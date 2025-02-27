@@ -157,6 +157,132 @@ class ArrayQuestions {
         return res;
     }
 
+    public static int[] subtractTwoArrays(int[] arr1, int[] arr2){ // arr2 - arr1
+        int n = arr1.length;
+        int m = arr2.length;
+
+        int[] res = new int[m];
+
+        int i = n-1;
+        int j = m-1;
+        int k = m-1;
+
+        int borrow = 0;
+
+        while(k >= 0){
+            int diff = arr2[j] - borrow; // j will never be negative inside this loop
+
+            if(i >= 0){
+                diff = diff - arr1[i];
+            }
+
+            if(diff < 0){
+                diff = diff + 10;
+                borrow = 1;
+            } else {
+                borrow = 0;
+            }
+
+            res[k] = diff;
+
+            i--;
+            j--;
+            k--;
+        }
+
+        return res;
+    }
+
+    public static void reverseArray(int[] arr){
+        int n = arr.length;
+
+        for(int i=0; i<n/2; i++){
+            int frontEle = arr[i];
+            int backEle = arr[n-1-i];
+
+            arr[i] = backEle;
+            arr[n-i-1] = frontEle;
+        }
+    }
+
+    public static void swapArrayElements(int[] arr, int i, int j){
+        // int temp = arr[i];
+        // arr[i] = arr[j];
+        // arr[j] = temp;
+
+        int elementAti = arr[i];
+        int elementAtj = arr[j];
+
+        arr[i] = elementAtj;
+        arr[j] = elementAti;
+    }
+
+    public static void reverseArray2(int[] arr){
+        int n = arr.length;
+
+        int i = 0;
+        int j = n-1;
+
+        while(i < j){
+            swapArrayElements(arr,i,j);
+
+            i++;
+            j--;
+        }
+    }
+
+    public static void reverseArray3(int[] arr, int si, int ei){
+        while(si < ei){
+            swapArrayElements(arr, si, ei);
+
+            si++;
+            ei--;
+        }
+    }
+
+    public static void rotateArray(int[] arr, int k){
+        int n = arr.length;
+
+        k = k % n;
+
+        if(k < 0){
+            k = k + n;
+        }
+
+        reverseArray3(arr,0,n-1);
+        reverseArray3(arr,0,k-1);
+        reverseArray3(arr,k,n-1);
+    }
+
+    public static int[] inverseArray(int[] arr){
+        int n = arr.length;
+
+        int[] inv = new int[n];
+
+        for(int idx = 0; idx<n; idx++){
+            int pos = arr[idx];
+            int ele = idx;
+
+            inv[pos] = ele;
+        }
+
+        return inv;
+    }
+
+    public static void printSubarrays(int[] arr){
+        int n = arr.length;
+
+        for(int si=0; si<n; si++){
+            for(int ei = si; ei<n; ei++){
+                // print from si to ei
+                for(int idx=si; idx<=ei; idx++){
+                    System.out.print(arr[idx] + " ");
+                }
+                System.out.println();
+            }
+        }
+    }
+
 
 
 
@@ -180,7 +306,7 @@ class ArrayQuestions {
 
     public static void main(String[] args){
         int[] arr1 = takeArrayInput();
-        int[] arr2 = takeArrayInput();
+        // int[] arr2 = takeArrayInput();
 
         // System.out.println("Enter target to search in your array");
         // int tar = scn.nextInt();
@@ -188,8 +314,8 @@ class ArrayQuestions {
         // int count = findElementsGreaterThan40(arr);
         // System.out.println("Count of elements greater than 40: " + count);
 
-        int[] ans = sumOfArrays(arr1, arr2);
-        printArray(ans);
+        printSubarrays(arr1);
+        // printArray(ans);
         // System.out.println("Answer to your query is " + ans);
     }
 }
