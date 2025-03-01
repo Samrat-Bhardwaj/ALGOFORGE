@@ -283,6 +283,135 @@ class ArrayQuestions {
         }
     }
 
+    public static int findCountOfSubbarraysWithSumK(int[] arr, int k){
+        int n = arr.length;
+        int count = 0;
+
+        for(int si=0; si<n; si++){
+            int csum = 0;
+
+            for(int ei=si; ei<n; ei++){
+                csum += arr[ei];
+
+                if(csum == k){
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    public static int findCountOfSubbarraysWithSumDivisibleByK(int[] arr, int k){
+        int n = arr.length;
+        int count = 0;
+
+        for(int si=0; si<n; si++){
+            int csum = 0;
+
+            for(int ei=si; ei<n; ei++){
+                csum += arr[ei];
+
+                if(csum % k == 0){
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+
+    public static int maxSumSubarray(int[] arr){
+        int n = arr.length;
+        int maxSum = 0;
+
+        int maxSum_si = 0;
+        int maxSum_ei = 0;
+
+        for(int si=0; si<n; si++){
+            int csum = 0;
+
+            for(int ei=si; ei<n; ei++){
+                csum += arr[ei];
+
+                if(csum > maxSum){
+                    maxSum = csum;
+                    maxSum_si = si;
+                    maxSum_ei = ei;
+                }
+            }
+        }
+
+        // printing the subarray with maximum sum
+        // for(int idx = maxSum_si; idx <= maxSum_ei; idx++){
+        //     System.out.print(arr[idx] + " ");
+        // }
+
+        return maxSum;
+    }
+
+
+    public static int maxSumSubarray2(int[] arr){
+        int n = arr.length;
+        int maxSum = Integer.MIN_VALUE;
+        int maxSum_si = 0;
+        int maxSum_ei = 1;
+        int si = 0;
+
+        int meh = 0;
+
+        for(int idx=0; idx<n; idx++){
+            meh = meh + arr[idx]; // -23
+
+            // maxSum = Math.max(maxSum, meh);
+            if(meh > maxSum){
+                maxSum = meh;
+                maxSum_si = si; 
+                maxSum_ei = idx; // this subarray in ending today
+            }
+
+            if(meh < 0){
+                meh = 0;
+                si = idx + 1; // we will consider new subarray from tomorrow 
+            }
+        }
+
+        // printing the subarray with maximum sum
+        for(int idx = maxSum_si; idx <= maxSum_ei; idx++){
+            System.out.print(arr[idx] + " ");
+        }
+
+        return maxSum;
+    }
+
+    public static void printAllSubsets(int[] arr){
+        int n = arr.length;
+        int total_number_of_subsets = (int)Math.pow(2,n);
+
+        for(int i = 0; i < total_number_of_subsets; i++){
+            // i -> convert to binary
+            int num = i;
+            String sub = "";
+
+            for(int idx=n-1; idx>=0; idx--){
+                int rem = num % 2;
+                num = num/2;
+
+                // 1 -> print arr[idx]
+                if(rem == 1){
+                    sub = arr[idx] + " " + sub; 
+                } else { // 0 -> print space
+                    sub = "_ " + sub;
+                }
+            }
+
+            System.out.println(sub);
+        }
+    }
+
+
+
 
 
 
@@ -305,7 +434,7 @@ class ArrayQuestions {
 
 
     public static void main(String[] args){
-        int[] arr1 = takeArrayInput();
+        // int[] arr1 = takeArrayInput();
         // int[] arr2 = takeArrayInput();
 
         // System.out.println("Enter target to search in your array");
@@ -314,7 +443,11 @@ class ArrayQuestions {
         // int count = findElementsGreaterThan40(arr);
         // System.out.println("Count of elements greater than 40: " + count);
 
-        printSubarrays(arr1);
+        // int[] arr = {3,4,-9,-15,3,7,-9,-8,12,-3,7,-8};
+        // int[] arr = {-2,-3,-4,-5,-6,-7,-1};
+        int[] arr = {7,4,5,2};
+        // int ans = maxSumSubarray2(arr);
+        printAllSubsets(arr);
         // printArray(ans);
         // System.out.println("Answer to your query is " + ans);
     }
