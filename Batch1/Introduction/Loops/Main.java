@@ -19,10 +19,22 @@ class Main {
         //     i++;
         // }
     
-        for(int i=0; i<5; i++){
+        // for(int i=0; i<5; i++){
+        //     System.out.println(i);
+        // }
+
+        // System.out.println(i+43);
+
+
+        for(int i=1; i<=10; i++){
+            // System.out.println("above statement");
+            if(i == 7){
+                continue;
+            }
+
             System.out.println(i);
         }
 
-        System.out.println(i+43);
+        System.out.println("outside for loop");
     }
 }

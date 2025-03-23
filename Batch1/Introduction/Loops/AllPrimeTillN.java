@@ -5,6 +5,7 @@ class AllPrimeTillN {
 
         int n = scn.nextInt();
 
+        // 64 -> 
         for(int num = 2; num <= n; num++){
             
             boolean isPrime = true;

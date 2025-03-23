@@ -13,7 +13,8 @@ class Prime {
         //     }
         // }
 
-        for(int i = 2; i*i <= num; i++){
+        // 64 -> 1*64, 2*32, 4*16, 8*8, 16*4 
+        for(int i = 2; i*i <= num; i++){ // i <= root(num) = i*i <= num
             if(num % i == 0){
                 isPrime = false;
                 break;

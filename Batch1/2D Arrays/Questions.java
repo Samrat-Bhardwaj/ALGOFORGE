@@ -69,8 +69,8 @@ class Questions {
         }
     }
 
-    public void reverseEveryRow(int[][] matrix){
-        int n = matrix.length;
+    public void reverseEveryRow(int[][] arr){
+        int n = arr.length;
 
         for(int row=0; row<n; row++){
 
@@ -125,7 +125,7 @@ class Questions {
     }
 
     // leetcode 240 =======================================
-    public boolean searchMatrix(int[][] matrix, int target) {
+    public boolean searchMatrix2(int[][] matrix, int target) {
         int n = matrix.length;
         int m = matrix[0].length;
 
@@ -145,15 +145,32 @@ class Questions {
         return false;
     }
 
+    // diagnoal traversal 
+    public static void printDiagonal(int[][] arr){
+        int n = arr.length;
+        int m = arr[0].length;
+
+        for(int diag=0; diag<m; diag++){
+
+            for(int i=0, j=diag; i<n && j<m; i++, j++){
+                System.out.print(arr[i][j] + ",");
+            }
+
+            System.out.println();
+        }
+    }
+
     public static void main(String[] args){
         // int[][] arr = {{11,22,4,45,110}, {33,9,7,5,89}, {66,77,6,55,99}, {13,1,43,88,44}};
         int[][] arr2 = {{1,2,3,4,5}, {6,7,8,9,10}, {11,12,13,14,15}, {16,17,18,19,20}, {21,22,23,24,25}};
+        int[][] arr = {{1,2,3,6,5},{4,5,6,7,2},{7,8,9,8,1}};
+        printSpiral(arr);
+        
+        // print2DArray(arr2);
 
-        // printSpiral(arr);
-        print2DArray(arr2);
+        // transpose(arr2);
 
-        transpose(arr2);
-
-        print2DArray(arr2);
+        // print2DArray(arr2);
+        // printDiagonal(arr2);
     }
 }

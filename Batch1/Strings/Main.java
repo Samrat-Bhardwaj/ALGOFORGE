@@ -100,7 +100,6 @@ class Main {
     }
 
     // toggle casing
-
     public static String toggleCase(String str){
         int n = str.length();
         StringBuilder sb = new StringBuilder();
