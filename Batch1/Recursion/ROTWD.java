@@ -56,6 +56,49 @@ class ROTWD {
         return myAns;
     }
 
+    public static ArrayList<String> getAllStairPaths(int n){
+        if(n<0){
+            return new ArrayList<>();
+        }
+
+        if(n==0){
+            ArrayList<String> baseAns = new ArrayList<>();
+            baseAns.add("");
+            return baseAns;
+        }
+
+        ArrayList<String> allPaths = new ArrayList<>();
+
+        ArrayList<String> pathsAfterOneStep = getAllStairPaths(n-1);
+        ArrayList<String> pathsAfterTwoStep = getAllStairPaths(n-2);
+        ArrayList<String> pathsAfterThreeStep = getAllStairPaths(n-3);
+
+        for(String path: pathsAfterOneStep){
+            allPaths.add("1" + path);
+        }
+
+        for(String path: pathsAfterTwoStep){
+            allPaths.add("2" + path);
+        }
+
+        for(String path: pathsAfterThreeStep){
+            allPaths.add("3" + path);
+        }
+
+        return allPaths;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -70,7 +113,7 @@ class ROTWD {
 
 
     public static void main(String[] args){
-        ArrayList<String> ans = getKPC("12");
+        ArrayList<String> ans = getAllStairPaths(10);
 
         System.out.println(ans); // [,c,b,bc,a,ac,ab,abc]
     }
