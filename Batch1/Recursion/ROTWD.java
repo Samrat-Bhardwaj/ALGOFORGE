@@ -89,31 +89,78 @@ class ROTWD {
     }
 
 
+    // sr -> source row
+    // sc -> source col
+    // dr -> destination row
+    // dc -> destination col
+
+    // allMazePaths(0,0,n-1,m-1);
+    public static ArrayList<String> allMazePaths(int sr, int sc, int dr, int dc){
+        if(sr > dr || sc > dc){ // wrong place 
+            return new ArrayList<>();
+        }
+
+        if(sr == dr && sc == dc){
+            ArrayList<String> baseAns = new ArrayList();
+            baseAns.add("");
+            return baseAns;
+        }
 
 
+        ArrayList<String> hpaths = allMazePaths(sr, sc+1, dr, dc);
+        ArrayList<String> vpaths = allMazePaths(sr+1, sc, dr, dc);
 
+        ArrayList<String> allPaths = new ArrayList<>();
 
+        for(String path: hpaths){
+            allPaths.add("h" + path);
+        }
 
+        for(String path: vpaths){
+            allPaths.add("v" + path);
+        }
 
+        return allPaths;
+    }
 
+    public static ArrayList<String> getAllMazePathsWithJumps(int sr, int sc, int dr, int dc){
+        if(sr == dr && sc == dc){
+            ArrayList<String> baseAns = new ArrayList<>();
+            baseAns.add("");
+            return baseAns;
+        }
 
+        ArrayList<String> allPaths = new ArrayList<>();
+        // horizontal moves
+        for(int jump = 1; jump <= dc-sc; jump++){
+            ArrayList<String> hpaths = getAllMazePathsWithJumps(sr, sc+jump, dr, dc);
 
+            for(String path: hpaths){
+                allPaths.add("h" + jump + path);
+            }
+        }
+        // vertical moves
+        for(int jump=1; jump <= dr-sr; jump++){
+            ArrayList<String> vpaths = getAllMazePathsWithJumps(sr+jump, sc, dr, dc);
 
+            for(String path: vpaths){
+                allPaths.add("v" + jump + path);
+            }
+        }
+        // diagonal moves
+        for(int jump=1; jump <= Math.min(dc-sc,dr-sr); jump++){
+            ArrayList<String> dpaths = getAllMazePathsWithJumps(sr+jump, sc+jump, dr, dc);
 
+            for(String path: dpaths){
+                allPaths.add("d" + jump + path);
+            }
+        }
 
-
-
-
-
-
-
-
-
-
-
+        return allPaths;
+    }
 
     public static void main(String[] args){
-        ArrayList<String> ans = getAllStairPaths(10);
+        ArrayList<String> ans = getAllMazePathsWithJumps(0,0,2,2);
 
         System.out.println(ans); // [,c,b,bc,a,ac,ab,abc]
     }
