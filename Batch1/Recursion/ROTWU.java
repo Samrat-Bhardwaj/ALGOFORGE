@@ -55,34 +55,31 @@ class ROTWU {
     }
 
 
+    // 0,0,n-1,m-1
+    public static void printAllMazePathsWithJumps(int row, int col, int dr, int dc, String psf){ // path so far
+        if(row == dr && col == dc){
+            System.out.print(psf+" , ");
+            return;
+        }
 
+        // horizontal moves 
+        for(int jump=1; jump <= dc-col; jump++){
+            printAllMazePathsWithJumps(row, col+jump, dr, dc, psf + "h" + jump);
+        }
 
+        // vertical moves
+        for(int jump=1; jump <= dr-row; jump++){
+            printAllMazePathsWithJumps(row+jump, col, dr, dc, psf + "v" + jump);
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        // diagnoal moves
+        for(int jump=1; jump<= Math.min(dr-row, dc-col); jump++){
+            printAllMazePathsWithJumps(row+jump, col+jump, dr,dc, psf+"d"+jump);
+        }
+    }
 
     public static void main(String[] args){
-        printAllStairPaths(4, "");
+        // printAllMazePathsWithJumps(0,0,2,2, "");
+        printEncodings("303","");
     }
 }
