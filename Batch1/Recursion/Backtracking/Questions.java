@@ -181,6 +181,134 @@ class Questions {
         return true;
     }
 
+    // N-Queens optimised (leetcode 52) Space = O(N)================================
+    public int findNQueensSolution(int row, int n, boolean[] rowVis, boolean[] colVis, boolean[] diagVis, boolean[] aDiagVis){
+        if(row == n){
+            return 1;
+        }
+
+        int ans = 0;
+        for(int col=0; col<n; col++){
+            if(!rowVis[row] && !colVis[col] && !diagVis[col-row+n-1] && !aDiagVis[row+col]){
+
+                rowVis[row] = true;
+                colVis[col] = true;
+                diagVis[col-row+n-1]= true;
+                aDiagVis[row+col] = true;
+
+                ans += findNQueensSolution(row+1,n,rowVis,colVis,diagVis,aDiagVis);
+
+                rowVis[row] = false;
+                colVis[col] = false;
+                diagVis[col-row+n-1]= false;
+                aDiagVis[row+col] = false;
+            }
+        }
+
+        return ans;
+    }
+
+    public int totalNQueens(int n) {
+        int m = n;
+        boolean[] rowVis = new boolean[n];
+        boolean[] colVis = new boolean[m];
+
+        boolean[] diagVis = new boolean[n+m-1];
+        boolean[] aDiagVis = new boolean[n+m-1];
+
+        return findNQueensSolution(0,n,rowVis,colVis,diagVis,aDiagVis);
+    }
+
+    // N Queens -> O(1) space -> Most Optimized
+    public int setKthBitTrue(int num, int k){
+        int mask = (1 << k);
+
+        int newNum = num | mask;
+        return newNum;
+    }
+
+    public int setKthBitfalse(int num, int k){
+        int mask = ~(1 << k);
+
+        int newNum = num & mask;
+        return newNum;
+    }
+
+    public boolean isPossibleToPlaceQueenHere(int row, int col, int n, int colVis, int diagVis, int aDiagVis){
+        int mask = (1<<col);
+        if(colVis & mask > 0) return false;
+
+        mask = (1 << (col-row+n-1));
+        if(diagVis & mask > 0) return false;
+
+        mask = (1 << (row+col));
+        if(aDiagVis & mask > 0) return false;
+
+        return true;
+    }
+
+    public int findNQueensSolution_bit(int row, int n, int colVis, int diagVis, int aDiagVis){
+        if(row == n){
+            return 1;
+        }
+
+        int ans = 0;
+        for(int col=0; col<n; col++){
+            if(isPossibleToPlaceQueenHere(row,col,n,colVis,diagVis,aDiagVis)){
+
+                // colVis = setKthBitTrue(colVis,col);
+                colVis ^= (1 << col);
+                // diagVis = setKthBitTrue(diagVis,col-row+n-1);
+                diagVis ^= (1 << (col-row+n-1));
+                aDiagVis = setKthBitTrue(aDiagVis,col+row);
+
+                ans += findNQueensSolution_bit(row+1,n,colVis,diagVis,aDiagVis);
+
+                // colVis = setKthBitfalse(colVis,col);
+                colVis ^= (1 << col);
+                // diagVis = setKthBitfalse(diagVis,col-row+n-1);
+                diagVis ^= (1 << (col-row+n-1));
+                aDiagVis = setKthBitfalse(aDiagVis,col+row);
+            }
+        }
+
+        return ans;
+    }
+
+    public int totalNQueens(int n) {
+        int colVis = 0;
+        int diagVis = 0;
+        int aDiagVis = 0;
+
+        return findNQueensSolution_bit(0,n,colVis,diagVis,aDiagVis)
+    }
+
+// HomeWORK  ================================================================
+    // leetcode 526 
+
+    // leetcode 1947
+
+    // leetcode 1986
+
+    // leetcode 282
+
+    // leetcode 301
+
+    // leetcode 980
+
+
+// SHOULD DISCUSS ===========================================================
+    // leetcode 22 
+
+    // leetcode 79
+
+    // leetcode 1307
+
+    // leetcode 140 
+
+    // leetcode 212
+
+    // leetcode 1240 
 
 
 

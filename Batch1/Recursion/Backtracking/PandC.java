@@ -78,31 +78,7 @@ class PandC {
         // coinChangeCombinationMultiple(coins, idx+1, tar, asf);
     }
 
-    // friends pairing 
-    public long countFriendsPairings(int n) {
-        if(n <= 2){
-            return n;
-        }
-
-        long aloneCombination = countFriendsPairings(n-1);
-        long pairCombination = countFriendsPairings(n-2);
-
-        long totalCombination = aloneCombination + (n-1)*pairCombination;
-
-        return totalCombination;
-    }
-
-    // josephus for zero base indexing 
-    public int josephus(int n, int k){
-        if(n == 1){
-            return 0;
-        }
-
-        int smallerAns = josephus(n-1,k);
-        int ans = (smallerAns + k) % n;
-
-        return ans;
-    }
+    
 
 
 
