@@ -112,6 +112,78 @@ class Questions {
         }
     }
 
+    // sudoku solver
+    public void solveSudoku(char[][] board) {
+        ArrayList<int[]> emptyPlaces = new ArrayList<>();
+
+        for(int i=0; i<9; i++){
+            for(int j=0; j<9; j++){
+                if(board[i][j] == '.'){
+                    emptyPlaces.add(new int[]{i,j});
+                }
+            }
+        }
+
+        fillSudoku(0,emptyPlaces,board);
+    }
+
+    public boolean fillSudoku(int idx, ArrayList<int[]> emptyPlaces,char[][] board){
+        if(idx == emptyPlaces.size()){
+            return true;
+        }
+
+        int row = emptyPlaces.get(idx)[0];
+        int col = emptyPlaces.get(idx)[1];
+
+        for(char num = '1'; num<='9'; num++){
+            if(canPlace(row,col,board,num) == true){
+                board[row][col] = num;
+
+                boolean isSudokuFilled = fillSudoku(idx+1, emptyPlaces, board);
+                if(isSudokuFilled == true){
+                    return true;
+                }
+
+                board[row][col] = '.';
+            }
+        }
+
+        return false;
+    }
+
+    public boolean canPlace(int row, int col,char[][] board, char num){
+        // row check
+        for(int i=row,j=0; j<9; j++){
+            if(board[i][j] == num){
+                return false;
+            }
+        }
+
+        // col check
+        for(int i=0, j=col; i<9; i++){
+            if(board[i][j] == num){
+                return false;
+            }
+        }
+
+        // 3x3 cell check
+        int cellStartingRow = (row/3)*3;
+        int cellStartingCol = (col/3)*3;
+
+        for(i=cellStartingRow; i<cellStartingRow+3; i++){
+            for(j=cellStartingCol; j<cellStartingCol+3; j++){
+                if(board[i][j] == num){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+
+
 
 
 
@@ -143,5 +215,6 @@ class Questions {
 
         // NQueens(0,n,vis);
         printKnightTour(0,0);
+        board = [["5","3",".",".","7",".",".",".","."],["6",".",".","1","9","5",".",".","."],[".","9","8",".",".",".",".","6","."],["8",".",".",".","6",".",".",".","3"],["4",".",".","8",".","3",".",".","1"],["7",".",".",".","2",".",".",".","6"],[".","6",".",".",".",".","2","8","."],[".",".",".","4","1","9",".",".","5"],[".",".",".",".","8",".",".","7","9"]]
     }
 }
