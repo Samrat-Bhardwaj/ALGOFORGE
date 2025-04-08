@@ -283,7 +283,86 @@ class Questions {
         return findNQueensSolution_bit(0,n,colVis,diagVis,aDiagVis)
     }
 
-// HomeWORK  ================================================================
+    // leetcode 22 
+    public List<String> generateParenthesis(int n) {
+        List<String> ans = new ArrayList<>();
+
+        generateValidStrings("",0,0,n,ans);
+
+        return ans;
+    }
+
+    public void generateValidStrings(String curr, int ob, int cb, int n,List<String> ans){
+        if(cb == n){
+            ans.add(curr);
+            return;
+        }
+
+        // add '('
+        if(ob < n){
+            generateValidStrings(curr+"(", ob+1, cb, n, ans);
+        }
+
+        // add ')'
+        if(cb < ob){
+            generateValidStrings(curr+")", ob, cb+1, n, ans);
+        }
+    }
+
+    // leetcode 79
+    public boolean exist(char[][] board, String word) {
+        int n = board.length;
+        int m = board[0].length;
+
+        boolean[][] vis = new boolean[n][m];
+
+        boolean ans = false;
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(board[i][j] == word.charAt(0)){
+                    ans = ans || findIfWordExists(i,j,0,board,word,vis);
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    public static boolean findIfWordExists(int row, int col, int idx,char[][] board,String word,boolean[][] vis){
+        if(idx == word.length()){
+            return true;
+        }
+
+        if(row<0 || col<0 || row>=board.length || col>=board[0].length || vis[row][col] || board[row][col] != word.charAt(idx)){
+            return false;
+        }
+
+        vis[row][col] = true;
+        boolean wordFound = false;
+
+        int[][] dirs = {{0,1},{1,0},{-1,0},{0,-1}};
+
+        for(int[] dir: dirs){
+            int nRow = row + dir[0];
+            int nCol = col + dir[1];
+
+            // we can't be proactive here, will miss TC with 1*1 board 
+            wordFound = wordFound || findIfWordExists(nRow, nCol, idx+1,board,word,vis);
+            // if(wordFound == true) return true;
+        }
+
+        vis[row][col] = false;
+        return wordFound;
+    }
+
+    // leetcode 1307 (requires Map, set)
+
+    // leetcode 140 (requires set)
+
+    // leetcode 212 (TRIE + backtracking)
+
+    // HomeWORK  ================================================================
     // leetcode 526 
 
     // leetcode 1947
@@ -295,20 +374,6 @@ class Questions {
     // leetcode 301
 
     // leetcode 980
-
-
-// SHOULD DISCUSS ===========================================================
-    // leetcode 22 
-
-    // leetcode 79
-
-    // leetcode 1307
-
-    // leetcode 140 
-
-    // leetcode 212
-
-    // leetcode 1240 
 
 
 
