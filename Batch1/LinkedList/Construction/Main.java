@@ -13,6 +13,48 @@ class LinkedList {
     int size;
 
     public void addLast(int data){
+        Node nn = new Node(data);
+
+        if(head == null){ // size can be 0
+            head = nn;
+            tail = nn;
+        } else {
+            tail.next = nn;
+            tail = nn;
+        }
+
+        this.size++;
+    }
+
+    public void addFirst(int data){
+        Node nn = new Node(data);
+
+        if(tail == null){
+            head = nn;
+            tail = nn;
+        } else {
+            nn.next = head;
+            head = nn;
+        }
+
+        this.size++;
+    }
+
+    public void display(){ // you don't have access to size
+        Node temp = head;
+
+        while(temp != null){
+            System.out.print(temp.data + " ");
+            
+            Node tempKaNext = temp.next;
+            temp = tempKaNext;
+            // temp = temp.next;
+        }
+
+        System.out.println();
+    }
+
+    public void removeLast(){
         
     }
 }
@@ -23,11 +65,21 @@ class Main {
         
         for(int i=1; i<=4; i++){
             ll.addLast(i);
+            ll.display();
         }
+        // System.out.println(ll);
+        ll.addFirst(55);
+        ll.display();
+        // System.out.println(ll);
 
-        System.out.println(ll.head.data);
-        System.out.println(ll.head.next.data);
-        System.out.println(ll.head.next.next.data);
-        System.out.println(ll.head.next.next.next.data);
+        ll.addFirst(10);
+        ll.display();
+        // System.out.println(ll);
+
+
+        // System.out.println(ll.head.data);
+        // System.out.println(ll.head.next.data);
+        // System.out.println(ll.head.next.next.data);
+        // System.out.println(ll.head.next.next.next.data);
     }
 }
