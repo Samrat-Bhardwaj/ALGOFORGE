@@ -20,6 +20,14 @@ class LinkedList {
 class Main {
     public static void main(String[] args){
         LinkedList ll = new LinkedList();
-        ll.addLast(23);
+        
+        for(int i=1; i<=4; i++){
+            ll.addLast(i);
+        }
+
+        System.out.println(ll.head.data);
+        System.out.println(ll.head.next.data);
+        System.out.println(ll.head.next.next.data);
+        System.out.println(ll.head.next.next.next.data);
     }
 }
