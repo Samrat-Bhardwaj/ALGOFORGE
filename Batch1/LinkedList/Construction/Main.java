@@ -55,7 +55,28 @@ class LinkedList {
     }
 
     public void removeLast(){
-        
+        if(head == null){
+            System.out.println("There is nothing to remove!!!");
+            return;
+        }
+
+        if(head.next == null){ // size is 1
+            head = null;
+            tail = null;
+            size = 0;
+            return;
+        }
+
+        Node temp = head;
+
+        while(temp.next != tail){
+            Node tempKaNext = temp.next;
+            temp = temp.next;
+        }
+
+        temp.next = null;
+        tail = temp;
+        size--;
     }
 }
 
@@ -76,10 +97,11 @@ class Main {
         ll.display();
         // System.out.println(ll);
 
+        while(ll.size != 0){
+            ll.removeLast();
+            ll.display();
+        }
 
-        // System.out.println(ll.head.data);
-        // System.out.println(ll.head.next.data);
-        // System.out.println(ll.head.next.next.data);
-        // System.out.println(ll.head.next.next.next.data);
+        ll.removeLast();
     }
 }
