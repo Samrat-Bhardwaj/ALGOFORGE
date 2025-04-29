@@ -29,7 +29,7 @@ class LinkedList {
     public void addFirst(int data){
         Node nn = new Node(data);
 
-        if(tail == null){
+        if(head == null){
             head = nn;
             tail = nn;
         } else {

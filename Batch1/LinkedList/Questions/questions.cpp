@@ -7,6 +7,16 @@ struct ListNode {
     ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
+struct Node {
+    int data;
+    struct Node* next;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
+};
+
 // leetcode 876 =========================
 ListNode* middleNode(ListNode* head) {
     ListNode* slow = head;
@@ -116,10 +126,73 @@ void reorderList(ListNode* head) {
 }
 
 // Unfold Linkedlist (Undo leetcode 143) ======================================
+void unfoldLinkedList(ListNode* head){
+    ListNode* oddPositionDummy = new ListNode(-1);
+    ListNode* evenPositionDummy = new ListNode(-1);
+
+    ListNode* oddCurr = oddPositionDummy;
+    ListNode* evenCurr = evenPositionDummy;
+
+    int pos = 0;
+    ListNode* curr = head;
+
+    while(curr){
+        ListNode* currKaNext = curr->next;
+        curr->next = NULL;
+
+        if(pos % 2 == 0){
+            evenCurr->next = curr;
+            evenCurr = evenCurr->next;
+        } else {
+            oddCurr->next = curr;
+            oddCurr = oddCurr->next;
+        }
+
+        curr = currKaNext;
+        pos++;
+    }
+
+    ListNode* oddPositionActualHead = oddPositionDummy->next;
+    oddPositionDummy->next = NULL;
+    oddPositionActualHead = reverseLinkedList(oddPositionActualHead);
+
+    evenCurr->next = oddPositionActualHead;
+}
 
 
-// leetcode 328 =============================================================
+// leetcode 328(HW) =============================================================
 
+// https://www.geeksforgeeks.org/problems/segregate-even-and-odd-nodes-in-a-linked-list5035/1
+
+Node* divide(Node* head) {
+    Node* evenDummy = new Node(-1);
+    Node* oddDummy = new Node(-1);
+
+    Node* evenCurr = evenDummy;
+    Node* oddCurr = oddDummy;
+
+    Node* curr = head;
+
+    while(curr){
+        Node* currKaNext = curr->next;
+        curr->next = NULL;
+
+        if(curr->data % 2 == 0){
+            evenCurr->next = curr;
+            evenCurr = evenCurr->next;
+        } else {
+            oddCurr->next = curr;
+            oddCurr = oddCurr->next;
+        }
+
+        curr = currKaNext;
+    }
+
+    evenCurr->next = oddDummy->next;
+    return evenDummy->next;
+}
+
+// leetcode 25 =========================================================
 
 
 

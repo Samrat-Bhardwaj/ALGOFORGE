@@ -150,11 +150,195 @@ class Questions {
     }
 
     // Unfold Linkedlist (Undo leetcode 143) ======================================
+    public void unfoldLinkedList(ListNode head){
+        ListNode oddPositionDummy = new ListNode(-1);
+        ListNode evenPositionDummy = new ListNode(-1);
+
+        ListNode oddCurr = oddPositionDummy;
+        ListNode evenCurr = evenPositionDummy;
+
+        int pos = 0;
+        ListNode curr = head;
+
+        while(curr != null){
+            ListNode currKaNext = curr.next;
+            curr.next = null;
+
+            if(pos % 2 == 0){
+                evenCurr.next = curr;
+                evenCurr = evenCurr.next;
+            } else {
+                oddCurr.next = curr;
+                oddCurr = oddCurr.next;
+            }
+
+            curr = currKaNext;
+            pos++;
+        }
+
+        ListNode oddPositionActualHead = oddPositionDummy.next;
+        oddPositionDummy.next = null;
+        oddPositionActualHead = reverseLinkedList(oddPositionActualHead);
+
+        evenCurr.next = oddPositionActualHead;
+    }
 
 
-    // leetcode 328 =============================================================
+    // leetcode 328 (HW) =============================================================
 
 
+    // https://www.geeksforgeeks.org/problems/segregate-even-and-odd-nodes-in-a-linked-list5035/1
+    Node divide(Node head) {
+        Node evenDummy = new Node(-1);
+        Node oddDummy = new Node(-1);
+
+        Node evenCurr = evenDummy;
+        Node oddCurr = oddDummy;
+
+        Node curr = head;
+
+        while(curr != null){
+            Node currKaNext = curr.next;
+            curr.next = null;
+
+            if(curr.data % 2 == 0){
+                evenCurr.next = curr;
+                evenCurr = evenCurr.next;
+            } else {
+                oddCurr.next = curr;
+                oddCurr = oddCurr.next;
+            }
+
+            curr = currKaNext;
+        }
+
+        evenCurr.next = oddDummy.next;
+        return evenDummy.next;
+    }
+
+    // leetcode 25 ====================================
+    class Solution {
+        ListNode ohead;
+        ListNode otail;
+        ListNode thead;
+        ListNode ttail;
+
+        public int getSize(ListNode head){
+            int size = 0;
+
+            ListNode temp = head;
+            while(temp != null){
+                temp = temp.next;
+                size++;
+            }
+
+            return size;
+        }
+
+        public void addFirst(ListNode node){
+            if(thead == null){
+                thead = node;
+                ttail = node;
+            } else {
+                node.next = thead;
+                thead = node;
+            }
+        }
+
+        public ListNode reverseKGroup(ListNode head, int k) {
+            ohead = null;
+            otail = null;
+            thead = null;
+            ttail = null;
+
+            int size = getSize(head);
+            ListNode curr = head;
+            
+            while(size >= k){
+                int K = k;
+                
+                while(K-- > 0){ // making temporary linkedlist
+                    ListNode currKaNext = curr.next;
+                    curr.next = null;
+
+                    addFirst(curr);
+                    curr = currKaNext;
+                    size--;
+                }
+
+                if(ohead == null){
+                    ohead = thead;
+                    otail = ttail;
+                } else {
+                    otail.next = thead;
+                    otail = ttail;
+                }
+                thead = null;
+                ttail = null;
+            }
+
+            otail.next = curr;
+            return ohead;
+        }
+    }
+
+    // leetcode 138 =============================================
+    public void attachCopyNodesInBetween(Node head){
+        Node curr = head;
+
+        while(curr != null){
+            Node copy = new Node(curr.val);
+
+            Node currKaNext = curr.next;
+            curr.next = copy;
+            copy.next = currKaNext;
+
+            curr = currKaNext;
+        }
+    }
+
+    public Node detachInBetweenList(Node head){
+        Node copyHead = head.next;
+
+        Node curr = head;
+        while(curr != null){
+            Node currKaNext = curr.next.next; // originalNext
+
+            Node copy = curr.next;
+            if(currKaNext != null){
+                copy.next = currKaNext.next;
+            }
+            
+            curr.next = currKaNext;
+            curr = currKaNext;
+        }
+
+        return copyHead;
+    }
+
+    public Node copyRandomList(Node head) {
+        if(head == null){
+            return null;
+        }
+        attachCopyNodesInBetween(head);
+
+        Node curr = head;
+
+        // assign random node values
+        while(curr != null){
+            Node copy = curr.next;
+
+            if(curr.random != null){
+                copy.random = curr.random.next;
+            }
+
+            curr = curr.next.next;
+        }
+
+        return detachInBetweenList(head);
+    }
+
+    // leetcode 2 (HW)
 
 
 
