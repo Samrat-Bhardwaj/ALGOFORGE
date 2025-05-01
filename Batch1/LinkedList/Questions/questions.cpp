@@ -195,6 +195,104 @@ Node* divide(Node* head) {
 // leetcode 25 =========================================================
 
 
+// leetcode 83 ==================================================== 
+ListNode* deleteDuplicates(ListNode* head) {
+    if(head == NULL || head->next == NULL){
+        return head;
+    }
+
+    ListNode* curr = head;
+
+    while(curr && curr->next){
+        if(curr->val == curr->next->val){
+            ListNode* currKaNext = curr->next;
+
+            curr->next = currKaNext->next;
+
+            currKaNext->next = nullptr; // not required
+        } else {    
+            curr = curr->next;
+        }
+    }
+
+    return head;
+}
+
+
+// leetcode 82 ========================================================
+ListNode* deleteDuplicates(ListNode* head) {
+    if(head ==nullptr || head->next ==nullptr){
+        return head;
+    }
+
+    ListNode* dummy = new ListNode(-1);
+    dummy->next = head;
+
+    ListNode* curr = dummy;
+
+    while(curr && curr->next && curr->next->next){
+        if(curr->next->val == curr->next->next->val){ // not moving, just updating connections
+            ListNode* temp = curr->next;
+            int duplicateValue = temp->val;
+
+            while(temp && temp->val == duplicateValue){
+                temp = temp->next;
+            }
+
+            curr->next = temp;
+        } else {
+            curr = curr->next;
+        }
+    }
+
+    return dummy->next;
+}
+
+
+// leetcode 141 (Check linkedlist cycle) ======================================================
+bool hasCycle(ListNode* head) {
+    ListNode* slow = head;
+    ListNode* fast = head;
+
+    while(fast && fast->next){
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if(slow == fast){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+    // https://www.geeksforgeeks.org/problems/find-the-first-node-of-loop-in-linked-list--170645/1
+    // leetcode 142
+    ListNode *detectCycle(ListNode *head) {
+        if(head==nullptr || head->next==nullptr){
+            return nullptr;
+        }
+        
+        ListNode* slow=head;
+        ListNode* fast=head;
+
+        while(fast && fast->next){
+            slow=slow->next;
+            fast=fast->next->next;
+
+            if(slow==fast) break;
+        } 
+
+        if(slow!=fast) return nullptr;
+
+        fast=head;
+        while(slow!=fast){
+            slow=slow->next;
+            fast=fast->next;
+        }
+
+        return slow;
+    }
 
 void main(){
 

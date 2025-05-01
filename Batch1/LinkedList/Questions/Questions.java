@@ -341,6 +341,108 @@ class Questions {
     // leetcode 2 (HW)
 
 
+    // leetcode 83 ==================================================== 
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null || head.next == null){
+            return head;
+        }
+
+        ListNode curr = head;
+
+        while(curr != null && curr.next != null){
+            if(curr.val == curr.next.val){
+                ListNode currKaNext = curr.next;
+
+                curr.next = currKaNext.next;
+
+                currKaNext.next = null; // not required
+            } else {    
+                curr = curr.next;
+            }
+        }
+
+        return head;
+    }
+
+    // leetcode 82 ========================================================
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null || head.next == null){
+            return head;
+        }
+
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+
+        ListNode curr = dummy;
+
+        while(curr!=null && curr.next!=null && curr.next.next!=null){
+            if(curr.next.val == curr.next.next.val){ // not moving, just updating connections
+                ListNode temp = curr.next;
+                int duplicateValue = temp.val;
+
+                while(temp!=null && temp.val == duplicateValue){
+                    temp = temp.next;
+                }
+
+                curr.next = temp;
+            } else {
+                curr = curr.next;
+            }
+        }
+
+        return dummy.next;
+    }
+
+    // leetcode 141 (Check linkedlist cycle) ======================================================
+    public boolean hasCycle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while(fast!=null && fast.next!=null){
+            slow = slow.next;
+            fast = fast.next.next;
+
+            if(slow == fast){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // starting point of cycle in linkedList -> https://www.geeksforgeeks.org/problems/find-the-first-node-of-loop-in-linked-list--170645/1
+    public static Node findFirstNode(Node head) {
+        if(head == null || head.next==null){
+            return null;
+        }
+
+        Node slow = head;
+        Node fast = head;
+
+        while(fast!=null && fast.next!=null){
+            slow = slow.next;
+            fast = fast.next.next;
+
+            if(slow == fast){
+                break;
+            }
+        }
+
+        if(slow != fast){ // no cycle
+            return null;
+        }
+
+        slow = head;
+        while(slow != fast){
+            slow = slow.next;
+            fast = fast.next;
+        }
+
+        return slow;
+    }
+
+    // leetcode 21 ===================================================== 
+    
 
 
 
