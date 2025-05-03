@@ -442,7 +442,272 @@ class Questions {
     }
 
     // leetcode 21 ===================================================== 
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode p1 = list1;
+        ListNode p2 = list2;
+
+        ListNode dummy = new ListNode(-1);
+        ListNode curr = dummy;
+
+        while(p1 != null && p2 != null){
+            if(p1.val < p2.val){
+                // isolating the node
+                ListNode p1KaNext = p1.next;
+                p1.next = null;
+                // making connection 
+                curr.next = p1;
+                // moving to next
+                p1 = p1KaNext;
+            } else {
+                // isolating the node
+                ListNode p2KaNext = p2.next;
+                p2.next = null;
+                // making connection 
+                curr.next = p2;
+                // moving to next
+                p2 = p2KaNext;
+            }
+
+            curr = curr.next;
+        }
+
+        if(p1 != null){
+            curr.next = p1;
+        } else {
+            curr.next = p2;
+        }
+
+        return dummy.next;
+    }   
+
+    // leetcode 160 ======================================================
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode temp = headA;
+
+        while(temp.next != null){
+            temp = temp.next;
+        }
+
+        temp.next = headB; // headA is starting of tail now
+
+        ListNode startOfCylceNode = findCycleFirstNode(headA);
+
+        temp.next = null;
+
+        return startOfCylceNode;
+    }
+
+    public static ListNode findCycleFirstNode(ListNode head) {
+        if(head == null || head.next==null){
+            return null;
+        }
+
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while(fast!=null && fast.next!=null){
+            slow = slow.next;
+            fast = fast.next.next;
+
+            if(slow == fast){
+                break;
+            }
+        }
+
+        if(slow != fast){ // no cycle
+            return null;
+        }
+
+        slow = head;
+        while(slow != fast){
+            slow = slow.next;
+            fast = fast.next;
+        }
+
+        return slow;
+    }
+
+    // leetcode 1472 ============================================
+    class BrowserHistory {
+        class ListNode {
+            String data;
+            ListNode prev;
+            ListNode next;
+
+            public ListNode(String data){
+                this.data = data;
+            }
+        }
+
+        ListNode curr;
+
+        public BrowserHistory(String homepage) {
+            curr = new ListNode(homepage);
+        }
+        
+        public void visit(String url) {
+            ListNode newNode = new ListNode(url);
+
+            curr.next = newNode;
+            newNode.prev = curr;
+
+            curr = newNode;
+        }
+        
+        public String back(int steps) {
+            while(curr.prev != null && steps -- > 0){
+                curr = curr.prev;
+            }
+
+            return curr.data;
+        }
+        
+        public String forward(int steps) {
+            while(curr.next!=null && steps -- > 0){
+                curr = curr.next;
+            }
+
+            return curr.data;
+        }
+    }
+
+    // leetcode 2074 ===========================================
+    class Solution {
+        ListNode ohead;
+        ListNode otail;
+        ListNode thead;
+        ListNode ttail;
+
+        public int getSize(ListNode head){
+            int size = 0;
+
+            ListNode temp = head;
+            while(temp != null){
+                temp = temp.next;
+                size++;
+            }
+
+            return size;
+        }
+
+        public void addLast(ListNode node){
+            if(thead == null){
+                thead = node;
+                ttail = node;
+            } else {
+                ttail.next = node;
+                ttail = node;
+            }
+        }
+
+        public void addFirst(ListNode node){
+            if(thead == null){
+                thead = node;
+                ttail = node;
+            } else {
+                node.next = thead;
+                thead = node;
+            }
+        }
+
+        public ListNode reverseEvenLengthGroups(ListNode head) {
+            if(head == null || head.next == null){
+                return head;
+            }
+
+            ohead = null;
+            otail = null;
+            thead = null;
+            ttail = null;
+
+            int size = getSize(head);
+            ListNode curr = head;
+
+            int curr_group_size = 1;
+
+            while(size >= curr_group_size){
+                int K = curr_group_size;
+                
+                while(K-- > 0){
+                    ListNode currKaNext = curr.next;
+                    curr.next = null;
+
+                    if(curr_group_size % 2 == 0){
+                        addFirst(curr);
+                    } else {
+                        addLast(curr);
+                    }
+
+                    curr = currKaNext;
+                }
+
+                if(ohead == null){
+                    ohead = thead;
+                    otail = ttail;
+                } else {
+                    otail.next = thead;
+                    otail = ttail;
+                }
+
+                thead = null;
+                ttail = null;
+
+                size -= curr_group_size;
+                curr_group_size++;
+            }
+
+            while(curr != null){
+                ListNode currKaNext = curr.next;
+                curr.next = null;
+
+                if(size % 2 == 0){
+                    addFirst(curr);
+                } else {
+                    addLast(curr);
+                }
+
+                curr = currKaNext;
+            }
+
+            if(ohead == null){
+                ohead = thead;
+                otail = ttail;
+            } else {
+                otail.next = thead;
+                otail = ttail;
+            }
+
+            return ohead;
+        }
+    }
     
+    // leetcode 61 =================================================
+
+    // leetcode 1669 =======================================
+    public ListNode mergeInBetween(ListNode list1, int a, int b, ListNode list2) {
+        ListNode prev = list1;
+        ListNode curr = list1;
+
+        for(int i=0; i<=b; i++){
+            if(i < a-1){
+                prev = prev.next;
+            }
+            curr = curr.next;
+        }
+
+        prev.next = list2;
+
+        ListNode list2Tail = list2;
+
+        while(list2Tail.next != null){
+            list2Tail = list2Tail.next;
+        }
+
+        list2Tail.next = curr;
+    }
+
+
+
 
 
 
