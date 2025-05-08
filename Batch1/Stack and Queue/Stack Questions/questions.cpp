@@ -58,7 +58,7 @@ vector<int> nextLargerElement(vector<int>& arr) {
     
     stack<int> st;
 
-    for(int in-1; i>=0; i--){
+    for(int i = n-1; i>=0; i--){
         int currEle = arr[i];
 
         while(st.size()>0 && st.top() <= currEle){
@@ -76,6 +76,115 @@ vector<int> nextLargerElement(vector<int>& arr) {
 
     return ngr;
 }
+
+
+vector<int> nextLargerElement2(vector<int>& arr) {
+    int n = arr.size(); 
+
+    vector<int> ngr(n, -1);
+    
+    stack<int> st;
+
+    for(int i=0; i<n; i++){
+        while(st.size() && arr[st.top()] < arr[i]){
+            ngr[st.top()] = arr[i];
+            st.pop();
+        }
+
+        st.push(i);
+    }
+
+    return ngr;
+}
+
+// next smaller on left 
+vector<int> leftSmaller(vector<int> arr) {
+    vector<int> nsl;
+    stack<int> st;
+    st.push(-1);
+
+    for(int i=0; i<arr.size(); i++){
+        while(st.top()!=-1 && st.top()>=arr[i]){
+            st.pop();
+        }
+
+        nsl.push_back(st.top());
+
+        st.push(arr[i]);
+    }
+    return nsl;    
+}
+
+// https://www.geeksforgeeks.org/problems/stock-span-problem-1587115621/1
+vector<int> calculateSpan(vector<int>& arr) {
+    vector<int> ans;
+    stack<int> st;
+    st.push(-1);
+
+    for(int i=0; i<arr.size(); i++){
+        while(st.top()!=-1 && arr[st.top()] <= arr[i]){
+            st.pop();
+        }
+
+        ans.push_back(i - st.top());
+        st.push(i);
+    }
+
+    return ans;    
+}
+
+// leetcode 84 ==================================
+int largestRectangleArea(vector<int>& heights) {
+    int n = heights.size();
+    vector<int> nsl(n,-1);
+    vector<int> nsr(n,n);
+
+    stack<int> st;
+    st.push(-1);
+    for(int i=0; i<n; i++){
+        while(st.top()!=-1 && heights[st.top()] >= heights[i]){
+            st.pop();
+        }
+
+        nsl[i] = st.top();
+        st.push(i);
+    }
+
+    stack<int> st2;
+    st2.push(n);
+    for(int i=n-1; i>=0; i--){
+        while(st2.top()!=n && heights[st2.top()] >= heights[i]){
+            st2.pop();
+        }
+
+        nsr[i] = st2.top();
+
+        st2.push(i);
+    }
+
+    int maxArea = 0;
+    for(int i=0; i<n; i++){
+        int h = heights[i];
+        int w = nsr[i] - nsl[i] - 1;
+
+        maxArea = max(maxArea, h * w);
+    }
+
+    return maxArea;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
