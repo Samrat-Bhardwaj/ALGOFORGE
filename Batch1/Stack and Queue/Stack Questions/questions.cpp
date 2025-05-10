@@ -174,6 +174,42 @@ int largestRectangleArea(vector<int>& heights) {
 }
 
 
+// leetcode 84 ===============================================
+int largestRectangleArea(vector<int>& heights) {
+    int n = heights.size();
+    stack<int> st;
+    int maxArea = 0;
+
+    st.push(-1);
+
+    for(int i=0; i<n; i++){
+        while(st.top()!= -1 && heights[st.top()] >= heights[i]){
+            int idxPopped = st.top(); st.pop();
+
+            int h = heights[idxPopped];
+            int nsr = i;
+            int nsl = st.top();
+
+            maxArea = max(maxArea, h * (nsr - nsl - 1));
+        }
+
+        st.push(i);
+    }
+
+    while(st.top()!=-1){
+        int idxPopped = st.top(); st.pop();
+
+        int h = heights[idxPopped];
+        int nsr = n;
+        int nsl = st.top();
+
+        maxArea = max(maxArea, h * (nsr - nsl - 1));
+    }
+
+    return maxArea;
+}
+
+
 
 
 

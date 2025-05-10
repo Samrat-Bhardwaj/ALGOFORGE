@@ -184,6 +184,125 @@ class Main {
     }
 
 
+    // leetcode 84 optimized ====================
+    public int largestRectangleArea(int[] heights) {
+        int maxArea = 0;
+        int n = heights.length;
+        Stack<Integer> st = new Stack<>();
+
+        st.push(-1);
+
+        for(int i=0; i<n; i++){
+            // doesn't matter if you pop equal elements or not
+            while(st.peek()!=-1 && heights[st.peek()] >= heights[i]){
+                int idxPopped = st.pop();
+                int h = heights[idxPopped];
+                
+                int nsr = i; // next smaller on right
+                int nsl = st.peek(); // next smaller on left
+
+                maxArea = Math.max(area, h * (nsr - nsl - 1));
+            }
+
+            st.push(i);
+        }
+
+        while(st.peek()!=-1){
+            int idxPopped = st.pop();
+            int h = heights[idxPopped];
+            
+            int nsr = n; // next smaller on right
+            int nsl = st.peek(); // next smaller on left
+
+            maxArea = Math.max(area, h * (nsr - nsl - 1));
+        }
+
+        return maxArea;
+    }
+
+    // https://www.geeksforgeeks.org/problems/fun-with-expresions2523/1
+    public int precendence(char ch){
+        if(ch=='/' || ch=='*'){
+            return 2;
+        } else if(ch=='+' || ch=='-'){
+            return 1;
+        }
+    }
+
+    public int calculate(int v1, int v2, char ch){
+        if(ch == '/'){
+            return v1 / v2;
+        } else if(ch == '*'){
+            return v1 * v2;
+        } else if(ch == '-'){
+            return v1 - v2;
+        } else {
+            return v1 + v2;
+        }
+    }
+
+    public int calculate(String s) {
+        Stack<Integer> operands = new Stack<>();
+        Stack<Character> operators = new Stack<>();
+        
+
+        for(int i=0; i<s.length(); i++){
+            char ch = s.charAt(i);
+
+            if(Character.isDigit(ch)){ // character is digit
+                int num = 0;
+                int j = i;
+                while(Character.isDigit(j)){
+                    num = num*10 + s.charAt(j) - '0';
+                    j++;
+                }
+                operands.push(num);
+                i = j-1;
+            } else if(ch == '('){
+                operators.push(ch);
+            } else if(ch == '+' || ch == '-' || ch == '*' || ch == '/'){
+                while(operators.size() > 0 && operators.peek()!= '(' && precendence(operators.peek()) >= precendence(ch)){
+                    int v2 = operands.pop();
+                    int v1 = operands.pop();
+
+                    int op = operators.pop();
+
+                    char newValue = calculate(v1,v2,op);
+
+                    operands.push(newValue);
+                }
+
+                operators.push(ch);
+            } else if(ch == ')'){
+                while(operators.peek() != '('){
+                    int v2 = operands.pop();
+                    int v1 = operands.pop();
+
+                    int op = operators.pop();
+
+                    char newValue = calculate(v1,v2,op);
+
+                    operands.push(newValue);
+                }
+                operators.pop();
+            }
+        }
+
+
+        while(operators.size()>0){
+            int v2 = operands.pop();
+            int v1 = operands.pop();
+
+            char op = operators.pop();
+
+            int newValue = calculate(v1,v2,op);
+
+            operands.push(newValue);
+        }
+
+        return operands.peek();
+    }
+
 
 
 
