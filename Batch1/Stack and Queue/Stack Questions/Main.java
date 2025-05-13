@@ -1,4 +1,4 @@
-import java.util.Stack;
+import java.util.*;
 
 class Main {
     // duplicate parenthesis
@@ -185,7 +185,7 @@ class Main {
 
 
     // leetcode 84 optimized ====================
-    public int largestRectangleArea(int[] heights) {
+    public int largestRectangleArea2(int[] heights) {
         int maxArea = 0;
         int n = heights.length;
         Stack<Integer> st = new Stack<>();
@@ -201,7 +201,7 @@ class Main {
                 int nsr = i; // next smaller on right
                 int nsl = st.peek(); // next smaller on left
 
-                maxArea = Math.max(area, h * (nsr - nsl - 1));
+                maxArea = Math.max(maxArea, h * (nsr - nsl - 1));
             }
 
             st.push(i);
@@ -214,19 +214,20 @@ class Main {
             int nsr = n; // next smaller on right
             int nsl = st.peek(); // next smaller on left
 
-            maxArea = Math.max(area, h * (nsr - nsl - 1));
+            maxArea = Math.max(maxArea, h * (nsr - nsl - 1));
         }
 
         return maxArea;
     }
 
     // https://www.geeksforgeeks.org/problems/fun-with-expresions2523/1
-    public int precendence(char ch){
+    public static int precendence(char ch){
         if(ch=='/' || ch=='*'){
             return 2;
         } else if(ch=='+' || ch=='-'){
             return 1;
         }
+        return 0;
     }
 
     public int calculate(int v1, int v2, char ch){
@@ -265,9 +266,9 @@ class Main {
                     int v2 = operands.pop();
                     int v1 = operands.pop();
 
-                    int op = operators.pop();
+                    char op = operators.pop();
 
-                    char newValue = calculate(v1,v2,op);
+                    int newValue = calculate(v1,v2,op);
 
                     operands.push(newValue);
                 }
@@ -278,9 +279,9 @@ class Main {
                     int v2 = operands.pop();
                     int v1 = operands.pop();
 
-                    int op = operators.pop();
+                    char op = operators.pop();
 
-                    char newValue = calculate(v1,v2,op);
+                    int newValue = calculate(v1,v2,op);
 
                     operands.push(newValue);
                 }
@@ -301,6 +302,171 @@ class Main {
         }
 
         return operands.peek();
+    }
+
+
+    // convert infix expressions to postfix and prefix 
+    public static void infixToPostPre(String infix){ // no spaces in given string
+        Stack<String> prefix = new Stack<>();
+        Stack<String> postfix = new Stack<>();
+
+        Stack<Character> operators = new Stack<>();
+
+        for(int i=0; i<infix.length(); i++){
+            char ch = infix.charAt(i);
+
+            if(ch=='+' || ch =='-' || ch == '*' || ch =='/' || ch=='^'){
+                while(operators.size()>0 && operators.peek()!='(' && precendence(operators.peek()) >= precendence(ch)){
+                    String preV2 = prefix.pop();
+                    String preV1 = prefix.pop();
+
+                    String postV2 = postfix.pop();
+                    String postV1 = postfix.pop();
+
+                    char op = operators.pop();
+
+                    calculateAndPush(preV1, preV2, postV1, postV2, op, prefix, postfix);
+                }
+                operators.push(ch);
+            } else if(ch=='('){
+                operators.push(ch);
+            } else if(ch == ')'){
+                while(operators.peek() != '('){
+                    String preV2 = prefix.pop();
+                    String preV1 = prefix.pop();
+
+                    String postV2 = postfix.pop();
+                    String postV1 = postfix.pop();
+
+                    char op = operators.pop();
+
+                    calculateAndPush(preV1, preV2, postV1, postV2, op, prefix, postfix);
+                }
+
+                operators.pop();
+            } else {
+                prefix.push(ch+"");
+                postfix.push(ch+"");
+            }
+
+        }
+
+        while(operators.size() > 0){
+            String preV2 = prefix.pop();
+            String preV1 = prefix.pop();
+
+            String postV2 = postfix.pop();
+            String postV1 = postfix.pop();
+
+            char op = operators.pop();
+
+            calculateAndPush(preV1, preV2, postV1, postV2, op, prefix, postfix);
+        }
+
+        System.out.println(prefix.peek());
+        System.out.println(postfix.peek());
+    }
+
+    public static void calculateAndPush(String preV1, String preV2, String postV1, String postV2, char op, Stack<String> prefix, Stack<String> postfix){
+        prefix.push(op + preV1 + preV2);
+        postfix.push(postV1 + postV2 + op);
+    }
+
+
+    // leetcode 239 (Sliding window maximum) ================================================
+
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length;
+
+        int[] ans = new int[n - k + 1];
+
+        int[] ngr = new int[n];
+        Arrays.fill(ngr, n);
+        Stack<Integer> st = new Stack<>();
+
+        for(int i=0; i<n; i++){
+            while(st.size()>0 && nums[st.peek()] < nums[i]){
+                ngr[st.pop()] = i;
+            }
+
+            st.push(i);
+        }
+
+        int ansIndex = 0;
+
+        for(int idx=0; idx<ans.length; idx++){ // idx = window starting point
+            if(ansIndex < idx){
+                ansIndex = idx;
+            }
+
+            while(ngr[ansIndex] < idx + k){
+                ansIndex = ngr[ansIndex];
+            }
+
+            ans[idx] = nums[ansIndex];
+        }
+
+        return ans;
+    }
+
+
+    // merge intervals (Leetcode 56) ======================================================
+    class Pair {
+        int startTime;
+        int endTime;
+
+        public Pair(int startTime, int endTime){
+            this.startTime = startTime;
+            this.endTime = endTime;
+        }
+    }
+
+    public int[][] merge(int[][] intervals) {
+        int n = intervals.length;
+
+        // nlogn
+        Arrays.sort(intervals, (int[] a, int[] b) -> { // this and other will be compared
+            if(a[0] == b[0]){
+                return a[1] - b[1];
+            }
+            return a[0] - b[0]; // increasing order sort, decreasing order (b - a);
+        });
+
+        Stack<Pair> st = new Stack<>();
+        Pair[] intervalPairs = new Pair[n];
+
+        for(int i=0; i<n; i++){
+            intervalPairs[i] = new Pair(intervals[i][0], intervals[i][1]);
+        }
+
+        for(int i=0; i<n; i++){
+            Pair current = intervalPairs[i];
+
+            while(st.size()>0 && st.peek().endTime >= current.startTime){
+                Pair top = st.pop();
+
+                current.startTime = top.startTime;
+                current.endTime = Math.max(current.endTime, top.endTime);
+            }
+
+            st.push(current);
+        }
+
+        int[][] ans = new int[st.size()][2];
+        for(int i=0; i<ans.length; i++){
+            ans[i][0] = st.peek().startTime;
+            ans[i][1] = st.peek().endTime;
+            st.pop();
+        }   
+
+        // not neccessory for leetcode
+        // for(int i=0; i<ans.length/2; i++){
+        //     ans[i][0] = ans[ans.length - i -1][0];
+        //     ans[i][1] = ans[ans.length - i -1][1];
+        // }
+
+
+        return ans;
     }
 
 
@@ -326,14 +492,21 @@ class Main {
 
 
 
-    public static void main(String[] args){
-        String str = "((a+(b))+(c+d))";
-        boolean ans = checkDuplicate(str);
 
-        if(ans){
-            System.out.println("Duplicate brackets!!!!!!");
-        } else {
-            System.out.println("No Duplicate brackets");
-        }
+
+
+
+    public static void main(String[] args){
+        // String str = "((a+(b))+(c+d))";
+        // boolean ans = checkDuplicate(str);
+
+        // if(ans){
+        //     System.out.println("Duplicate brackets!!!!!!");
+        // } else {
+        //     System.out.println("No Duplicate brackets");
+        // }
+
+        String str = "(a+b)*(c+d)";
+        infixToPostPre(str);
     }
 }
