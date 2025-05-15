@@ -1,15 +1,15 @@
 // static stack 
 class Stack {
-    int maxSize = 10;
+    int initialSize = 4;
     int[] arr;
     int tos;
 
     public Stack(){
-        arr = new int[maxSize];
+        arr = new int[initialSize];
         tos = -1;
     }
 
-    public int peek(){
+    public int peek(){ // O(1)
         if(tos == -1){
             System.out.println("Stack empty Exception!!");
             return -1;
@@ -18,7 +18,7 @@ class Stack {
         return arr[tos];
     }
 
-    public int pop(){
+    public int pop(){ // O(1)
         if(tos == -1){
             System.out.println("Stack empty Exception!!");
             return -1;
@@ -30,11 +30,17 @@ class Stack {
         return peekValue;
     }
 
-    // if our stack is full, throw error of stackOverflow
-    public void push(int value){
-        if(tos + 1 >= maxSize){
-            System.out.println("Stack Overflow!!!!");
-            return;
+    // avergae O(1)
+    public void push(int value){ // for N push, new array will be created log(N) times
+        if(tos + 1 == arr.length){
+            System.out.println("Creating new array");
+            int[] newArray = new int[arr.length * 2];
+
+            for(int i=0; i<arr.length; i++){
+                newArray[i] = arr[i];
+            }
+
+            arr = newArray;
         }
 
         tos++;
@@ -46,12 +52,20 @@ class Stack {
     }
 }
 
-class StackImplementation {
+class DynamicStack {
     public static void main(String[] args){
         Stack st = new Stack();
 
         st.push(2);
         st.push(23);
+        st.push(23);
+        st.push(2123);
+        st.push(2321);
+        st.push(2323);
+        st.push(223);
+        st.push(13);
+        st.push(123);
+        st.push(2113);
 
         System.out.println(st.peek());
         System.out.println(st.pop());
