@@ -1,6 +1,6 @@
-// static queue 
+// dynamic queue 
 class Queue {
-    private int maxSize = 8;
+    private int intialSize = 4;
     private int front;
     private int size;
     private int[] data;
@@ -8,13 +8,20 @@ class Queue {
     public Queue(){
        front = 0;
        size = 0;
-       data = new int[maxSize];
+       data = new int[intialSize];
     }
 
     public void add(int value){
-        if(size == maxSize){
-            System.out.println("Queue overflow!!");
-            return;
+        if(size == data.length){
+            int[] newData = new int[data.length * 2];
+
+            for(int i=0; i<size; i++){
+                int idxForOldData = (front + i) % data.length;
+                newData[i] = data[idxForOldData];
+            }
+
+            data = newData;
+            front = 0;
         }
 
         int idx = ( front + size ) % data.length;
@@ -56,20 +63,28 @@ class Queue {
     }
 }
 
-class QueueImplementation {
+class DynamicQueue {
     public static void main(String[] args){
         Queue que = new Queue();
 
         que.add(2);
         que.add(23);
+        que.add(2321);
+        que.add(2123);
 
-        System.out.println(que.peek()); // 2,23
-        System.out.println(que.remove()); // 23
-        System.out.println(que.peek()); // 23
-        que.add(39); // 23,39
         que.display();
-        System.out.println(que.remove());
-        System.out.println(que.remove());
-        System.out.println(que.size());
+        
+        que.add(2213);
+        que.add(2213);
+        que.display();
+
+        // System.out.println(que.peek()); // 2,23
+        // System.out.println(que.remove()); // 23
+        // System.out.println(que.peek()); // 23
+        // que.add(39); // 23,39
+        // que.display();
+        // System.out.println(que.remove());
+        // System.out.println(que.remove());
+        // System.out.println(que.size());
     }
 }
