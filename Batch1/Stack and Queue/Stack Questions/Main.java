@@ -230,7 +230,7 @@ class Main {
         return 0;
     }
 
-    public int calculate(int v1, int v2, char ch){
+    public static int calculate(int v1, int v2, char ch){
         if(ch == '/'){
             return v1 / v2;
         } else if(ch == '*'){
@@ -373,6 +373,68 @@ class Main {
     }
 
 
+    // prefix evaluation and conversion ====================================
+    public static void prefixConversionAndEvaluation(String prefix){
+        Stack<Integer> res = new Stack<>();
+        Stack<String> infix = new Stack<>();
+        Stack<String> postfix = new Stack<>();
+
+        for(int i=prefix.length()-1; i>=0; i--){
+            char ch = prefix.charAt(i);
+
+            if(ch == '+' || ch =='-' || ch =='*' || ch=='/'){
+                int op1 = res.pop();
+                int op2 = res.pop();
+
+                int value = calculate(op1,op2,ch);
+                res.push(value);
+
+                String infV1 = infix.pop();
+                String infV2 = infix.pop();
+
+                infix.push("(" + infV1 + ch + infV2 + ")");
+
+                String postV1 = postfix.pop();
+                String postV2 = postfix.pop();
+
+                postfix.push(postV1 + postV2 + ch);
+            } else {
+                res.push(ch-'0');
+                infix.push(ch+"");
+                postfix.push(ch+"");
+            }
+        }
+
+        System.out.println("Result is " + res.pop());
+        System.out.println("Infix expression is " + infix.pop());
+        System.out.println("Postfix expression is " + postfix.pop());
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // leetcode 239 (Sliding window maximum) ================================================
 
     public int[] maxSlidingWindow(int[] nums, int k) {
@@ -469,9 +531,84 @@ class Main {
         return ans;
     }
 
+    // leetcode 155 (min stack) =================================
+    class MinStack {
+        Stack<Integer> st;
+        Stack<Integer> minStack;
+    
+        public MinStack() {
+            st = new Stack<>();
+            minStack = new Stack<>();
+        }
+        
+        public void push(int val) {
+            if(minStack.size() == 0 || minStack.peek() > val){
+                minStack.push(val);
+            }
 
+            st.push(val);
+        }
+        
+        public void pop() {
+            if(st.peek() == minStack.peek()){
+                minStack.pop();
+            }
 
+            return st.pop();
+        }
+        
+        public int top() {
+            return st.peek();
+        }
+        
+        public int getMin() {
+            return minStack.peek();
+        }
+    }
 
+    // leetcode 155 (min stack in O(1) space) =================================
+    class MinStack {
+        Stack<Long> st;
+        long min = -1;
+    
+        public MinStack() {
+            st = new Stack<>();
+        }
+        
+        public void push(int x) {
+            if(st.size() == 0){
+                st.push((long)x);
+                min = x;
+            }else if(x < min){
+                long updatedValue = (2 * (long)x) - min;
+                st.push(updatedValue);
+                min = x;
+            } else {
+                st.push((long)x);
+            }
+        }
+        
+        public void pop() { // you need to return current_min
+            if(st.peek() < min){
+                long prev_min = 2*min - st.peek();
+                min = prev_min;
+            } 
+
+            st.pop(); 
+        }
+        
+        public int top() {
+            if(st.peek() < min){
+                return (int)min;
+            } 
+
+            return Math.toIntExact(st.peek());
+        }
+        
+        public int getMin() {
+            return (int)min;
+        }
+    }
 
 
 
@@ -506,7 +643,9 @@ class Main {
         //     System.out.println("No Duplicate brackets");
         // }
 
-        String str = "(a+b)*(c+d)";
-        infixToPostPre(str);
+        // String str = "(a+b)*(c+d)";
+        // infixToPostPre(str);
+        String prefix = "-+7*45+20";
+        prefixConversionAndEvaluation(prefix);
     }
 }

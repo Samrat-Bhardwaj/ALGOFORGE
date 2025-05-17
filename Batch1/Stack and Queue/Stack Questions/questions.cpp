@@ -223,6 +223,30 @@ vector<vector<int>> merge(vector<vector<int>>& intervals) {
 
 
 
+    // leetcode 155 (min stack) =================================
+    class MinStack {
+    public:
+        MinStack() {
+            
+        }
+        
+        void push(int val) {
+            
+        }
+        
+        void pop() {
+            
+        }
+        
+        int top() {
+            
+        }
+        
+        int getMin() {
+            
+        }
+    };
+
 
 
 
