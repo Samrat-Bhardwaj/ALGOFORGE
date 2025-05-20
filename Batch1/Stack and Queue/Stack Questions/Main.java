@@ -611,6 +611,133 @@ class Main {
     }
 
 
+    // leetcode 503 (NGR in circular array) ===============================================
+    public int[] nextGreaterElements(int[] nums) {
+        int n = nums.length;
+        Stack<Integer> st = new Stack<>();
+
+        int[] ngr = new int[n];
+        Arrays.fill(ngr,-1);
+
+        for(int i=0; i<2*n; i++){
+            while(st.size()>0 && nums[st.peek()] < nums[i%n]){
+                ngr[st.pop()] = nums[i%n];
+            }
+
+            if(i<n){
+                st.push(i);
+            }
+        }
+
+        return ngr;
+    }
+
+    // leetcode 946 ==========================================================
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Stack<Integer> st = new Stack<>();
+        int n = pushed.length;
+
+        int j = 0;
+
+        for(int i=0; i<n; i++){
+            while(st.size()>0 && st.peek() == popped[j]){
+                st.pop();
+                j++;
+            }
+
+            st.push(pushed[i]);
+        }
+
+        while(st.size()>0 && j<n && st.peek() == popped[j]){
+            st.pop();
+            j++;
+        }
+
+        return j == n;
+    }
+
+    // leetcode 921  ========================================
+    public int minAddToMakeValid(String s) {
+        int extra_closing_brackets = 0;
+        int extra_opening_brackets = 0;
+
+        for(int i=0; i<s.length(); i++){
+            char ch = s.charAt(i);
+
+            if(ch == '('){
+                extra_opening_brackets++;
+            } else {
+                if(extra_opening_brackets == 0){ // closing bracket without any opening 
+                    extra_closing_brackets++;
+                } else { // closing bracket for some opening bracket
+                    extra_opening_brackets--;
+                }
+            }
+        }
+
+        return extra_closing_brackets + extra_opening_brackets;
+    }
+
+
+    // leetcode 1021
+    public String removeOuterParentheses(String s) {
+        StringBuilder sb = new StringBuilder();
+        // String ans = "";
+
+        int ob = 0;
+        for(int i=0; i<s.length(); i++){
+            if(s.charAt(i) == '('){
+                if(ob != 0){
+                    sb.append('('); // O(1)
+                    // ans += "("; // O(N);
+                }
+                ob++;
+            } else {
+                if(ob != 1){
+                    sb.append(')');
+                }
+                ob--;
+            }
+        }
+
+        return sb.toString();    
+    }
+
+    // leetcode 1541 ====================================
+    public int minInsertions(String s) {
+        int n = s.length();
+        int extra_closing_brackets = 0;
+        int extra_opening_brackets = 0;
+        int closing_brackets_required = 0;
+
+        for(int i=0; i<s.length(); i++){
+            char ch = s.charAt(i);
+
+            if(ch == '('){
+                extra_opening_brackets++; 
+            } else {
+                if(i+1 < n && s.charAt(i+1) == ')'){
+                    i++;
+                } else {
+                    closing_brackets_required++;
+                }
+
+                if(extra_opening_brackets == 0){
+                    extra_closing_brackets++;
+                } else {
+                    extra_opening_brackets--;
+                }
+            }
+        }
+
+        return extra_opening_brackets*2 + extra_closing_brackets + closing_brackets_required;
+    }
+
+
+    // leetcode 678 ============================================
+    public boolean checkValidString(String s) {
+        
+    }
 
 
 

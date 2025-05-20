@@ -221,31 +221,28 @@ vector<vector<int>> merge(vector<vector<int>>& intervals) {
     });   
 }
 
+// leetcode 1021
+string removeOuterParentheses(string s) {
+    string ans = "";
 
+    int ob = 0;
+    for(int i=0; i<s.size(); i++){
+        if(s[i] == '('){
+            if(ob != 0){
+                ans += "("; // O(1);
+            }
+            ob++;
+        } else {
+            if(ob != 1){
+                ans += ')';
+            }
+            ob--;
+        }
+    }
 
-    // leetcode 155 (min stack) =================================
-    class MinStack {
-    public:
-        MinStack() {
-            
-        }
-        
-        void push(int val) {
-            
-        }
-        
-        void pop() {
-            
-        }
-        
-        int top() {
-            
-        }
-        
-        int getMin() {
-            
-        }
-    };
+    return ans;    
+}
+
 
 
 
