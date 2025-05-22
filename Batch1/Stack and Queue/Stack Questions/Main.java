@@ -736,7 +736,114 @@ class Main {
 
     // leetcode 678 ============================================
     public boolean checkValidString(String s) {
-        
+        int max = 0;
+        int min = 0;
+
+        for(int i=0; i<s.length(); i++){
+            char ch = s.charAt(i);
+            if(ch == '('){
+                max++;
+                min++;
+            } else if(ch == ')'){
+                max--;
+                min--;
+            } else {
+                max++; // i will consider this as '('
+                min--; // i will consider this as ')'
+            }
+
+            if(max < 0) return false;
+            if(min < 0) min = 0;
+        }
+        // min > 0 -> ob is extra 
+        // max < 0 -> cb is extra;
+
+        return min == 0;
+    }
+
+    // leetcode 856 =====================================================
+    public int scoreOfParentheses(String s) {
+        Stack<Integer> st = new Stack<>();
+
+        for(int i=0; i<s.length(); i++){
+            char ch = s.charAt(i);
+            if(ch == '('){
+                st.push(-1);
+            } else {
+                if(st.peek() == -1){
+                    st.pop();
+                    st.push(1);
+                } else {
+                    int currentScore = 0;
+                    while(st.peek() != -1){
+                        currentScore += st.pop();
+                    }
+
+                    st.pop();
+                    st.push(2*currentScore);
+                }
+            }
+        }
+
+        int finalScore = 0;
+        while(st.size() > 0){
+            finalScore += st.pop();
+        }        
+
+        return finalScore;
+    }
+
+    // leetcode 856 O(1) Space =========================================
+    public int scoreOfParentheses(String s) {
+        int extra_opening_brackets = 0;
+        int finalScore = 0;
+
+        for(int i=0; i<s.length(); i++){
+            char ch = s.charAt(i);
+            if(ch == '('){
+                extra_opening_brackets++;
+            } else {
+                extra_opening_brackets--;
+            }
+
+            if(ch == ')'  && s.charAt(i-1) == '('){
+                // finalScore += (1 << extra_opening_brackets);
+                finalScore += (int)(Math.pow(2, extra_opening_brackets));
+            }
+        }
+
+        return finalScore;
+    }
+
+    // leetcode 456 =============================================
+    public boolean find132pattern(int[] nums) {
+        int n = nums.length;
+
+        int[] minSoFar = new int[n];
+        minSoFar[0] = nums[0];
+
+        for(int i=1; i<n; i++){
+            minSoFar[i] = Math.min(minSoFar[i-1], nums[i]);
+        }
+
+        Stack<Integer> possibleKValue = new Stack<>();
+        possibleKValue.push(nums[n-1]);
+
+        for(int j=n-2; j>=0; j--){
+            int min = minSoFar[j];
+
+            while(possibleKValue.size()>0 && min >= possibleKValue.peek()){
+                possibleKValue.pop();
+            }
+
+            if(possibleKValue.size()>0 && nums[j] > possibleKValue.peek()){
+                return true;
+            }
+
+            possibleKValue.push(nums[j]);
+        }
+
+        return false;
     }
 
 
