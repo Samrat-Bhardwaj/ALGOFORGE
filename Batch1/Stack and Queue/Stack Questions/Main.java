@@ -846,6 +846,191 @@ class Main {
         return false;
     }
 
+    // leetcode 735 ===================================
+    public int[] asteroidCollision(int[] asteroids) {
+        Stack<Integer> st = new Stack<>();
+
+        for(int i=0; i<asteroids.length; i++){
+            int val = asteroids[i];
+
+            if(val > 0){
+                st.push(val);
+            } else {
+                boolean canPush = true;
+                while(st.size() > 0 && st.peek()>0){
+                    if(st.peek() < -(val)){
+                        canPush = true;
+                        st.pop();
+                    } else if(st.peek() == -(val)){
+                        canPush = false;
+                        st.pop();
+                        break;
+                    } else {
+                        canPush = false;
+                        break;
+                    }
+                }
+
+                if(canPush){
+                    st.push(val);
+                }
+            }
+        }
+
+        int[] ans = new int[st.size()];
+
+        for(int i=ans.length-1; i>=0; i--){
+            ans[i] = st.pop();
+        }
+
+        return ans;
+    }
+
+    // leetcode 402 ===================================
+    public String removeKdigits(String num, int k) {
+        Stack<Character> st = new Stack<>();
+
+        for(int i=0; i<num.length(); i++){
+            char currVal = num.charAt(i);
+
+            while(k>0 && st.size()>0 && st.peek() > currVal){
+                st.pop();
+                k--;
+            }
+
+            if(st.size() == 0 && currVal == '0') continue; // leading zeros
+            st.push(currVal);
+        }
+
+        while(k-- > 0 && st.size()>0){
+            st.pop();
+        }
+        if(st.size() == 0) return "0";
+
+        StringBuilder sb = new StringBuilder();
+        while(st.size()>0){
+            sb.append(st.pop());
+        }
+
+        sb.reverse();
+        return sb.toString();
+    }
+
+    // Trapping rain water (leetcode 42) =======================
+    public int trap(int[] height) {
+        int n = height.length;
+
+        int[] lmax = new int[n]; // max from 0 to i-1
+        int[] rmax = new int[n]; // max to from i+1 to n-1
+
+        for(int i=1; i<n; i++){
+            lmax[i] = Math.max(lmax[i-1], height[i-1]);
+        }
+
+        for(int i=n-2; i>=0; i--){
+            rmax[i] = Math.max(rmax[i+1], height[i+1]);
+        }
+
+        int totalWater = 0;
+
+        for(int i=1; i<n-1; i++){
+            int maxHeightAllowed = Math.min(lmax[i], rmax[i]);
+
+            totalWater = totalWater + Math.max(maxHeightAllowed - height[i],0);
+        }
+
+        return totalWater;
+    }
+
+    // method 2
+    public int trap(int[] height) {
+        int n = height.length;
+
+        int[] lmax = new int[n]; // max from 0 to i
+        int[] rmax = new int[n]; // max to from i to n-1
+
+        lmax[0] = height[0];
+        for(int i=1; i<n; i++){
+            lmax[i] = Math.max(lmax[i-1], height[i]);
+        }
+
+        rmax[n-1] = height[n-1];
+        for(int i=n-2; i>=0; i--){
+            rmax[i] = Math.max(rmax[i+1], height[i]);
+        }
+
+        int totalWater = 0;
+
+        for(int i=0; i<n; i++){
+            int maxHeightAllowed = Math.min(lmax[i], rmax[i]);
+
+            totalWater = totalWater + maxHeightAllowed - height[i];
+        }
+
+        return totalWater;
+    }
+
+    // Trapping rain water in one iteration =============================
+    public int trap(int[] height) {
+        Stack<Integer> st = new Stack<>();
+
+        int totalWater = 0;
+
+        for(int i=0; i<height.length; i++){
+            while(st.size()>0 && height[st.peek()] < height[i]){
+                int currentIdx = st.pop();
+                if(st.size() == 0) break;
+
+                int right = i;
+                int left = st.peek();
+
+                int allowedHeight = Math.min(height[right], height[left]);
+
+                int h = allowedHeight - height[currentIdx];
+
+                int w = right - left - 1;
+
+                totalWater += h*w;
+            }
+
+            st.push(i);
+        }
+
+        return totalWater;
+    }
+
+    // Trapping rainwater O(1) space ================================
+    public int trap(int[] height) {
+        int n = height.length;
+
+        int i=0;
+        int j=n-1;
+
+        int lmax = 0; 
+        int rmax = 0; 
+
+        int totalWater = 0;
+
+        while(i < j){
+            lmax = Math.max(lmax, height[i]);
+            rmax = Math.max(rmax, height[j]);
+        
+            if(lmax <= rmax){
+                totalWater += lmax - height[i];
+                i++;
+            } else {
+                totalWater += rmax - height[j];
+                j--;
+            } 
+        }
+
+        return totalWater;
+    }
+
+
+
+
+
 
 
 
