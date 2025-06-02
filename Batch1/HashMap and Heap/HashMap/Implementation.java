@@ -1,13 +1,20 @@
+import java.util.LinkedList;
+import java.util.ArrayList;
 class Implementation {
-    class HashMap<K,V> {
+    static class HashMap<K,V> {
         class HashMapNode {
             K key;
             V value;
+
+            public HashMapNode(K key, V Value){
+                this.key = key;
+                this.value = value;
+            }
         }
 
         private LinkedList<HashMapNode>[] data;
         private int size;
-        private number_of_buckets = 4;
+        private int number_of_buckets = 4;
         
         public HashMap(){
             init();
@@ -49,7 +56,7 @@ class Implementation {
                 HashMapNode node = data[bucketIndex].get(keyIndex);
                 node.value = value;
             } else { // new Key Value pair in HashMap
-                HashMapNode newNode = new HashMapNode(K,V);
+                HashMapNode newNode = new HashMapNode(key,value);
                 data[bucketIndex].add(newNode);
                 this.size++;
             }
@@ -63,7 +70,7 @@ class Implementation {
         private void rehash(){
             this.number_of_buckets *= 2;
             LinkedList<HashMapNode>[] oldData = this.data;
-            ListNode<HashMapNode>[] newData = new LinkedList[number_of_buckets];
+            LinkedList<HashMapNode>[] newData = new LinkedList[number_of_buckets];
             this.data = newData;
             this.size = 0;
 
@@ -75,19 +82,47 @@ class Implementation {
         }
 
         public V get(K key){
+            int bucketIndex = hashFunction(key);
+            int keyIndex = findKeyIndex(key, bucketIndex);
 
+            if(keyIndex == -1){
+                return null;
+            } else {
+                HashMapNode node = data[bucketIndex].get(keyIndex);
+                return node.value;
+            }
         }
 
         public V remove(K key){
+            int bucketIndex = hashFunction(key);
+            int keyIndex = findKeyIndex(key, bucketIndex);
 
+            if(keyIndex == -1){
+                return null;
+            } else {
+                HashMapNode node = data[bucketIndex].remove(keyIndex);
+                this.size--;
+                return node.value;
+            }
         }
 
         public boolean containsKey(K key){
+            int bucketIndex = hashFunction(key);
+            int keyIndex = findKeyIndex(key, bucketIndex);
 
-        }
+            return keyIndex != -1;
+        }   
 
         public ArrayList<K> keySet(){
+            ArrayList<K> keys = new ArrayList<>();
 
+            for(int i=0; i<data.length; i++){
+                for(HashMapNode node: data[i]){
+                    keys.add(node.key);
+                }
+            }
+
+            return keys;
         }
 
         public int size(){
@@ -95,6 +130,20 @@ class Implementation {
         }
     }
     public static void main(String[] args){
+        HashMap<String,Integer> map = new HashMap<>();
 
+        map.put("India", 400);
+        map.put("China", 300);
+        System.out.println(map.keySet());
+        // System.out.println(map.remove(232));
+        System.out.println(map.get("India"));
+        System.out.println(map.get("China"));
+        System.out.println(map.containsKey("England"));
+
+        map.put("England", 200);
+        System.out.println(map.get("England"));
+
+        map.remove("England");
+        System.out.println(map.containsKey("England"));
     }
 }
