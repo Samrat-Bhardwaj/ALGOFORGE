@@ -153,7 +153,7 @@ public int longestConsecutive(int[] nums) {
         if(set.contains(currentVal) == false){
             continue;
         }
-        
+
         int prevVal = currentVal - 1;
         int nextVal = currentVal + 1;
 
@@ -173,6 +173,99 @@ public int longestConsecutive(int[] nums) {
 
     return ans;
 }
+
+// leetcode 1497 ===========================================
+public boolean canArrange(int[] arr, int k) {
+    HashMap<Integer, Integer> map = new HashMap<>();
+
+    for(int i=0; i<arr.length; i++){
+        int remainder = arr[i] % k;
+        remainder = (remainder + k) % k; // to handle negative numbers
+        int remainderRequired = (k - remainder) % k; // %k will handle rem == 0
+
+        if(map.containsKey(remainderRequired) && map.get(remainderRequired) > 0){
+            map.put(remainderRequired, map.get(remainderRequired) - 1);
+        } else {
+            map.put(remainder, map.getOrDefault(remainder, 0) + 1);
+        }
+    }
+
+    for(int x: map.keySet()){
+        if(map.get(x) > 0) return false;
+    }
+
+    return true;
+}
+
+// https://www.geeksforgeeks.org/problems/count-distinct-elements-in-every-window/1
+ArrayList<Integer> countDistinct(int arr[], int k) {
+    ArrayList<Integer> ans = new ArrayList<>();
+    
+    HashMap<Integer, Integer> freMap = new HashMap<>();
+
+    for(int i=0; i<arr.length; i++){
+        freMap.put(arr[i], freMap.getOrDefault(arr[i], 0) + 1);
+
+        if(i == k-1){ // first window
+            ans.add(freMap.size());
+        } else if(i >= k){
+            freMap.put(arr[i-k], freMap.get(arr[i-k]) - 1);
+
+            if(freMap.get(arr[i-k]) == 0) freMap.remove(arr[i-k]);
+
+            ans.add(freMap.size());
+        }
+    }
+
+    return ans;
+}
+
+// largest subarray with zero sum (https://www.geeksforgeeks.org/problems/largest-subarray-with-0-sum/1) ================
+int maxLen(int arr[]) {
+    HashMap<Integer, Integer> sumVsIndex = new HashMap<>();
+    int csum = 0;
+    int maxLength = 0;
+    sumVsIndex.put(0, -1); // to handle when csum  = 0;
+
+    for(int i=0; i<arr.length; i++){
+        csum += arr[i];
+
+        if(sumVsIndex.containsKey(csum)){
+            maxLength = Math.max(maxLength, i - sumVsIndex.get(csum));
+        } else {
+            sumVsIndex.put(csum, i);
+        }
+    }
+
+    return maxLength;    
+}
+
+// number of subarray with zero sum (https://www.geeksforgeeks.org/problems/zero-sum-subarrays1825/1)
+int findSubarray(int[] arr) {
+    HashMap<Integer, Integer> sumFrequency = new HashMap<>();
+    int csum  = 0;
+    int count = 0;
+    sumFrequency.put(0,1);
+
+    for(int e: arr){
+        csum += e;
+
+        if(sumFrequency.containsKey(csum)){
+            count += sumFrequency.get(csum);
+        }
+
+        sumFrequency.put(csum, sumFrequency.getOrDefault(csum,0) + 1);
+    }
+
+    return count;
+}
+
+
+
+
+
+
+
 
 
 

@@ -108,6 +108,91 @@ int longestConsecutive(vector<int>& nums) {
     return ans;
 }
 
+// leetcode 1497 ====================================
+bool canArrange(vector<int>& arr, int k) {
+    vector<int> remainderFre(k,0);
+
+    for(int e: arr){
+        int rem = ((e%k) + k)%k;
+
+        remainderFre[rem]++;
+    }
+
+    for(int rem=0; rem<k; rem++){
+        if(rem == 0){
+            if(remainderFre[0]%2 != 0) return false;
+        } else if(remainderFre[rem] != remainderFre[k-rem]){ // rem 1 = 3, rem 4 = 3
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// https://www.geeksforgeeks.org/problems/count-distinct-elements-in-every-window/1
+vector<int> countDistinct(vector<int> &arr, int k) {
+    unordered_map<int,int> freMap;
+    vector<int> ans;
+
+    for(int i=0; i<arr.size(); i++){
+        freMap[arr[i]]++;
+
+        if(i == k - 1){
+            ans.push_back(freMap.size());
+        } else if(i >= k){
+            freMap[arr[i-k]]--;
+            if(freMap[arr[i-k]] == 0) freMap.erase(arr[i-k]);
+            ans.push_back(freMap.size());
+        }
+    }
+
+    return ans;
+}
+
+// largest subarray with zero sum (https://www.geeksforgeeks.org/problems/largest-subarray-with-0-sum/1) ================
+int maxLen(vector<int>& arr) {
+    unordered_map<int,int> sumVsIndex;
+    int csum = 0;
+    int maxLength = 0;
+    sumVsIndex[0] = -1; // to handle when csum  = 0;
+
+    for(int i=0; i<arr.size(); i++){
+        csum += arr[i];
+
+        if(sumVsIndex.find(csum) != sumVsIndex.end()){
+            maxLength = max(maxLength, i - sumVsIndex[csum]);
+        } else {
+            sumVsIndex[csum] = i;
+        }
+    }
+
+    return maxLength;    
+}
+
+
+// number of subarray with zero sum (https://www.geeksforgeeks.org/problems/zero-sum-subarrays1825/1)
+int findSubarray(vector<int> &arr) {
+    unordered_map<int,int> sumFrequency;
+    int csum=0, count=0;
+
+    sumFrequency[0] = 1;
+
+    for(int e: arr){
+        csum += e;
+        count += sumFrequency[csum];
+        sumFrequency[csum]++;
+    }
+
+    return count;
+}
+
+
+
+
+
+
+
+
 
 
 
