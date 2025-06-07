@@ -260,55 +260,144 @@ int findSubarray(int[] arr) {
     return count;
 }
 
+// longest subaray with sum K (https://www.geeksforgeeks.org/problems/longest-sub-array-with-sum-k0809/1)
+public int longestSubarray(int[] arr, int k) {
+    HashMap<Integer,Integer> sumVsIndex = new HashMap<>();
+    int ans = 0;
+    int csum = 0;
 
+    sumVsIndex.put(csum , -1);
 
+    for(int i=0; i<arr.length; i++){
+        csum += arr[i];
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // leetcode 146 (LRU cache) ===================================
-    class LRUCache {
-        public LRUCache(int capacity) {
-            
+        if(sumVsIndex.containsKey(csum-k)){
+            ans = Math.max(ans, i - sumVsIndex.get(csum - k));
         }
-        
-        public int get(int key) {
-            
-        }
-        
-        public void put(int key, int value) {
-            
+
+        // sumVsIndex.put(sumVsIndex.getOrDefault(csum,i));
+        if(sumVsIndex.containsKey(csum) == false){
+            sumVsIndex.put(csum, i);
         }
     }
+
+    return ans;
+}
+
+// Leetcode 560 , Number of subarrays with sum K
+public int subarraySum(int[] nums, int k) {
+    HashMap<Integer,Integer> sumFrequency = new HashMap<>();
+    int csum = 0;
+    int res = 0;
+    sumFrequency.put(0,1);
+
+    for(int e: nums){
+        csum += e;
+
+        // res += sumFrequency.getOrDefault(csum-k, 0);
+        if(sumFrequency.containsKey(csum-k)){
+            res += sumFrequency.get(csum-k);
+        }
+
+        sumFrequency.put(csum, sumFrequency.getOrDefault(csum, 0) + 1);
+    }
+
+    return res;
+}
+
+// leetcode 974 , Number of subarrays divisible by k
+public int subarraysDivByK(int[] nums, int k) {
+    HashMap<Integer, Integer> remFrequency = new HashMap<>();
+    int res = 0, csum = 0;
+
+    remFrequency.put(0,1);
+
+    for(int e: nums){
+        csum += e;
+
+        int remainder = csum % k;
+        if(remainder < 0){
+            remainder += k;
+        }
+
+        res += remFrequency.getOrDefault(remainder, 0);
+        remFrequency.put(remainder, remFrequency.getOrDefault(remainder,0) + 1);
+    }  
+
+    return res;      
+}
+
+// leetcode 525, Longest subarray with equal 0s and 1s
+public int findMaxLength(int[] arr) {
+    HashMap<Integer, Integer> sumVsIndex = new HashMap<>();
+    int csum = 0;
+    int maxLength = 0;
+    sumVsIndex.put(0, -1); // to handle when csum  = 0;
+
+    for(int i=0; i<arr.length; i++){
+        csum += (arr[i] == 0 ? -1 : arr[i]);
+
+        if(sumVsIndex.containsKey(csum)){
+            maxLength = Math.max(maxLength, i - sumVsIndex.get(csum));
+        } else {
+            sumVsIndex.put(csum, i);
+        }
+    }
+
+    return maxLength; 
+}
+
+// leetcode 146 (LRU cache) ===================================
+class LRUCache {
+    class Node {
+        int key;
+        int value;
+        Node prev;
+        Node next;
+
+        public Node(int key, int value){
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    Node head;
+    Node tail;
+
+    HashMap<Integer, Node> keyVsNode;
+    int maxCapacity;
+
+    public LRUCache(int capacity) {
+        
+    }
+    
+    public int get(int key) { // get address, and add this node to the end of LL
+        
+    }
+    
+    public void put(int key, int value) { // add new node at the end
+        
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public static void main(String[] args){
     

@@ -186,7 +186,87 @@ int findSubarray(vector<int> &arr) {
     return count;
 }
 
+// longest subaray with sum K (https://www.geeksforgeeks.org/problems/longest-sub-array-with-sum-k0809/1)
+int longestSubarray(vector<int>& arr, int k) {
+    unordered_map<int,int> sumVsIndex;
+    int res = 0;
+    int csum = 0;
 
+    sumVsIndex[csum] = -1;  
+
+    for(int i=0; i<arr.size(); i++){
+        csum += arr[i];
+
+        if(sumVsIndex.find(csum - k) != sumVsIndex.end()){
+            res = max(res, i - sumVsIndex[csum-k]);
+        }
+
+        if(sumVsIndex.find(csum) == sumVsIndex.end()){
+            sumVsIndex[csum] = i;
+        }
+    }
+    return res;
+}
+
+// Leetcode 560 , Number of subarrays with sum K
+int subarraySum(vector<int>& nums, int k) {
+    unordered_map<int,int> sumFrequency;
+    int csum=0, count=0;
+
+    sumFrequency[0] = 1;
+
+    for(int e: nums){
+        csum += e;
+        count += sumFrequency[csum-k];
+        sumFrequency[csum]++;
+    }
+
+    return count;
+}
+
+
+// leetcode 974 , Number of subarrays divisible by k
+int subarraysDivByK(vector<int>& nums, int k) {
+    unordered_map<int,int> remFrequency;
+    int res = 0, csum = 0;
+    remFrequency[0] = 1;
+
+    for(int e: nums){
+        csum += e;
+
+        int remainder = csum % k;
+
+        if (remainder < 0){
+            remainder += k;
+        }
+        
+
+        res += remFrequency[remainder];
+        remFrequency[remainder]++;
+    }        
+
+    return res;
+}
+
+
+// leetcode 525, Longest subarray with equal 0s and 1s
+int findMaxLength(vector<int>& nums) {
+    unordered_map<int, int> sumVsIndex;
+    int res = 0, csum  = 0;
+
+    sumVsIndex[0] = -1;
+    for(int i=0; i<nums.size(); i++){
+        csum = csum + (nums[i] == 0 ? -1 : nums[i]);
+
+        if(sumVsIndex.find(csum) != sumVsIndex.end()){
+            res = max(res, i - sumVsIndex[csum]);
+        } else {
+            sumVsIndex[csum] = i;
+        }
+    }        
+
+    return res;
+}
 
 
 
