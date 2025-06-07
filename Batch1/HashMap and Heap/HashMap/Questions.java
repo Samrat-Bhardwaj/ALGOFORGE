@@ -366,17 +366,89 @@ class LRUCache {
 
     HashMap<Integer, Node> keyVsNode;
     int maxCapacity;
+    int size;
+
+    private void addLast(Node nn){
+        if(head == null){
+            head = tail = nn;
+        } else {
+            tail.next = nn;
+            nn.prev = tail;
+            tail = nn;
+        }
+        size++;
+    }
+
+    private void removeNode(Node nn){
+        if(head == tail){
+            head = tail = null;
+        } else if(head == nn){
+            head = head.next;
+        } else if(tail == nn){
+            tail = tail.prev;
+        } else {
+            Node nodeKaPrev = nn.prev;
+            Node nodeKaNext = nn.next;
+
+            nodeKaPrev.next = nodeKaNext;
+            nodeKaNext.prev = nodeKaPrev;
+        }
+        size--;
+    }
 
     public LRUCache(int capacity) {
-        
+        head = null;
+        tail = null;
+        size = 0;
+        maxCapacity = capacity;
+        keyVsNode = new HashMap<>();
     }
     
     public int get(int key) { // get address, and add this node to the end of LL
-        
+        if(keyVsNode.containsKey(key) == false){
+            return -1;
+        }
+        // get node with given key
+        Node keyNode = keyVsNode.get(key);
+
+        // remove node from between the list
+        removeNode(keyNode);
+        // add to the last as this the most recently used n
+        addLast(keyNode);
+
+        return keyNode.value;
     }
     
     public void put(int key, int value) { // add new node at the end
-        
+        // if key does not exist
+        if(keyVsNode.containsKey(key) == false){
+            // create a new node
+            Node nn = new Node(key, value);
+            keyVsNode.put(key, nn);
+
+            // add at last 
+            addLast(nn);
+
+            // remove LRU node if capacity exceeds maxCapacity 
+            if(size > maxCapacity){
+                // get LRU node
+                Node headNode = head;
+                int headKey = headNode.key;
+
+                // remove LRU node
+                keyVsNode.remove(headKey); // removed from map
+                removeNode(headNode); // removed from List
+            }
+        } else {
+            // update the node to most recently used
+            int givenKeyValue = get(key);
+
+            // find this node
+            Node givenKeyNode = keyVsNode(key);
+
+            // update the value
+            givenKeyNode.value = value;
+        }
     }
 }
 
