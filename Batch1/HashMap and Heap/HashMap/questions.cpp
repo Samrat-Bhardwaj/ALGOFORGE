@@ -2,6 +2,7 @@
 #include<unordered_map>
 #include<unordered_set>
 #include<vector>
+#include<stack>
 
 using namespace std;
  
@@ -268,7 +269,38 @@ int findMaxLength(vector<int>& nums) {
     return res;
 }
 
+// leetcode 895 (Max frequency stack) =========================
+class FreqStack {
+public:
+    unordered_map<int,int> freMap;
+    unordered_map<int, stack<int>> frequencyStack;
+    int maxFrequency = 0;
+    FreqStack() {
+        
+    }
+    
+    void push(int val) {
+        int updatedFre = freMap[val]++;
 
+        frequencyStack[updatedFre].push(val);
+
+        maxFrequency = max(maxFrequency, updatedFre);
+    }
+    
+    int pop() {
+        int topValue = frequencyStack[maxFrequency].top(); frequencyStack[maxFrequency].pop();
+
+        freMap[topValue]--;
+
+        if(frequencyStack[maxFrequency].size() == 0){
+            maxFrequency--;
+        }
+
+        return topValue;
+    }
+};
+
+// leetcode 380 (Insert, delete, getRandom in O(1))
 
 
 

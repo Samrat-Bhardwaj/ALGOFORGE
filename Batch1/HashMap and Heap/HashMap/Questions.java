@@ -452,6 +452,85 @@ class LRUCache {
     }
 }
 
+// leetcode 895 (Max frequency stack) =========================
+class FreqStack {
+    HashMap<Integer, Integer> freMap;
+    HashMap<Integer, LinkedList<Integer>> frequencyStack;
+    int maxFrequency;
+
+    public FreqStack() {
+        freMap = new HashMap<>();
+        frequencyStack = new HashMap<>();
+        maxFrequency = 0;
+    }
+    
+    public void push(int val) {
+        int currFre = freMap.getOrDefault(val, 0);
+        int updatedFrequency = currFre + 1;
+
+        freMap.put(val, updatedFrequency);
+        
+        if(frequencyStack.containsKey(updatedFrequency) == false){
+            frequencyStack.put(updatedFrequency, new LinkedList<>());
+        }
+
+        frequencyStack.get(updatedFrequency).addFirst(val);
+
+        maxFrequency = Math.max(maxFrequency, updatedFrequency);
+    }
+    
+    public int pop() {
+        int topValue = frequencyStack.get(maxFrequency).removeFirst();
+        
+        freMap.put(topValue, freMap.get(topValue) - 1);
+        
+        if(frequencyStack.get(maxFrequency).size() == 0){
+            maxFrequency--;
+        }
+
+        return topValue;
+    }
+}
+
+// leetcode 380 (Insert, delete, getRandom in O(1))
+class RandomizedSet {
+    HashMap<Integer,Integer> map;
+    ArrayList<Integer> data;
+
+    public RandomizedSet() {
+        map = new HashMap<>();
+        data = new ArrayList<>();
+    }
+    
+    public boolean insert(int val) {
+        if(map.containsKey(val)){
+            return false;
+        }
+
+        map.put(val, data.size());
+        data.add(val);
+
+        return true;
+    }
+    
+    public boolean remove(int val) {
+        if(map.containsKey(val) == false){
+            return false;
+        }
+
+        int valIdx = map.get(val);
+        int dataAtLast = data.get(data.size()-1);
+
+        data.set(valIdx, dataAtLast);
+        data.remove(data.size()-1);
+
+        return true;
+    }
+    
+    public int getRandom() {
+        return data.get((int)Math.random() % data.size());
+    }
+}
 
 
 
