@@ -522,17 +522,21 @@ class RandomizedSet {
         int dataAtLast = data.get(data.size()-1);
 
         data.set(valIdx, dataAtLast);
+        map.put(dataAtLast, valIdx);
+
+        map.remove(val);
         data.remove(data.size()-1);
 
         return true;
     }
     
     public int getRandom() {
-        return data.get((int)Math.random() % data.size());
+        int idx = new Random().nextInt(data.size());
+        return data.get(idx);
     }
 }
 
-
+// Rest of the hasmap Heap problems are solved with A&S.
 
 
 
