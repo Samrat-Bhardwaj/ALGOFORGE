@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Stack;
 class Node {
     int data;
     ArrayList<Node> children;
@@ -13,9 +14,20 @@ class Node {
 
 class Main {
     public static void displayTree(Node root){
+        System.out.print(root.data + " -> ");
 
+        for(Node child: root.children){
+            System.out.print(child.data+" ,");
+        }
+
+        System.out.println(".");
+
+        // asking the recursive function to print subTrees
+        for(Node child: root.children){
+            displayTree(child);
+        }
     }
-    
+
     public static void main(String[] args){
         int[] treeData = {10,20,80,-1,-1,30,50,-1,60,-1,-1,40,90,-1,100,120,-1,130,-1,-1,110,-1,-1,-1};
 
