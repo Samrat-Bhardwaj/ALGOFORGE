@@ -53,20 +53,47 @@ class Questions {
         return height + 1;
     }
 
-    // Euler traversal of tree
-    public static void eulerTraversal(Node root){
-        System.out.println("Preorder -> " + root.data);
+    // mirror a generic Tree
+    public static Node mirrorTree(Node root){
+        int size = root.children.size();
 
-        for(Node child: root.children){
-            System.out.println("Taking edge from " + root.data + " -> " + child.data);
+        int i = 0;
+        int j = size-1;
 
-            eulerTraversal(child);
+        while(i<=j){
+            Node childAtI = root.children.get(i);
+            Node childAtJ = root.children.get(j);
 
-            System.out.println("Taking edge from " + child.data + " -> " + root.data);
+            childAtI = mirrorTree(childAtI);
+
+            if(i < j) // don't mirror again if i == j
+                childAtJ = mirrorTree(childAtJ);
+
+            root.children.set(i, childAtJ);
+            root.children.set(j, childAtI);
+
+            i++;
+            j--;
         }
 
+        return root;
+    }
 
-        System.out.println("Postorder -> " + root.data);
+    // remove leaf nodes
+    public static Node removeLeafNodes(Node root){
+        int size = root.children.size();
+        for(int i=size-1; i>=0; i--){
+            Node child = root.children.get(i);
+
+            if(child.children.size() == 0){
+                root.children.remove(i);
+            }
+        }
+
+        for(Node child: root.children){
+            removeLeafNodes(child);
+        }
+        return root;
     }
 
 
@@ -123,11 +150,25 @@ class Questions {
 
 
 
+    public static void displayTree(Node root){
+        System.out.print(root.data + " -> ");
 
+        for(Node child: root.children){
+            System.out.print(child.data+" ,");
+        }
+
+        System.out.println(".");
+
+        // asking the recursive function to print subTrees
+        for(Node child: root.children){
+            displayTree(child);
+        }
+    }
 
     public static void main(String[] args){
         // int[] treeData = {10,20,80,-1,-1,30,50,-1,60,-1,-1,40,90,-1,100,120,-1,130,-1,-1,110,-1,-1,-1};
-        int[] treeData = {10,20,50,-1,60,-1,-1,30,-1,40,80,-1,90,-1,100,-1,-1,-1};
+        // int[] treeData = {10,20,50,-1,60,-1,-1,30,-1,40,80,-1,90,-1,100,-1,-1,-1};
+        int[] treeData = {10,20,50,140,-1,-1,-1,30,60,-1,70,110,-1,120,-1,-1,80,-1,-1,40,90,-1,100,130,-1,-1,-1,-1};
 
         Stack<Node> st = new Stack<>();
         Node root = null;
@@ -148,7 +189,12 @@ class Questions {
         }
 
         // System.out.println(height(root));
-        eulerTraversal(root);
+        // eulerTraversal(root);
+        displayTree(root);
+        Node rootMirror = removeLeafNodes(root);
+
+        System.out.println("Printing Modified Tree ===================");
+        displayTree(rootMirror);
     }
 }
 
