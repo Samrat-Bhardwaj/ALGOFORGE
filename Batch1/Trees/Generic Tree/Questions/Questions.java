@@ -96,7 +96,52 @@ class Questions {
         return root;
     }
 
+    // flatten a generic Tree
+    public static Node flattenGenericTree(Node root){
+        for(Node child : root.children){
+            flattenGenericTree(child);
+        }
 
+        while(root.children.size() > 1){
+            Node lastChild = root.children.remove(root.children.size()-1);
+            Node secondLastChild = root.children.get(root.children.size()-1);
+
+            Node tail = getTail(secondLastChild);
+
+            tail.children.add(lastChild);
+        }
+
+        return root;
+    }
+
+    public static Node getTail(Node root){
+        Node temp = root;
+        while(temp.children.size() > 0){
+            temp = temp.children.get(0);
+        }
+
+        return temp;
+    }
+
+    // Optimized approach of flatten a generic Tree
+    public static Node flattenGenericTree2(Node root){ // returning tail of flattened node
+        if(root.children.size() == 0){
+            return root;
+        }
+
+        Node lastChildTail = flattenGenericTree2(root.children.get(root.children.size()-1));
+
+        while(root.children.size() > 1){
+            Node lastChild = root.children.remove(root.children.size() - 1);
+            Node secondLastChild = root.children.get(root.children.size() - 1);
+
+            Node secondLastChildTail = flattenGenericTree2(secondLastChild);
+
+            secondLastChildTail.children.add(lastChild);
+        }
+
+        return lastChildTail;
+    }
 
 
 
@@ -166,9 +211,9 @@ class Questions {
     }
 
     public static void main(String[] args){
-        // int[] treeData = {10,20,80,-1,-1,30,50,-1,60,-1,-1,40,90,-1,100,120,-1,130,-1,-1,110,-1,-1,-1};
+        int[] treeData = {10,20,50,-1,-1,30,60,-1,70,110,-1,120,-1,-1,80,-1,-1,40,90,-1,100};
         // int[] treeData = {10,20,50,-1,60,-1,-1,30,-1,40,80,-1,90,-1,100,-1,-1,-1};
-        int[] treeData = {10,20,50,140,-1,-1,-1,30,60,-1,70,110,-1,120,-1,-1,80,-1,-1,40,90,-1,100,130,-1,-1,-1,-1};
+        // int[] treeData = {10,20,50,140,-1,-1,-1,30,60,-1,70,110,-1,120,-1,-1,80,-1,-1,40,90,-1,100,130,-1,-1,-1,-1};
 
         Stack<Node> st = new Stack<>();
         Node root = null;
@@ -191,10 +236,10 @@ class Questions {
         // System.out.println(height(root));
         // eulerTraversal(root);
         displayTree(root);
-        Node rootMirror = removeLeafNodes(root);
+        Node ModifiedRootTail = flattenGenericTree2(root);
 
         System.out.println("Printing Modified Tree ===================");
-        displayTree(rootMirror);
+        displayTree(root);
     }
 }
 
