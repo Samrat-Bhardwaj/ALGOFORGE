@@ -114,7 +114,7 @@ class Questions {
         return root;
     }
 
-    public static Node getTail(Node root){
+    public static Node getTail(Node root){ // SubTree is already flattened
         Node temp = root;
         while(temp.children.size() > 0){
             temp = temp.children.get(0);
@@ -143,6 +143,88 @@ class Questions {
         return lastChildTail;
     }
 
+    // Find in generic tree
+    public static boolean find(Node root, int target){
+        if(root.data == target){
+            return true;
+        }
+        
+        for(Node child: root.children){
+            boolean dataFoundInSubtree = find(child, target);
+
+            if(dataFoundInSubtree == true){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Node to root path 
+    public static ArrayList<Integer> nodeToRootPath(Node root, int target){
+        if(root.data == target){
+            ArrayList<Integer> bans = new ArrayList<>();
+            bans.add(root.data);
+
+            return bans;
+        } 
+
+        for(Node child: root.children){
+            ArrayList<Integer> subPath = nodeToRootPath(child, target);
+
+            if(subPath.size() > 0){
+                subPath.add(root.data);
+                return subPath;
+            }
+        }
+
+        return new ArrayList<>();
+    }
+
+    // LCA of generic Tree
+    public static int findLCA(Node root, int tar1, int tar2){
+        ArrayList<Integer> ntr1 = nodeToRootPath(root, tar1);
+        ArrayList<Integer> ntr2 = nodeToRootPath(root, tar2);
+
+        if(ntr1.size() == 0 || ntr2.size() == 0){
+            System.out.println("No LCA");
+            return -1;
+        }
+
+        int j = ntr2.size() - 1;
+        int i = ntr1.size() - 1;
+        while(j >= 0 && i>=0 && ntr1.get(i) == ntr2.get(j)){
+            i--;
+            j--;
+        }
+
+        j++;
+        return ntr2.get(j);
+    }
+
+
+    // is Mirror
+    public static boolean isMirror(Node n1, Node n2){
+        if(n1.children.size() != n2.children.size() || n1.data != n2.data){
+            return false;
+        }
+        int size = n1.children.size();
+        for(int i=0; i<n1.children.size(); i++){
+            Node child1 = n1.children.get(i);
+            Node child2 = n2.children.get(size - i - 1);
+
+            if(isMirror(child1, child2) == false){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // isSymmetric 
+    public static boolean isSymmetric(Node root){
+        
+    }
 
 
 
@@ -211,9 +293,9 @@ class Questions {
     }
 
     public static void main(String[] args){
-        int[] treeData = {10,20,50,-1,-1,30,60,-1,70,110,-1,120,-1,-1,80,-1,-1,40,90,-1,100};
+        // int[] treeData = {10,20,50,-1,-1,30,60,-1,70,110,-1,120,-1,-1,80,-1,-1,40,90,-1,100};
         // int[] treeData = {10,20,50,-1,60,-1,-1,30,-1,40,80,-1,90,-1,100,-1,-1,-1};
-        // int[] treeData = {10,20,50,140,-1,-1,-1,30,60,-1,70,110,-1,120,-1,-1,80,-1,-1,40,90,-1,100,130,-1,-1,-1,-1};
+        int[] treeData = {10,20,50,140,-1,-1,-1,30,60,-1,70,110,-1,120,-1,-1,80,-1,-1,40,90,-1,100,130,-1,-1,-1,-1};
 
         Stack<Node> st = new Stack<>();
         Node root = null;
@@ -235,11 +317,15 @@ class Questions {
 
         // System.out.println(height(root));
         // eulerTraversal(root);
-        displayTree(root);
-        Node ModifiedRootTail = flattenGenericTree2(root);
+        // displayTree(root);
+        // Node ModifiedRootTail = flattenGenericTree2(root);
 
-        System.out.println("Printing Modified Tree ===================");
-        displayTree(root);
+
+        // System.out.println("Printing Modified Tree ===================");
+        // displayTree(root);
+
+        // System.out.println(nodeToRootPath(root, 120));
+        System.out.println(findLCA(root,30,115));
     }
 }
 
