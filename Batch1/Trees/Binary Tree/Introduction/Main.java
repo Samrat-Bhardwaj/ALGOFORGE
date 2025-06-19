@@ -22,21 +22,49 @@ class Pair {
 
 class Main {
     public static int size(Node root){
+        if(root == null){
+            return 0;
+        }
 
+        int leftSize = size(root.left);
+        int rightSize = size(root.right);
+
+        return leftSize + rightSize + 1;
     }
 
     public static int sum(Node root){
-        
+        if(root == null){
+            return 0;
+        }
+
+        int leftSum = sum(root.left);
+        int rightSum = sum(root.right);
+
+        return leftSum + rightSum + root.data;
     }
 
     public static int maxOfBinaryTree(Node root){
-        
+        if(root == null){
+            return Integer.MIN_VALUE;
+        }
+
+        int leftMax = maxOfBinaryTree(root.left);
+        int rightMax = maxOfBinaryTree(root.right);
+
+        return Math.max(Math.max(leftMax, rightMax), root.data);
     }
 
     public static int height(Node root){
-        
+        if(root == null){
+            return -1;
+        }
+
+        int leftHeight = height(root.left);
+        int rightHeight = height(root.right);
+
+        return Math.max(leftHeight, rightHeight) + 1;
     }
-    
+
     public static void display(Node root){
         if(root == null){
             return;
