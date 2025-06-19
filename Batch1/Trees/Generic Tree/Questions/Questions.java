@@ -223,7 +223,7 @@ class Questions {
 
     // isSymmetric 
     public static boolean isSymmetric(Node root){
-        
+        return isMirror(root, root);
     }
 
 
