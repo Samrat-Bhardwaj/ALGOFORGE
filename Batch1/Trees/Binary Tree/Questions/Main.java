@@ -74,9 +74,133 @@ class Main {
     }
 
     // leetcode 863, Get Nodes at K distance 
-    public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
-        
+    public static ArrayList<TreeNode> nodeToRootPath(TreeNode root, TreeNode target){
+        if(root == null){
+            return new ArrayList<>();
+        }
+
+        if(root.equals(target)){
+            ArrayList<TreeNode> bans = new ArrayList<>();
+            bans.add(target);
+            return bans;
+        }
+
+        ArrayList<TreeNode> left = nodeToRootPath(root.left, target);
+        if(left.size() > 0){
+            left.add(root);
+            return left;
+        }
+
+        ArrayList<TreeNode> right = nodeToRootPath(root.right, target);
+        if(right.size() > 0){
+            right.add(root);
+            return right;
+        }
+
+        return new ArrayList<>();
     }
+
+    public static void getKLevelDown(TreeNode node, TreeNode blocker, int k, List<Integer> res){
+        if(node == null || k<0){
+            return;
+        }
+
+        if(node.equals(blocker)){
+            return;
+        }
+
+        if(k == 0){
+            res.add(node.data);
+            return;
+        }
+
+        getKLevelDown(node.left, blocker, k-1, res);
+        getKLevelDown(node.right, blocker, k-1, res);
+    }
+
+    public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
+        ArrayList<TreeNode> ntr = nodeToRootPath(root, target);
+
+        List<Integer> res = new ArrayList<>();
+
+        for(int i=0; i<ntr.size(); i++){
+            TreeNode currentNode = ntr.get(i);
+            TreeNode blocker = i == 0 ? null : ntr.get(i-1);
+            getKLevelDown(currentNode, blocker, k - i, res);
+        }
+
+        return res;
+    }
+
+// leetcode 236, LCA ===============================================
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) { // O(N), O(N) space
+        ArrayList<TreeNode> ntrp = nodeToRootPath(root, p);
+        ArrayList<TreeNode> ntrq = nodeToRootPath(root, q);
+
+        int i = ntrp.size() - 1;
+        int j = ntrq.size() - 1;
+
+        while(i>=0 && j>=0 && ntrp.get(i) == ntrq.get(j)){
+            i--;
+            j--;
+        }
+        j++;
+
+        return ntrq.get(j);
+    }
+
+    // LCA better
+    public boolean LCA_better(TreeNode root, TreeNode p, TreeNode q, TreeNode[] LCA){
+        if(root == null){
+            return false;
+        }
+        if(LCA[0] != null){
+            return false; // don't go anywhere else once we have found LCA
+        }
+        
+        boolean self = false;
+        if(root == p || root == q){
+            self = true;
+        }
+
+        boolean left = LCA_better(root.left, p, q, LCA);
+        boolean right = LCA_better(root.rightt, p, q, LCA);
+
+        if((self && left) || (self && right) || (left && right)){
+            LCA[0] = root;
+        }
+
+        return self || left || right;
+    }
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) { // O(N), O(rec) space
+        TreeNode[] LCA = new TreeNode[1];
+        LCA_better(root,p,q,LCA);
+        return LCA[0];
+    }
+
+    // leetcode 1325, REMOVE leaves equal to given target
+    public TreeNode removeLeafNodes(TreeNode root, int target) {
+        if(root == null){
+            return null;
+        }
+
+        root.left = removeLeafNodes(root.left, target);
+        root.right = removeLeafNodes(root.right, target);
+
+        if(root.left == null && root.right == null && root.val == target){
+            return null;
+        }
+
+        return root;
+    }
+
+
+    
+
+
+
+
 
 
 
