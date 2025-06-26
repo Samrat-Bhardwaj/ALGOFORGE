@@ -114,4 +114,198 @@ class Main {
         
         return root;
     }
+
+    // Find pair sum (Leetcode 653) ==================================
+    public boolean findEleInBST(TreeNode root, int ele, TreeNode blocker){
+        if(root == null) return false;
+
+        if(root != blocker && root.val == ele) return true;
+
+        if(root.val < ele){
+            return findEleInBST(root.right, ele, blocker);
+        } else {
+            return findEleInBST(root.left, ele, blocker);
+        }
+    }
+
+    public boolean findPairSum(TreeNode curr, TreeNode root, int k){
+        if(curr == null){
+            return false;
+        }
+
+        int secondEle = k - curr.val;
+
+        if(findEleInBST(root,secondEle,curr)){ // logN
+            return true;
+        }
+
+        return findPairSum(curr.left, root, k) || findPairSum(curr.right, root, k);
+    }
+
+    public boolean findTarget(TreeNode root, int k) {
+        return findPairSum(root,root,k); // NlogN
+    }
+
+    // Build BST from preorder(Leetcode 1008) =============================
+    public TreeNode buildBSTFromPreorder(int[] preorder, int[] idx, int lowerBound, int upperBound){
+        if(idx[0] >= preorder.length || preorder[idx[0]] <= lowerBound || preorder[idx[0]] >= upperBound){
+            return null;
+        }
+
+        TreeNode root = new TreeNode(preorder[idx[0]]);
+        idx[0]++;
+
+        root.left = buildBSTFromPreorder(preorder,idx,lowerBound,root.val);
+        root.right = buildBSTFromPreorder(preorder,idx,root.val,upperBound);
+
+        return root;
+    }
+
+    public TreeNode bstFromPreorder(int[] preorder) {
+        int[] idx = new int[1];
+        return buildBSTFromPreorder(preorder, idx, Integer.MIN_VALUE, Integer.MAX_VALUE); 
+    }
+
+    // Without upperBound, we dont need lowerbound coz we are handling left first and smaller values are already attached in left subtree
+    public TreeNode buildBSTFromPreorder_better(int[] preorder, int[] idx, int upperBound){
+        if(idx[0] >= preorder.length || preorder[idx[0]] >= upperBound){
+            return null;
+        }
+
+        TreeNode root = new TreeNode(preorder[idx[0]]);
+        idx[0]++;
+
+        root.left = buildBSTFromPreorder_better(preorder,idx,root.val);
+        root.right = buildBSTFromPreorder_better(preorder,idx,upperBound);
+
+        return root;
+    }
+
+    public TreeNode bstFromPreorder(int[] preorder) {
+        int[] idx = new int[1];
+        return buildBSTFromPreorder_better(preorder, idx, Integer.MAX_VALUE); 
+    }
+
+    // Validate BST
+    class BSTPair {
+        long max;
+        long min;
+        boolean isBST;
+
+        public BSTPair(){}
+
+        public BSTPair(int max, int min, boolean isBST){
+            this.max = max;
+            this.min = min;
+            this.isBST = isBST;
+        }
+    }
+
+    public BSTPair isTreeBST(TreeNode root){
+        if(root == null){
+            return new BSTPair(Long.MIN_VALUE, Long.MAX_VALUE, true);
+        }
+
+        if(root.left == null && root.right == null){
+            return new BSTPair(root.val, root.val, true);
+        }
+
+        BSTPair left = isTreeBST(root.left);
+        BSTPair right = isTreeBST(root.right);
+
+        if(left.isBST == false || right.isBST == false || left.max >= root.val || right.min <= root.val){
+            return new BSTPair(1,2,false); // any garbage value with false
+        }
+
+        BSTPair ansPair = new BSTPair();
+        ansPair.min = Math.min(left.min, root.val); // handling inf cases
+        ansPair.max = Math.max(right.max, root.val); // handling -inf cases
+
+        ansPair.isBST = true;
+
+        return ansPair;
+    }
+
+    public boolean isValidBST(TreeNode root) {
+        BSTPair res = isTreeBST(root);
+        return res.isBST;
+    }
+
+    // leetcode 1373 =======================================
+    class BSTPair {
+        int max;
+        int min;
+        boolean isBST;
+        int sum;
+        int maxSum;
+
+        public BSTPair(){}
+
+        public BSTPair(int max, int min, boolean isBST, int sum, int maxSum){
+            this.max = max;
+            this.min = min;
+            this.isBST = isBST;
+            this.sum = sum;
+            this.maxSum = maxSum;
+        }
+    }
+
+    public BSTPair validateBST(TreeNode root){
+        if(root == null){
+            return new BSTPair(Integer.MIN_VALUE, Integer.MAX_VALUE, true, 0, 0);
+        }
+
+        if(root.left == null && root.right == null){
+            return new BSTPair(root.val, root.val, true, root.val, root.val);
+        }
+
+        BSTPair left = validateBST(root.left);
+        BSTPair right = validateBST(root.right);
+
+        int currentMaxSum = Math.max(left.maxSum, right.maxSum);
+        
+        if(!left.isBST || !right.isBST || left.max >= root.val || right.min <= root.val){
+            return new BSTPair(1,2,false,0,currentMaxSum); // max min garbage, isBST = false, sum = 0 but maxSum should be maximum
+        }
+        
+        BSTPair ansPair = new BSTPair();
+        ansPair.max = Math.max(root.val, right.max);
+        ansPair.min = Math.min(root.val, left.min);
+        ansPair.isBST = true;
+        ansPair.sum = left.sum + right.sum + root.val;
+        ansPair.maxSum = Math.max(currentMaxSum, ansPair.sum);
+
+        return ansPair;
+    }
+
+    public int maxSumBST(TreeNode root) {
+        int maxSum = validateBST(root).maxSum;
+
+        return Math.max(maxSum, 0);
+    }
+
+    // Leetcode 98 better  ==============================
+    TreeNode prev ;
+    public boolean traverse(TreeNode root){
+        if(root == null) return true;
+
+        if(traverse(root.left) == false) return false;
+
+        if(prev == null){
+            prev = root;
+        } else if(prev.val >= root.val){
+            return false;
+        }
+
+        prev = root;
+
+        if(traverse(root.right) == false) return false;
+
+        return true;
+    }
+
+    public boolean isValidBST(TreeNode root) {
+        prev = null;
+        return traverse(root);
+    }
 }
