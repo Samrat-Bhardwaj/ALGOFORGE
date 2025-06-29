@@ -125,6 +125,39 @@ class DiameterQuestions {
         }
     }
 
+    // Leetcode 124 (Node to Node max path sum) ==============================
+    // { maxPathSum, maxNodeToNode -> ans }
+    public int[] maxNodeToNode(TreeNode root){
+        if(root == null){
+            return new int[]{-(int)(1e8), -(int)(1e8)};
+        }
+
+        int[] leftPair = maxNodeToNode(root.left);
+        int[] rightPair = maxNodeToNode(root.right);
+
+        int maxLeftPathSum = leftPair[0];
+        int maxRightPathSum = rightPair[0];
+
+        int maxLeftNodeToNode = leftPair[1];
+        int maxRightNodeToNode = rightPair[1];
+
+        int maxPathSum = Math.max(Math.max(maxLeftPathSum + root.val, maxRightPathSum + root.val), root.val);
+        // 3 Scenarios -> left Path + current node, right path + current node, current node
+
+        int maxNodeToNode = Math.max(maxPathSum, Math.max(maxLeftPathSum + maxRightPathSum + root.val, Math.max(maxLeftNodeToNode, maxRightNodeToNode)));
+        // all the above 3 scenariors, leftNTN one, rightNTN one, leftPathSum + rightPathSum + root.val
+
+        return new int[]{maxPathSum, maxNodeToNode};
+    }
+
+    public int maxPathSum(TreeNode root) {
+        return maxNodeToNode(root)[1];
+    }
+
+
+
+
+
 
 
 

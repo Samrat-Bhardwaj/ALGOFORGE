@@ -37,6 +37,32 @@ int diameterOfBinaryTree(TreeNode* root) {
 }
 
 
+// Leetcode 124 (Node to Node max path sum) ==
+int maxNodeToNode(TreeNode* root, int& ans){
+    if(root == nullptr){
+        return -(int)(1e8);
+    }
+
+    int maxLeftPathSum = maxNodeToNode(root->left, ans);
+    int maxRightPathSum = maxNodeToNode(root->right, ans);
+
+
+    int maxPathSum = max(max(maxLeftPathSum + root->val, maxRightPathSum + root->val), root->val);
+    // 3 Scenarios -> left Path + current node, right path + current node, current node
+
+    int maxNodeToNode = max(maxPathSum, maxLeftPathSum + maxRightPathSum + root->val);
+    ans = max(ans, maxNodeToNode);
+    // all the above 3 scenariors, leftPathSum + rightPathSum + root.val
+
+    return maxPathSum;
+}
+
+int maxPathSum(TreeNode* root) {
+    int ans = -(int)(1e8);
+    maxNodeToNode(root,ans);
+    return ans;
+}
+
 
 
 
