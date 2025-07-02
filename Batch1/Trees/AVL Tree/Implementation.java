@@ -80,25 +80,7 @@ class Implementation {
         return root;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // BST functions ==================================================
     public static Node addData(Node root, int val){
         if(root == null){
             return new Node(val);
