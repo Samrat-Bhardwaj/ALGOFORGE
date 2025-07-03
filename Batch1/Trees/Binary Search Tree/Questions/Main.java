@@ -186,6 +186,50 @@ class Main {
         return buildBSTFromPreorder_better(preorder, idx, Integer.MAX_VALUE); 
     }
 
+    // Construct BST from postorder (https://www.geeksforgeeks.org/problems/construct-bst-from-post-order/1)
+    public static Node buildBSTFromPostorder(int[] post, int[] idx, int lowerBound, int upperBound){
+        if(idx[0] < 0 || post[idx[0]] <= lowerBound || post[idx[0]] >= upperBound){
+            return null;
+        }
+
+        Node root = new Node(post[idx[0]]);
+        idx[0]--;
+
+        root.right = buildBSTFromPostorder(post, idx, root.data, upperBound);
+        root.left = buildBSTFromPostorder(post, idx, lowerBound, root.data);
+        
+        return root;
+    }
+
+    public static Node constructTree(int post[], int n) {
+        int[] idx = new int[1];
+        idx[0] = n-1;
+
+        return buildBSTFromPostorder(post, idx, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    // We don't need upperbound because we are processing elements for right node (larger elements)
+    public static Node buildBSTFromPostorder_better(int[] post, int[] idx, int lowerBound){
+        if(idx[0] < 0 || post[idx[0]] <= lowerBound){
+            return null;
+        }
+
+        Node root = new Node(post[idx[0]]);
+        idx[0]--;
+
+        root.right = buildBSTFromPostorder_better(post, idx, root.data);
+        root.left = buildBSTFromPostorder_better(post, idx, lowerBound);
+        
+        return root;
+    }
+
+    public static Node constructTree(int post[], int n) {
+        int[] idx = new int[1];
+        idx[0] = n-1;
+
+        return buildBSTFromPostorder_better(post, idx, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
     // Validate BST
     class BSTPair {
         long max;
@@ -307,5 +351,79 @@ class Main {
     public boolean isValidBST(TreeNode root) {
         prev = null;
         return traverse(root);
+    }
+
+    // leetcode 99, Recover BST ====================================
+    class Solution {
+        TreeNode a;
+        TreeNode b;
+        TreeNode prev;
+        public boolean inorderTraverse(TreeNode root){
+            if(root == null){
+                return false;
+            }
+
+            if(inorderTraverse(root.left) == true){
+                return true;
+            }
+
+            if(prev != null && prev.val >= root.val){
+                b = root;
+                if(a == null){
+                    a = prev;
+                } else {
+                    return true;
+                }
+            }
+
+            prev = root;
+            if(inorderTraverse(root.right) == true){
+                return true;
+            }
+
+            return false;
+        }
+
+        public void recoverTree(TreeNode root) {
+            a = null;
+            b = null;
+            prev = null;
+
+            inorderTraverse(root);
+
+            int temp = a.val;
+            a.val = b.val;
+            b.val = temp;
+        }
+    }
+
+    // leetcode 173, BST iterator ======================================================
+    class BSTIterator {
+        Stack<TreeNode> st;
+        public void addAllLeft(TreeNode curr){
+
+            while(curr != null){
+                st.add(curr);
+                curr = curr.left;
+            }
+        }
+
+        public BSTIterator(TreeNode root) {
+            st = new Stack<>();
+
+            addAllLeft(root);
+        }
+        
+        public int next() {
+            TreeNode top = st.pop();
+
+            addAllLeft(top.right); // going to add just greater
+            
+            return top.val;
+        }
+        
+        public boolean hasNext() {
+            return st.size() > 0;
+        }
     }
 }
