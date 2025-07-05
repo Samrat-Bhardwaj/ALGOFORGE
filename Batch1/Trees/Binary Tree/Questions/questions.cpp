@@ -93,6 +93,65 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
     return LCA;
 }
 
+// leetcode 112
+bool hasPathSum(TreeNode* root, int targetSum) {
+    if(root == nullptr) return false;
+
+    if(root->left == NULL && root->right == NULL){ // leaf
+        return root->val == targetSum;
+    }
+
+    return hasPathSum(root->left, targetSum - root->val) || hasPathSum(root->right, targetSum - root->val);
+}
+
+// leetcode 113 
+void traverse(TreeNode* root, int targetSum,vector<int>& currentPath,vector<vector<int>>& allPaths){
+    if(!root) return;
+
+    if(!root->left && !root->right){
+        if(root->val == targetSum){
+            currentPath.push_back(root->val);
+            allPaths.push_back(currentPath);
+            currentPath.pop_back();
+        }
+        return;
+    }
+
+    currentPath.push_back(root->val);
+
+    traverse(root->left, targetSum - root->val, currentPath, allPaths);
+    traverse(root->right, targetSum - root->val, currentPath, allPaths);
+
+    currentPath.pop_back();
+}
+
+vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+    vector<vector<int>> allPaths;
+    vector<int> currentPath;
+
+    traverse(root,targetSum,currentPath,allPaths);
+
+    return allPaths;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int main(){
     return 0;
 }

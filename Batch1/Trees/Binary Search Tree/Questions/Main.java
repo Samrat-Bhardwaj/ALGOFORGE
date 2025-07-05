@@ -418,7 +418,7 @@ class Main {
             TreeNode top = st.pop();
 
             addAllLeft(top.right); // going to add just greater
-            
+
             return top.val;
         }
         
@@ -426,4 +426,110 @@ class Main {
             return st.size() > 0;
         }
     }
+
+    // Kth Smallest element (leetcode 230) ==================================
+    public void addAllLeft(TreeNode curr, Stack<TreeNode> st){
+
+        while(curr != null){
+            st.add(curr);
+            curr = curr.left;
+        }
+    }
+
+    public int kthSmallest(TreeNode root, int k) {
+        Stack<TreeNode> st = new Stack<>();
+
+        addAllLeft(root, st);
+
+        while(k-- > 1){ // max space O(height)
+            TreeNode top = st.pop();
+
+            addAllLeft(top.right, st); // putting next greater on top 
+        }
+
+        return st.peek().val;
+    }
+
+    // Pred succ of BST (https://www.geeksforgeeks.org/problems/predecessor-and-successor/1)
+    class Solution {
+        Node pred;
+        Node succ;
+        Node prev;
+        public boolean traverseInorder(Node root, int key){
+            if(root == null) return false;
+
+            if(traverseInorder(root.left, key)) return true;
+
+            if(root.data < key){
+                pred = root;
+            } else if(prev != null && root.data > key && prev.data <= key){
+                succ = root;
+                return true;
+            }
+
+            prev = root;
+            if(traverseInorder(root.right, key)) return true;
+
+            return false;
+        }
+
+        public ArrayList<Node> findPreSuc(Node root, int key) {
+            pred = null;
+            succ = null;
+            prev = null;
+
+            ArrayList<Node> ans = new ArrayList<>();
+            traverseInorder(root, key);
+            
+            ans.add(pred);
+            ans.add(succ);
+            return ans;
+        }
+    }
+
+    // Pred succ of BST (A little better) (https://www.geeksforgeeks.org/problems/predecessor-and-successor/1)
+    class Solution {
+        public ArrayList<Node> findPreSuc(Node root, int key) {
+            Node pred = null;
+            Node succ = null;
+            Node prev = null;
+
+            Node curr = root;
+
+            while(curr != null){
+                if(curr.data < key){
+                    pred = curr;
+                    curr = curr.right;
+                } else if(curr.data > key){
+                    succ = curr;
+                    curr = curr.left;
+                } else {
+                    // find just smaller -> rightMost of left subtree
+                    Node temp = curr.left;
+                    if(temp != null){
+                        while(temp.right != null){
+                            temp = temp.right;
+                        }
+                        pred = temp;
+                    }
+
+                    // find just greater -> leftMost of right subtree
+                    temp = curr.right;
+                    if(temp != null){
+                        while(temp.left != null){
+                            temp = temp.left;
+                        }
+                        succ = temp;
+                    }
+                    break;
+                }
+            }
+
+            ArrayList<Node> ans = new ArrayList<>();
+            ans.add(pred);
+            ans.add(succ);
+
+            return ans;
+        }
+    } 
 }

@@ -263,6 +263,162 @@ class Main {
         return Math.max(leftDepth, rightDepth) + 1;
     }
 
+
+    // leetcode 112
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if(root == null) return false;
+
+        if(root.left == null && root.right == null){ // leaf
+            return root.val == targetSum;
+        }
+
+        return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);
+    }
+
+    // leetcode 113 
+    public void getAllPaths(TreeNode root,int targetSum,List<Integer> currentPath, List<List<Integer>> allPaths){
+        if(root == null) return;
+
+        if(root.left == null && root.right == null){
+            if(root.val == targetSum){
+                currentPath.add(root.val);
+
+                allPaths.add(new ArrayList<>(currentPath)); // O(N)
+
+                currentPath.remove(currentPath.size()-1);
+            }
+            return;
+        }
+
+        currentPath.add(root.val);
+
+        getAllPaths(root.left, targetSum - root.val, currentPath, allPaths);
+        getAllPaths(root.right, targetSum - root.val, currentPath, allPaths);
+
+        currentPath.remove(currentPath.size()-1);
+    }
+
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        List<List<Integer>> allPaths = new ArrayList<>();
+        List<Integer> currentPath = new ArrayList<>();
+
+        getAllPaths(root,targetSum, currentPath,allPaths);
+        return allPaths;
+    }
+
+// Binary tree to doubly linkedList (https://www.geeksforgeeks.org/problems/binary-tree-to-dll/1)
+
+class Solution {
+    // Function to convert binary tree to doubly linked list and return it.
+    Node head;
+    Node prev;
+    void convertBT_DLL(Node root){
+        if(root == null) return;
+
+        convertBT_DLL(root.left);
+
+        if(head == null){
+            head = root;
+        } else {
+            prev.right = root; // already visited prev, can destroy
+            root.left = prev; // already visited left, can destroy
+        }
+
+        prev = root;
+        convertBT_DLL(root.right);
+    }
+
+    Node bToDLL(Node root) {
+        head = null;
+        prev = null;
+
+        convertBT_DLL(root);
+
+        return head;
+    }
+}
+
+// leetcode 114 (Flatten tree same as of generic tree)
+public TreeNode flattenTree(TreeNode root){
+    if(root == null) return null;
+
+    if(root.left == null && root.right == null){
+        return root;
+    }
+
+    TreeNode leftKaTail = flattenTree(root.left);
+    TreeNode rightKaTail = flattenTree(root.right);
+    
+    TreeNode rightSubTree = root.right;
+    TreeNode leftSubTree = root.left;
+
+    root.left = null;
+    if(leftSubTree != null){
+        root.right = leftSubTree;
+        leftKaTail.right = rightSubTree;
+    }
+
+    return rightKaTail != null ? rightKaTail : leftKaTail;
+}
+
+public void flatten(TreeNode root) {
+    flattenTree(root);
+}
+
+
+// leetcode 114 (Flatten tree same as of generic tree)
+TreeNode prev;
+public void flattenTree(TreeNode root){
+    if(root == null) return;
+    
+    flattenTree(root.right); // want our previous to be on root.right
+    flattenTree(root.left);
+
+    // root will be at rightmost of left subtree
+    root.right = prev;
+    root.left = null;
+
+    prev = root;
+}
+
+public void flatten(TreeNode root) {
+    prev = null;
+    flattenTree(root);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void main(String[] args){
         
     }
