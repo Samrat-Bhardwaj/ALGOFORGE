@@ -134,6 +134,55 @@ vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
     return allPaths;
 }
 
+// leetcode 297 (Serialize and deserialize BT) ===================
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        if(!root){
+            return "#";
+        }
+
+        return to_string(root->val) + "," + serialize(root->left) + "," + serialize(root->right);
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* makeTreeFromString(string& data, int& idx){
+        if(data[idx] == '#'){
+            idx += 2;
+            return nullptr;
+        }
+
+        int num = 0;
+        bool isNegative = false;
+        while(data[idx] != ','){
+            if(data[idx] == '-'){
+                isNegative = true;
+                idx++;
+                continue;
+            }
+            num = num*10 + (data[idx] - '0');
+            idx++;
+        }
+        idx++;
+
+        if(isNegative) num *= -1;
+
+        TreeNode* root = new TreeNode(num);
+
+        root->left = makeTreeFromString(data,idx); 
+        root->right = makeTreeFromString(data,idx); 
+
+        return root;
+    }
+    TreeNode* deserialize(string data) {
+        int idx = 0;
+
+        return makeTreeFromString(data, idx);   
+    }
+};
+
 
 
 

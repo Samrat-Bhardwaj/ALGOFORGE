@@ -386,7 +386,129 @@ public void flatten(TreeNode root) {
     flattenTree(root);
 }
 
+// Leetcode 116 ===========================
+public Node connect(Node root) {
+    if(root == null){
+        return null;
+    }
 
+    Node curr = root;
+    Node first = root.left; // first node of next level
+
+    while(first != null){
+        curr.left.next = curr.right; // setting next of left child = right
+
+        if(curr.next == null){ // if current is at last node of current level
+            curr = first; // moving curr pointer to first node of next level
+            first = first.left; 
+        } else {
+            Node next = curr.next;
+            curr.right.next = next.left; // setting next of right child
+
+            curr = next;
+        }
+    }
+
+    return root;
+}
+
+// Leetcode 117 =================================
+public Node connect(Node root) {
+    Node curr = root; // for travelling on current level
+    Node head = null; // should point to first node of next level
+    Node prev = null; // prev node to travel on next level
+
+    while(curr != null){
+        // travel on the next level
+        while(curr != null){
+            if(curr.left != null){
+                if(prev == null){ // first node that is not null in this level
+                    head = curr.left;
+                } else {
+                    prev.next = curr.left;
+                }
+                prev = curr.left;
+            }
+
+            if(curr.right != null){
+                if(prev == null){ // first node that is not null in this level
+                    head = curr.right;
+                } else {
+                    prev.next = curr.right;
+                }
+                prev = curr.right;
+            }
+
+            curr = curr.next;
+        }
+
+        curr = head;
+        head = null;
+        prev = null;
+    }        
+
+    return root;
+}
+
+// leetcode 979 (Distribute coins)
+public int coinsRequired(TreeNode root, int[] moves){
+    if(root == null){
+        return 0;
+    }
+
+    int leftTreeRequirement = coinsRequired(root.left, moves);
+    int rightTreeRequirement = coinsRequired(root.right, moves);
+
+    moves[0] += Math.abs(leftTreeRequirement) + Math.abs(rightTreeRequirement);
+
+    return leftTreeRequirement + rightTreeRequirement + root.val - 1;
+}
+
+public int distributeCoins(TreeNode root) {
+    int[] moves = new int[1];
+
+    coinsRequired(root, moves);      
+    return moves[0];
+}
+
+// leetcode 968 (Binary Tree Cameras) ======================================
+class Solution {
+    // 1 (i am not covered by any camera, needs coverage)
+    // 0 (i am the camera)
+    // -1 (i am covered, don't need camera)
+
+    int totalCamera;
+    public int cameraRequired(TreeNode root){
+        if(root == null){
+            return -1; // null doesn't need any camera
+        }
+
+        int leftNodeRequirement = cameraRequired(root.left);
+        int rightNodeRequirement = cameraRequired(root.right);
+
+        if(leftNodeRequirement == 1 || rightNodeRequirement == 1){ // left or right needs coverage
+            totalCamera++;
+            return 0;
+        }
+
+        if(leftNodeRequirement == 0 || rightNodeRequirement == 0){ // left or right is giving me coverage
+            return -1;
+        }
+
+        return 1; // left and right is covered but i am not
+    }
+
+    public int minCameraCover(TreeNode root) {
+        totalCamera = 0;
+
+        int cameraRequired = cameraRequired(root);
+        if(cameraRequired == 1){ // root may also need camera
+            totalCamera++;
+        }
+
+        return totalCamera;
+    }
+}
 
 
 
