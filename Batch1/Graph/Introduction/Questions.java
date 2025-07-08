@@ -45,9 +45,52 @@ class Questions {
 
 
     // Print all paths between source and dest ======================================
-    public static void printAllPaths(int src, int des, ArrayList<Edge>[] graph, int N){
+    public static void allPaths(int src, int des, ArrayList<Edge>[] graph, String psf,boolean[] vis){
+        if(src == des){
+            System.out.println(psf);
+            return;
+        }
+        vis[src] = true;
 
+        for(Edge e: graph[src]){
+            int nbr = e.v;
+            if(!vis[nbr]){
+                allPaths(nbr, des, graph, psf + "->" + nbr, vis);
+            }
+        }
+
+        vis[src] = false;
     }
+
+    public static void printAllPaths(int src, int des, ArrayList<Edge>[] graph, int N){
+        allPaths(src,des,graph,""+src,new boolean[N]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Graph construction utils =====================================================
     public static void displayGraph(ArrayList<Edge>[] graph){
@@ -78,14 +121,15 @@ class Questions {
         addEdge(graph,0,1,10);
         addEdge(graph,1,2,11);
         addEdge(graph,1,3,7);
-        // addEdge(graph,1,4,12);
+        addEdge(graph,1,4,12);
         addEdge(graph,2,4,9);
-        // addEdge(graph,2,5,3);
+        addEdge(graph,2,5,3);
         addEdge(graph,5,6,6);
         addEdge(graph,5,7,5);
         addEdge(graph,6,7,4);
 
         // displayGraph(graph);
-        System.out.println(hasPath(0,7, graph, N));
+        // System.out.println(hasPath(0,7, graph, N));
+        printAllPaths(0,7, graph, N);
     }
 }
