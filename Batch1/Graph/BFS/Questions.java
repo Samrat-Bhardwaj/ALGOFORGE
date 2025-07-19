@@ -314,4 +314,170 @@ class Questions {
         int[] ansArray = order.stream().mapToInt(Integer::intValue).toArray(); // converting arraylist to array
         return ansArray;
     }
+
+    // Longest Increasing Path(leetcode 329) ========================
+    public int longestIncreasingPath(int[][] matrix) {
+        int n = matrix.length;
+        int m= matrix[0].length;
+
+        int[][] indegree = new int[n][m];
+        int[][] dirs = {{0,1},{1,0},{0,-1},{-1,0}};
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                for(int[] dir: dirs){ // O(4)
+                    int x = i + dir[0];
+                    int y = j + dir[1];
+
+                    if(x>=0 && y>=0 && x<n && y<m && matrix[x][y] < matrix[i][j]){
+                        indegree[i][j]++;
+                    }
+                }
+            }
+        }
+
+        LinkedList<Integer> que = new LinkedList<>();
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(indegree[i][j] == 0){
+                    que.addLast(i*m + j);
+                }
+            }
+        }
+
+        int level = 1;
+        while(que.size() > 0){
+            int size = que.size();
+
+            while(size-- > 0){
+                int idx = que.removeFirst();
+
+                int i = idx/m;
+                int j = idx%m;
+
+                for(int[] dir: dirs){ // O(4)
+                    int x = i + dir[0];
+                    int y = j + dir[1];
+
+                    if(x>=0 && y>=0 && x<n && y<m && matrix[x][y] > matrix[i][j]){
+                        indegree[x][y]--;
+                        if(indegree[x][y] == 0){ // all smaller neigbour elements already discovered
+                            que.addLast(x*m + y);
+                        }
+                    }
+                }
+            } 
+            level++;
+        }
+
+        return level - 1;
+    }
+
+    // Bipartie Graph ==============================================
+    // All acyclic and even length cycle graph are bipartite
+    public boolean isCycleEven(int[][] graph, int src, int[] vis){
+        LinkedList<Integer> que = new LinkedList<>();
+        que.addLast(src);
+
+        int color = 0; // even level, color = 0, odd level, color = 1
+        
+        while(que.size() > 0){
+            int size = que.size();
+
+            while(size-- > 0){
+                int vtx = que.removeFirst();
+
+                if(vis[vtx] != -1 && vis[vtx] != color){ // already but not equal to current level
+                    return false; // odd cycle
+                }
+
+                vis[vtx] = color;
+
+                for(int nbr: graph[vtx]){
+                    if(vis[nbr] == -1){
+                        que.addLast(nbr);
+                    }
+                }
+            }
+            color = (color + 1) % 2; // color = 0->1, 1->0
+        }
+
+        return true;
+    }
+
+    public boolean isBipartite(int[][] graph) {
+        int n = graph.length;
+        int[] vis = new int[n];
+        Arrays.fill(vis, -1); // not visited = -1
+
+        for(int i=0; i<n; i++){
+            if(vis[i] == -1){
+                if(isCycleEven(graph,i,vis) == false){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    // Leetcode 886 (Possible bipartition) =============================================
+    public boolean isCycleEven(ArrayList<Integer>[] graph, int src, int[] vis){
+        LinkedList<Integer> que = new LinkedList<>();
+        que.addLast(src);
+
+        int color = 0; // even level, color = 0, odd level, color = 1
+        
+        while(que.size() > 0){
+            int size = que.size();
+
+            while(size-- > 0){
+                int vtx = que.removeFirst();
+
+                if(vis[vtx] != -1 && vis[vtx] != color){ // already but not equal to current level
+                    return false; // odd cycle
+                }
+
+                vis[vtx] = color;
+
+                for(int nbr: graph[vtx]){
+                    if(vis[nbr] == -1){
+                        que.addLast(nbr);
+                    }
+                }
+            }
+            color = (color + 1) % 2; // color = 0->1, 1->0
+        }
+
+        return true;
+    }
+
+    public boolean possibleBipartition(int n, int[][] dislikes) {
+        ArrayList<Integer>[] graph = new ArrayList[n];
+
+        for(int i=0; i<n; i++){
+            graph[i] = new ArrayList<>();
+        }
+
+        for(int[] edge: dislikes){
+            int u = edge[0] - 1; // vertices are from 1,n -> changing them to 0,n
+            int v = edge[1] - 1;
+
+            graph[u].add(v);
+            graph[v].add(u);
+        }
+
+        int[] vis = new int[n];
+        Arrays.fill(vis, -1); // not visited = -1
+
+        for(int i=0; i<n; i++){
+            if(vis[i] == -1){
+                if(isCycleEven(graph,i,vis) == false){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
