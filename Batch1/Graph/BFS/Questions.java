@@ -589,4 +589,68 @@ class Questions {
             return 0;
         }
     }
+
+    // word ladder 2 (leetcode 126)
+    public boolean isSimilar(String a, String b){
+        if(a.length() != b.length()) return false;
+
+        int diff_char = 0;
+        for(int i=0; i<a.length() && diff_char < 2; i++){
+            if(a.charAt(i)  != b.charAt(i)){
+                diff_char++;
+            }
+        }
+
+        return diff_char == 1;
+    }
+
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        List<List<String>> ans = new ArrayList<>();
+        HashSet<String> vis = new HashSet<>();
+
+        LinkedList<List<String>> que = new LinkedList<>();
+
+        int min_path_length = -1;
+        int level = 1;
+
+        List<String> start = new ArrayList<>();
+        start.add(beginWord);
+        que.add(start);
+
+        while(que.size() > 0){
+            int size = que.size();
+
+            while(size-- > 0){
+                List<String> top = que.removeFirst();
+
+                String lastString = top.get(top.size()-1);
+
+                if(vis.contains(lastString)) continue;
+                if(min_path_length != -1 && top.size() >= min_path_length) continue;
+
+                vis.add(lastString);
+
+                for(String word: wordList){
+                    if(!vis.contains(word) && isSimilar(lastString, word)){
+                        List<String> nextPath = new ArrayList<>(top);
+                        nextPath.add(word);
+                        
+                        if(word.equals(endWord)){
+                            if(min_path_length == -1){
+                                min_path_length = level + 1;
+                                ans.add(nextPath);
+                            } else if(nextPath.size() == min_path_length){
+                                ans.add(nextPath);
+                            }  
+                        } 
+                    }
+
+                    que.add(nextPath);
+                }
+            }
+            level++;
+        }
+
+        return ans;
+    }
 }

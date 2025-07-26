@@ -155,6 +155,53 @@ public:
 };
 
 
+// Leetcode 1168 (Optimize Water Distribution in a Village) =====================
+vector<int> par;
+int findPar(int u){
+    return par[u] = par[u] == u ? u : findPar(par[u]);
+}
+
+int min_cost_kruskal(int n, vector<vector<int>>& edges){
+    int total_cost = 0;
+    par.resize(n,0);
+    for(int i=0; i<n; i++){
+        par[i] = i;
+    }
+
+    sort(edges.begin(), edges.end(), (auto a, auto b){
+        return a[2] < b[2];
+    });
+
+    for(vector<int>& edge: edges){
+        int u = edge[0];
+        int v = edge[1];
+        int w = edge[2];
+
+        int p1 = findPar(u);
+        int p2 = findPar(v);
+
+        if(p1 != p2){
+            par[p2] = p1;
+            total_cost += w;
+        }
+    }
+
+    return total_cost;
+}
+
+int supplyWater(int n, int k, vector<int> &wells, vector<vector<int>> &pipes) {
+  	vector<vector<int>> edges;
+    for(vector<int> pipe: pipes){
+        edges.push_back(pipe);
+    }
+
+    for(int i=0; i<n; i++){
+        edges.push_back({0,i+1,wells[i]});
+    }
+
+    return min_cost_kruskal(n+1,edges);
+}
+
 
 
 

@@ -368,4 +368,114 @@ class Questions {
             return total_comps;
         }
     }
+
+    // Questions After Kruskal Algorithm Implementation =============================================
+    
+
+    // Leetcode 1584 (Min cost to connect all points) ============
+    public int findCost(int[] x, int[] y){
+        return Math.abs(x[0] - y[0]) + Math.abs(x[1] - y[1]);
+    }
+
+    public int[][] createEdges(int[][] points){
+        int n = points.length;
+        int total_edges = n*(n-1)/2;
+
+        int[][] edges = new int[total_edges][3];
+        int idx = 0;
+
+        for(int i=0; i<n; i++){
+            for(int j=i+1; j<n; j++){
+                int u = i;
+                int v = j;
+                int w = findCost(points[i], points[j]);
+
+                edges[idx][0] = u;
+                edges[idx][1] = v;
+                edges[idx][2] = w;
+                idx++;
+            }
+        }
+
+        return edges;
+    }
+
+    int[] par;
+    int[] size;
+    public int findPar(int u){
+        if(par[u] == u) return u;
+
+        return par[u] = findPar(par[u]);
+    }
+
+    public void merge(int p1, int p2){
+        if(size[p1] < size[p2]){
+            par[p1] = p2;
+            size[p2] += size[p1];
+        } else {
+            par[p2] = p1;
+            size[p1] += size[p2];
+        }
+    }
+
+    public int find_mst_kruskal(int N, int[][] edges){
+        int total_cost = 0;
+        par = new int[N];
+        size = new int[N];
+
+        for(int i=0; i<N; i++){
+            par[i] = i;
+            size[i] = 1;
+        }   
+
+        Arrays.sort(edges, (int[] a, int[] b) -> {
+            return a[2] - b[2];
+        });
+
+        for(int[] edge: edges){
+            int u = edge[0];
+            int v = edge[1];
+            int w = edge[2];
+
+            int p1 = findPar(u);
+            int p2 = findPar(v);
+
+            if(p1 != p2){
+                merge(p1,p2);
+                total_cost += w;
+            }
+        }
+
+        return total_cost;
+    }
+
+    public int minCostConnectPoints(int[][] points) {
+        int n = points.length;
+        int[][] edges = createEdges(points);
+
+        return find_mst_kruskal(n, edges);
+    }
+
+    // Leetcode 1168 (Optimize Water Distribution in a Village) =====================
+    public int minCost(int n, int[] wells, int[] pipes){
+        int new_edges_length = pipes.length + n;
+        int[][] edges = new int[new_edges_length][3];
+
+        int idx = 0;
+        for(int i=0; i<n; i++){
+            edges[idx][0] = 0;
+            edges[idx][1] = i+1;
+            edges[idx][2] = wells[i]; // edge is created from 0 to (i+1)th house with cost = wells[i];
+            idx++;
+        }
+
+        for(int[] pipe: pipes){
+            edges[idx][0] = pipe[0];
+            edges[idx][1] = pipe[1];
+            edges[idx][2] = pipe[2];
+            idx++;
+        }
+
+        return find_mst_kruskal(n+1,edges);
+    }
 }
