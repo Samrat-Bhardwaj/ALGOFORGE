@@ -202,6 +202,68 @@ int supplyWater(int n, int k, vector<int> &wells, vector<vector<int>> &pipes) {
     return min_cost_kruskal(n+1,edges);
 }
 
+// Leetcode 1202. Smallest String With Swaps
+class Solution {
+public:
+    vector<int> par;
+    vector<int> size;
+    int findPar(int u){
+        if(par[u] == u) return u;
+
+        return par[u] = findPar(par[u]);
+    }
+
+    void merge(int p1, int p2){
+        if(size[p1] < size[p2]){
+            par[p1] = p2;
+            size[p2] += size[p1];
+        } else {
+            par[p2] = p1;
+            size[p1] += size[p2];
+        }
+    }
+
+    string smallestStringWithSwaps(string s, vector<vector<int>>& pairs) {
+        int n = s.size();
+        par.resize(n,0);
+        size.resize(n,1);
+
+        for(int i=0; i<n; i++){
+            par[i] = i;
+        }
+
+        for(vector<int>& edge: pairs){
+            int p1 = findPar(edge[0]);
+            int p2 = findPar(edge[1]);
+
+            if(p1 != p2){
+                merge(p1,p2);
+            }
+        }
+
+        unordered_map<int,string> groups;
+        for(int i=0; i<n; i++){
+            int p = findPar(i);
+            groups[p] += s[i];
+        }
+
+        for(auto &it: groups){
+            sort(it.second.beging(), it.second.end());
+        }
+
+        vector<int> pos(n,0);
+        string ans = "";
+        for(int i=0; i<n; i++){
+            int p = findPar(i);
+            int curr_group_pos = pos[p];
+            ans += groups[p][curr_group_pos];
+            pos[p]++;
+        }
+
+        return ans;
+    }
+}; 
+
 
 
 
