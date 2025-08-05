@@ -478,4 +478,72 @@ class Questions {
 
         return find_mst_kruskal(n+1,edges);
     }
+
+    // Leetcode 721 (Accounts merge)
+    String findPar(String u, HashMap<String,String> par){
+        if(par.get(u).equals(u)) return u;
+
+        String leader = findPar(par.get(u), par);
+        par.put(u, leader); // path compression
+
+        return leader;
+    }
+
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        HashMap<String,Integer> emailUID = new HashMap<>();
+        HashMap<String,String> par = new HashMap<>();
+
+        for(int uid=0; uid<accounts.size(); uid++){
+            List<String> account = accounts.get(uid);
+            String owner = account.get(0);
+            String firstEmail = account.get(1);
+
+            for(int i=1; i<account.size(); i++){
+                String email = account.get(i);
+
+                if(emailUID.containsKey(email) == false){
+                    emailUID.put(email, uid);
+                }
+                if(par.containsKey(email) == false){
+                    par.put(email, email);
+                }
+
+                String p1 = findPar(firstEmail, par);
+                String p2 = findPar(email, par);
+
+                if(!p1.equals(p2)){
+                    par.put(p2,p1); // merging two emails
+                }
+            }
+        }
+
+        HashMap<Integer, List<String>> UIDsVsEmails = new HashMap<>();
+
+        for(String email: emailUID.keySet()){
+            String leader = findPar(email, par);
+            int uid = emailUID.get(leader);
+
+            if(UIDsVsEmails.containsKey(uid) == false){
+                UIDsVsEmails.put(uid, new ArrayList<>());
+            }
+            UIDsVsEmails.get(uid).add(email);
+        }
+
+        // sort the emails against any owner
+        List<List<String>> ans = new ArrayList<>();
+        for(int uid: UIDsVsEmails.keySet()){
+            List<String> emails = UIDsVsEmails.get(uid);
+            Collections.sort(emails);
+
+            List<String> currOwnerEmails = new ArrayList<>();
+            currOwnerEmails.add(accounts.get(uid).get(0));
+
+            for(String email: emails){
+                currOwnerEmails.add(email);
+            }
+            ans.add(currOwnerEmails);
+        }
+
+        return ans;
+    }
 }

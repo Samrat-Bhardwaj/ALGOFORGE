@@ -232,4 +232,69 @@ class Questions {
 
         return paths[n-1];
     }
+
+    // Cheapest Flights Within K Stops (Leetcode 787)
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        int[] dis = new int[n];
+        Arrays.fill(dis,(int)(1e8));
+
+        dis[src]= 0; 
+
+        for(int i=1; i<= k+1; i++){
+            int[] ndis = Arrays.copyOf(dis, n);
+
+            for(int[] edge: flights){
+                int u = edge[0];
+                int v = edge[1];
+                int w = edge[2];
+
+                if(dis[u] + w < ndis[v]){
+                    ndis[v] = dis[u] + w;
+                }
+            }
+
+            dis = ndis;
+        }
+
+        return dis[dst] == (int)(1e8) ? -1 : dis[dst];
+    }
+
+    // Swin in rising water, Leetcode 778 ===================================
+    public int swimInWater(int[][] grid) {
+        int n = gird.length;
+        int m = grid[0].length;
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>((int[] a, int[] b)->{
+            return a[1] - b[1];
+        });
+
+        int[][] dirs = {{0,1},{1,0},{0,-1},{-1,0}};
+        boolean[] vis = new boolean[n][m];
+        vis[0][0] = true;
+        pq.add(new int[]{0,grid[0][0]});
+
+        while(pq.size() > 0){
+            int[] top = pq.remove();
+            int i = top[0]/m;
+            int j = top[0]%m;
+            int cost = top[1];
+
+            if(i==n-1 && j==m-1){
+                return cost;
+            }
+
+            for(int[] dir: dirs){
+                int x = i + dir[0];
+                int y = j + dir[1];
+
+                if(x>=0 && y>=0 && x<n && y<m && !vis[x][y]){
+                    vis[x][y] = true;
+                    int newCost = Math.max(cost, grid[x][y]);
+                    pq.add(new int[]{x*m + y, newCost});
+                }
+            }
+        }
+
+        return -1;
+    }
 }
