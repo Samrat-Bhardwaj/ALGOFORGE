@@ -418,4 +418,112 @@ class Questions {
 
         return num_scc;
     }
+
+    // Number of sub-islands (Leetcode 1905) ==============================
+    // visit complete of B to convert 1 -> 0 and check if this is a subisland
+    public boolean isSubIsland(int[][] A, int[][] B, int i, int j, int n, int m){
+        B[i][j] = 0;
+
+        boolean isSubIslandValue = true;
+        if(A[i][j] == 0){
+            isSubIslandValue = false;
+        }
+
+        int[][] dirs = {{0,1},{1,0},{0,-1},{-1,0}};
+
+        for(int[] dir: dirs){
+            int x = dir[0] + i;
+            int y = dir[1] + j;
+
+            if(x>=0 && y>=0 && x<n && y<m && B[x][y] == 1){
+                isSubIslandValue = isSubIsland(A,B,x,y,n,m) && isSubIslandValue;
+            }
+        }
+
+        return isSubIslandValue;
+    }
+
+    public int countSubIslands(int[][] A, int[][] B) {
+        int count = 0;
+        int n = A.length;
+        int m = A[0].length;
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(B[i][j] == 1){
+                    if(isSubIsland(A,B,i,j,n,m)){
+                        count++;
+                    }
+                }
+            }
+        }
+
+
+        return count;
+    }
+
+    // Number of distinct islands (https://www.geeksforgeeks.org/problems/number-of-distinct-islands/1)
+    void getShape(int i, int j,int sr, int sc, int n, int m, int[][] grid, ArrayList<String> currShape){
+        grid[i][j] = 0;
+
+        int[][] dirs = {{-1,0},{0,-1},{1,0},{0,1}};
+        currShape.add("" + (i-sr) + "," + (j-sc));
+
+        for(int[] dir: dirs){
+            int x = dir[0] + i;
+            int y = dir[1] + j;
+
+            if(x>=0 && y>=0 && x<n && y<m && grid[x][y] == 1){
+                getShape(x,y,sr,sc,n,m,grid,currShape);
+            }
+        }
+    }
+
+    int countDistinctIslands(int[][] grid) {
+        HashSet<ArrayList<String>> set = new HashSet<>();
+        int n = grid.length;
+        int m = grid[0].length;
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(grid[i][j] == 1){
+                    ArrayList<String> currShape = new ArrayList<>();
+                    getShape(i,j,i,j,n,m,grid,currShape);
+                    set.add(currShape);
+                }
+            }
+        }
+
+        return set.size();
+    }
+
+    // Clone graph (Leetcode 133) =======================================
+    class Solution {
+        // clone this node
+        public Node cloneGraph(Node node, HashMap<Integer,Node> map){
+            if(node == null){
+                return null;
+            }
+            // if already cloned, return cloned node
+            if(map.containsKey(node.val)){
+                return map.get(node.val);
+            }
+
+            Node clonedNode = new Node(node.val);
+            map.put(node.val, clonedNode);
+
+            for(Node actualNbr: node.neighbors){
+                Node clonedNbr = cloneGraph(actualNbr, map);
+                clonedNode.neighbors.add(clonedNbr);
+            }
+
+            return clonedNode;
+        }
+        
+        public Node cloneGraph(Node node) {
+            HashMap<Integer,Node> map = new HashMap<>();
+
+            return cloneGraph(node,map);
+        }
+    }
 }

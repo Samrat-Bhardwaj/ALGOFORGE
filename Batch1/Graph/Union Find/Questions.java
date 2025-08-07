@@ -546,4 +546,90 @@ class Questions {
 
         return ans;
     }
+
+    // Making a large island (Leetcode 827) =================================
+    class Solution {
+        int[] par;
+        int[] size;
+        public int findPar(int u){
+            if(par[u] == u) return u;
+
+            return par[u] = findPar(par[u]);
+        }
+
+        public void merge(int p1, int p2){
+            if(size[p1] < size[p2]){
+                par[p1] = p2;
+                size[p2] += size[p1];
+            } else {
+                par[p2] = p1;
+                size[p1] += size[p2];
+            }
+        }
+
+        public int largestIsland(int[][] grid) {
+            int n = grid.length;
+            int m = grid[0].length;
+
+            par = new int[n*m];
+            size = new int[n*m];
+
+            for(int i=0; i<n*m; i++){
+                par[i] = i;
+                size[i] = 1;
+            }
+
+            int[][] dirs = {{-1,0},{0,-1},{1,0},{0,1}};
+            // make par and size arrays
+            for(int i=0; i<n; i++){
+                for(int j=0; j<m; j++){
+                    if(grid[i][j] == 1){
+
+                        for(int[] dir: dirs){
+                            int x = dir[0] + i;
+                            int y = dir[1] + j;
+
+                            if(x>=0 && y>=0 && x<n && y<m && grid[x][y] == 1){
+                                int p1 = findPar(i*m + j);
+                                int p2 = findPar(x*m + y);
+                                if(p1 != p2){
+                                    merge(p1,p2);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            int maxArea = 0;
+            for(int i=0; i<n; i++){
+                for(int j=0; j<m; j++){
+                    if(grid[i][j] == 1){
+                        int p = findPar(i*m + j);
+                        maxArea = Math.max(maxArea, size[p]);
+                    } else {
+                        HashSet<Integer> set = new HashSet<>();
+                        int currArea = 0;
+                        for(int[] dir: dirs){
+                            int x = dir[0] + i;
+                            int y = dir[1] + j;
+
+                            if(x>=0 && y>=0 && x<n && y<m && grid[x][y] == 1){
+                                int p = findPar(x*m + y);
+                                
+                                if(set.containsKey(p) == false){
+                                    currArea += size[p];
+                                    set.add(p);
+                                }
+                            }
+                        }
+
+                        maxArea = Math.max(maxArea, currArea + 1);
+                    }
+                }
+            }
+
+            return maxArea;
+        }
+    }
 }
