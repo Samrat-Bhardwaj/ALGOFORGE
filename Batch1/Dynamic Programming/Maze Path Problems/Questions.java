@@ -110,6 +110,116 @@ class Questions {
         return dp[0][0];
     }
 
+    // leetcode 64 
+    public int minMazePathSum_rec(int row, int col, int n, int m, int[][] grid, int[][] dp){
+        if(row == n-1 && col == m-1){
+            return dp[row][col] = grid[row][col];
+        }
+
+        if(dp[row][col] != -1) return dp[row][col];
+
+        int minCost = Integer.MAX_VALUE;
+
+        if(row+1 < n){
+            minCost = Math.min(minCost, minMazePathSum_rec(row+1,col,n,m,grid,dp));
+        }
+
+        if(col+1 < m){
+            minCost = Math.min(minCost, minMazePathSum_rec(row, col+1,n,m,grid,dp));
+        }
+
+        return dp[row][col] = minCost + grid[row][col];
+    }
+
+    public int minMazePathSum_tab(int n, int m, int[][] grid, int[][] dp){
+        for(int row=n-1; row>=0; row--){
+            for(int col=m-1; col>=0; col--){
+                if(row == n-1 && col == m-1){
+                    dp[row][col] = grid[row][col];
+                    continue;
+                }
+
+                int minCost = Integer.MAX_VALUE;
+
+                if(row+1 < n){
+                    minCost = Math.min(minCost, dp[row+1][col]); //Math.min(minCost, minMazePathSum_rec(row+1,col,n,m,grid,dp));
+                }
+
+                if(col+1 < m){
+                    minCost = Math.min(minCost, dp[row][col+1]); //Math.min(minCost, minMazePathSum_rec(row, col+1,n,m,grid,dp));
+                }
+
+                dp[row][col] = minCost + grid[row][col];
+            }
+        }
+
+        return dp[0][0];
+    }
+
+    public int minMazePathSum_tab2(int n, int m, int[][] grid, int[][] dp,String[][] sdp){
+        for(int row=n-1; row>=0; row--){
+            for(int col=m-1; col>=0; col--){
+                if(row == n-1 && col == m-1){
+                    dp[row][col] = grid[row][col];
+                    sdp[row][col] = grid[row][col] + "";
+                } else if(row == n-1){
+                    dp[row][col] = dp[row][col+1] + grid[row][col];
+                    sdp[row][col] = grid[row][col] + "," + sdp[row][col+1];
+                } else if(col ==  m-1){
+                    dp[row][col] = dp[row+1][col] + grid[row][col];
+                    sdp[row][col] =grid[row][col] + "," + sdp[row+1][col];
+                } else {
+                    if(dp[row+1][col] < dp[row][col+1]){
+                        dp[row][col] = dp[row+1][col] + grid[row][col];
+                        sdp[row][col] = grid[row][col] + "," + sdp[row+1][col];
+                    } else {
+                        dp[row][col] = dp[row][col+1] + grid[row][col];
+                        sdp[row][col] = grid[row][col] + "," + sdp[row][col+1];
+                    }
+                }
+            }
+        }   
+
+        System.out.println(sdp[0][0]);
+        return dp[0][0];
+    }
+
+    public int minPathSum(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+
+        int[][] dp = new int[n][m];
+        String[][] sdp = new String[n][m];
+        // 0 is always a possible answer, filling dp array with -1
+        for(int[] d: dp){
+            Arrays.fill(d, -1);
+        }
+
+        return minMazePathSum_tab2(n,m,grid,dp,sdp);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void main(String[] args){
         int n = 2;
         int m = 3;
