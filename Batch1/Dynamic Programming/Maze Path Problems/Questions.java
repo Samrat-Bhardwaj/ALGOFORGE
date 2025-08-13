@@ -198,6 +198,186 @@ class Questions {
         return minMazePathSum_tab2(n,m,grid,dp,sdp);
     }
 
+    // Goldmine (https://www.geeksforgeeks.org/problems/gold-mine-problem2608/1)
+    public int getMaxGold_rec(int row, int col, int n, int m, int[][] mat,int[][] dp){
+        if(col == m-1){
+            return dp[row][col] = mat[row][col];
+        }
+
+        if(dp[row][col] != -1) return dp[row][col];
+
+        int maxGold = 0;
+        
+        if(row-1 >= 0){ // right up
+            maxGold = Math.max(maxGold, getMaxGold_rec(row-1,col+1,n,m,mat,dp));
+        }
+        // right right
+        maxGold = Math.max(maxGold, getMaxGold_rec(row,col+1,n,m,mat,dp));
+        
+        if(row+1 < n){// right down
+            maxGold = Math.max(maxGold, getMaxGold_rec(row+1,col+1,n,m,mat,dp));
+        }
+
+        return dp[row][col] = maxGold + mat[row][col];
+    }
+
+    public int getMaxGold_tab(int n, int m, int[][] mat, int[][] dp){
+        for(int col=m-1; col>=0; col--){
+            for(int row=0; row<n; row++){
+                if(col == m-1){
+                    dp[row][col] = mat[row][col];
+                    continue;
+                }
+
+                int maxGold = 0;
+                
+                if(row-1 >= 0){ // right up
+                    maxGold = Math.max(maxGold, dp[row-1][col+1]); //Math.max(maxGold, getMaxGold_rec(row-1,col+1,n,m,mat,dp));
+                }
+                // right right
+                maxGold = Math.max(maxGold, dp[row][col+1]); //Math.max(maxGold, getMaxGold_rec(row,col+1,n,m,mat,dp));
+                
+                if(row+1 < n){// right down
+                    maxGold = Math.max(maxGold, dp[row+1][col+1]); //Math.max(maxGold, getMaxGold_rec(row+1,col+1,n,m,mat,dp));
+                }
+
+                dp[row][col] = maxGold + mat[row][col];
+            }
+        }
+
+        int maxGold = 0;
+        for(int row=0; row<n; row++){
+            maxGold = Math.max(maxGold, dp[row][0]);
+        }
+
+        return maxGold;
+    }
+
+    public int maxGold(int[][] mat) {
+        int ans = 0;
+
+        int n = mat.length;
+        int m = mat[0].length;
+
+        int[][] dp = new int[n][m];
+        for(int[] d:dp){
+            Arrays.fill(d,-1);
+        }
+
+        // for(int row=0; row<n; row++){
+        //     int goldFromThisRow = getMaxGold_rec(row,0,n,m,mat,dp);
+        //     ans = Math.max(goldFromThisRow, ans);
+        // }
+
+        return getMaxGold_tab(n,m,mat,dp);
+    }
+
+    // Leetcode 746 ===============================================
+    public int minCostClimbingStairs_rec(int n, int[] cost, int[] dp){
+        if(n <= 1){
+            return dp[n] = cost[n];
+        }
+
+        if(dp[n] != -1) return dp[n];
+
+        int minCost = Math.min(minCostClimbingStairs_rec(n-1,cost,dp), minCostClimbingStairs_rec(n-2,cost,dp));
+
+        return dp[n] = minCost + (n < cost.length ? cost[n] : 0);
+    }
+
+    public int minCostClimbingStairs_tab(int N, int[] cost, int[] dp){
+        for(int n=0; n<=N; n++){
+            if(n <= 1){
+                dp[n] = cost[n];
+                continue;
+            }
+
+            int minCost = Math.min(dp[n-1], dp[n-2]); //Math.min(minCostClimbingStairs_rec(n-1,cost,dp), minCostClimbingStairs_rec(n-2,cost,dp));
+
+            dp[n] = minCost + (n < cost.length ? cost[n] : 0);
+        }   
+
+        return dp[N]; 
+    }
+
+    // Solve in O(1) space
+    public int minCostClimbingStairs_tabO1(int N, int[] cost){
+        for(int n=0; n<=N; n++){
+            
+        }
+    }
+
+    public int minCostClimbingStairs(int[] cost) {
+        int n = cost.length;
+
+        int[] dp = new int[n+1];
+        Arrays.fill(dp,-1);
+
+        return minCostClimbingStairs_tab(n,cost,dp);
+    }
+
+    // leetcode 91 =================================================
+    public int numDecodings_rec(int idx, String s, int[] dp){
+        if(idx == s.length()){
+            return dp[idx] = 1;    
+        }
+        if(s.charAt(idx) == '0'){
+            return dp[idx] = 0;
+        }
+
+        if(dp[idx] != -1) return dp[idx];
+
+        int singleCharWays = numDecodings_rec(idx+1,s,dp);
+        int twoCharsWays = 0;
+
+
+        if(idx + 1 < s.length()){
+            int numUsing2Chars = 10*(s.charAt(idx)-'0') + (s.charAt(idx+1) - '0');
+
+            if(numUsing2Chars <= 26){
+                twoCharsWays = numDecodings_rec(idx+2, s, dp);
+            }
+        }
+        
+        return dp[idx] = singleCharWays + twoCharsWays;
+    }
+
+    public int numDecodings_tab(String s, int[] dp){
+        for(int idx=s.length(); idx>=0; idx--){
+            if(idx == s.length()){
+                dp[idx] = 1; 
+                continue;   
+            }
+            if(s.charAt(idx) == '0'){
+                dp[idx] = 0;
+                continue;
+            }
+
+            int singleCharWays = dp[idx+1]; //numDecodings_rec(idx+1,s,dp);
+            int twoCharsWays = 0;
+
+
+            if(idx + 1 < s.length()){
+                int numUsing2Chars = 10*(s.charAt(idx)-'0') + (s.charAt(idx+1) - '0');
+
+                if(numUsing2Chars <= 26){
+                    twoCharsWays = dp[idx+2]; //numDecodings_rec(idx+2, s, dp);
+                }
+            }
+            
+            dp[idx] = singleCharWays + twoCharsWays;
+        }
+        return dp[0];
+    }
+
+    public int numDecodings(String s) {
+        int n = s.length();
+
+        int[] dp = new int[n+1];
+        // Arrays.fill(dp, -1);
+
+        return numDecodings_tab(s,dp);
+    }
 
 
 
