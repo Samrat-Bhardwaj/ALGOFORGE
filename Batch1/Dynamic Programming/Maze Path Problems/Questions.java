@@ -379,6 +379,100 @@ class Questions {
         return numDecodings_tab(s,dp);
     }
 
+    // leetcode 639 =============================================================
+    public long numDecodings_rec(int idx, String s, int n, long[] dp){
+        if(idx == n){
+            return dp[idx] = 1;
+        } 
+        if(s.charAt(idx) == '0'){
+            return dp[idx] = 0;
+        }
+
+        if(dp[idx] != -1) return dp[idx];
+
+        long oneCharWays = numDecodings_rec(idx+1,s,n,dp);
+        char ch1 = s.charAt(idx);
+
+        long totalWays = ch1 == '*' ? 9*oneCharWays : oneCharWays;
+
+        if(idx + 1 < n){
+            char ch2 = s.charAt(idx+1);
+            long twoCharsWays = numDecodings_rec(idx+2,s,n,dp);
+
+            if(ch1 =='*' && ch2 =='*'){
+                totalWays += 15*twoCharsWays;
+            } else if(ch1 =='*'){
+                totalWays += (ch2 <= '6' ? 2*twoCharsWays : twoCharsWays);
+            } else if(ch1=='1' && ch2 =='*'){
+                totalWays += 9*twoCharsWays;
+            } else if(ch1 =='2' && ch2 == '*'){
+                totalWays += 6*twoCharsWays;
+            } else if(ch2 == '*'){
+
+            } else {
+                int num = (ch1 -'0')*10 + (ch2 - '0');
+                if(num <= 26){
+                    totalWays += twoCharsWays;
+                }
+            }
+        }
+        
+        return dp[idx] = totalWays % mod;
+    }
+
+    public long numDecodings_tab(int idx, String s, int n, long[] dp){
+        for(idx = n; idx>=0; idx--){
+            if(idx == n){
+                dp[idx] = 1;
+                continue;
+            } 
+            if(s.charAt(idx) == '0'){
+                dp[idx] = 0;
+                continue;
+            }
+
+            long oneCharWays = dp[idx+1]; //numDecodings_rec(idx+1,s,n,dp);
+            char ch1 = s.charAt(idx);
+
+            long totalWays = ch1 == '*' ? 9*oneCharWays : oneCharWays;
+
+            if(idx + 1 < n){
+                char ch2 = s.charAt(idx+1);
+                long twoCharsWays = dp[idx+2]; //numDecodings_rec(idx+2,s,n,dp);
+
+                if(ch1 =='*' && ch2 =='*'){
+                    totalWays += 15*twoCharsWays;
+                } else if(ch1 =='*'){
+                    totalWays += (ch2 <= '6' ? 2*twoCharsWays : twoCharsWays);
+                } else if(ch1=='1' && ch2 =='*'){
+                    totalWays += 9*twoCharsWays;
+                } else if(ch1 =='2' && ch2 == '*'){
+                    totalWays += 6*twoCharsWays;
+                } else if(ch2 == '*'){
+
+                } else {
+                    int num = (ch1 -'0')*10 + (ch2 - '0');
+                    if(num <= 26){
+                        totalWays += twoCharsWays;
+                    }
+                }
+            }
+            
+            dp[idx] = totalWays % mod;
+        }
+
+        return dp[0];
+    }
+
+    public int numDecodings(String s) {
+        int n = s.length();
+
+        long[] dp = new long[n+1];
+        Arrays.fill(dp, -1);
+
+        return numDecodings_tab(0,s,n,dp);
+    }
+
 
 
 
