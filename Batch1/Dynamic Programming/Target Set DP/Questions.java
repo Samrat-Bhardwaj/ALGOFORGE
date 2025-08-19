@@ -144,6 +144,189 @@ class Questions {
         return coinChangeCombination_tab(coins,amount);
     }
 
+    // leetcode 377 ==================================
+    public int combinationSum4(int[] nums, int target) {
+        int[] dp = new int[target+1];
+
+        for(int idx=0; idx<=target; idx++){
+            if(idx == 0){
+                dp[idx] = 1;
+                continue;
+            }
+
+            int totalWays = 0;
+            for(int coin: nums){
+                if(idx - coin >= 0){
+                    totalWays += dp[idx-coin];
+                }
+            }
+
+            dp[idx] = totalWays;
+        }
+
+        return dp[target];
+    }
+
+    // leetcode 322 (minimum coins to make sum) ========================================
+    public int minCoinsRequired_rec(int[] coins, int target, int[] dp){
+        if(target == 0){
+            return dp[target] = 0;
+        }
+
+        if(dp[target] != -1) return dp[target];
+
+        int minCoins = (int)(1e8);
+        for(int coin: coins){
+            int currCoins = 1e8;
+
+            if(target - coin >= 0){
+                currCoins = minCoinsRequired_rec(coins,target-coin, dp);
+            }
+
+            minCoins = Math.min(currCoins+1, minCoins);
+        }
+
+        return dp[target] = minCoins;
+    }
+
+
+    public int minCoinsRequired_tab(int[] coins, int Target, int[] dp){
+        for(int target=0; target<=Target, target++){
+            if(target == 0){
+                dp[target] = 0;
+                continue;
+            }
+
+            int minCoins = (int)(1e8);
+            for(int coin: coins){
+                int currCoins = (int)1e8;
+
+                if(target - coin >= 0){
+                    currCoins = dp[target-coin]; //minCoinsRequired_rec(coins,target-coin, dp);
+                }
+
+                minCoins = Math.min(currCoins+1, minCoins);
+            }
+
+            dp[target] = minCoins;
+        }
+
+        return dp[Target];
+    }
+
+    public int minCoinsRequired_tab_pretty(int[] coins, int Target, int[] dp){
+        Arrays.fill(dp, int(1e8));
+
+        dp[0] = 0;
+        for(int target=1; target<=Target, target++){
+            for(int coin: coins){ // target = 5, coin = 2
+                if(target - coin >= 0){
+                    dp[target] = Math.min(dp[target-coin] + 1, dp[target]);
+                }
+            }
+        }
+
+        return dp[Target];
+    }
+
+    public int coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount+1];
+
+        int totalCoins =  minCoinsRequired_tab(coins,amount,dp);
+
+        return totalCoins >= (1e8) ? -1 : totalCoins;
+    }
+
+    // (Target Sum subset) https://www.geeksforgeeks.org/problems/subset-sum-problem-1611555638/1 ====================
+    public static boolean isSubsetSum_rec(int[] arr, int tar, int idx, Boolean[][] dp){
+        if(tar == 0 || idx == arr.length){
+            return dp[idx][tar] = tar == 0 ? true : false;
+        }
+
+        if(dp[idx][tar] != null) return dp[idx][tar];
+
+        boolean isPossible = false;
+        if(tar - arr[idx] >= 0){ // yes call
+            isPossible = isSubsetSum_rec(arr, tar - arr[idx], idx + 1, dp);
+        }
+
+        isPossible = isPossible || isSubsetSum_rec(arr, tar, idx + 1, dp); // no call
+
+        return dp[idx][tar] = isPossible;
+    }
+
+    static Boolean isSubsetSum(int arr[], int sum) {
+        // by default null is stored at every place
+        Boolean[][] dp = new Boolean[arr.length+1][sum+1];
+
+        return isSubsetSum_rec(arr, sum, 0, dp);
+    }
+
+    //Count of subsets with sum = target, https://www.geeksforgeeks.org/problems/perfect-sum-problem5633/1
+    public static int targetSumSubset_rec(int[] arr, int tar, int idx, int[][] dp){
+        if(idx == arr.length){
+            return dp[idx][tar] = tar == 0 ? 1 : 0;
+        }
+
+        if(dp[idx][tar] != -1) return dp[idx][tar];
+
+        int count = 0;
+        if(tar - arr[idx] >= 0){ // yes call
+            count = targetSumSubset_rec(arr, tar - arr[idx], idx + 1, dp);
+        }
+
+        count += targetSumSubset_rec(arr, tar, idx + 1, dp); // no call
+
+        return dp[idx][tar] = count;
+    }
+
+    public static int targetSumSubset_tab(int[] arr, int Tar, int idx, int[][] dp){
+        for(idx = arr.length; idx>=0; idx--){
+            for(int tar = 0; tar <= Tar; tar++){
+                if(idx == arr.length){
+                    dp[idx][tar] = tar == 0 ? 1 : 0;
+                    continue;
+                }
+
+                int count = 0;
+                if(tar - arr[idx] >= 0){ // yes call
+                    count = dp[idx+1][tar-arr[idx]]; //targetSumSubset_rec(arr, tar - arr[idx], idx + 1, dp);
+                }
+
+                count += dp[idx+1][tar]; //targetSumSubset_rec(arr, tar, idx + 1, dp); // no call
+
+                dp[idx][tar] = count;
+            }
+        }
+
+        return dp[0][Tar];
+    }
+
+    public int perfectSum(int[] nums, int target) {
+        int n = nums.length;
+        int[][] dp = new int[n+1][target+1];
+
+        for(int[] d: dp) Arrays.fill(d,-1);
+
+        return targetSumSubset_tab(nums,target,0,dp);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void main(String[] args){
         int[] coins = {2,5,3};
         int tar = 7;
