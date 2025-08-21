@@ -311,6 +311,136 @@ class Questions {
         return targetSumSubset_tab(nums,target,0,dp);
     }
 
+    // Leetcode 416 (can partition into equal) ====================================
+    public static boolean isSubsetSum_rec(int[] arr, int tar, int idx, Boolean[][] dp){
+        if(tar == 0 || idx == arr.length){
+            return dp[idx][tar] = tar == 0 ? true : false;
+        }
+
+        if(dp[idx][tar] != null) return dp[idx][tar];
+
+        boolean isPossible = false;
+        if(tar - arr[idx] >= 0){ // yes call
+            isPossible = isSubsetSum_rec(arr, tar - arr[idx], idx + 1, dp);
+        }
+
+        isPossible = isPossible || isSubsetSum_rec(arr, tar, idx + 1, dp); // no call
+
+        return dp[idx][tar] = isPossible;
+    }
+
+    static Boolean isSubsetSum(int arr[], int sum) {
+        // by default null is stored at every place
+        Boolean[][] dp = new Boolean[arr.length+1][sum+1];
+
+        return isSubsetSum_rec(arr, sum, 0, dp);
+    }
+
+    public boolean canPartition(int[] nums) {
+        int sum = 0;
+
+        for(int e: nums){
+            sum+=e;
+        }
+
+        if(sum % 2 != 0) return false;
+
+        return isSubsetSum(nums, sum/2);
+    }
+
+
+    // 0-1 knapsack (https://www.geeksforgeeks.org/problems/0-1-knapsack-problem0945/1) ==============================
+    public static int knapsack_rec(int cap, int[] val, int[] wt, int n,int[][] dp){
+        if(n == 0){
+            return dp[n][cap] = 0;
+        }
+
+        if(dp[n][cap] != -1) return dp[n][cap];
+
+        int pickCurrElement = 0;
+        if(cap - wt[n-1] >= 0){
+            pickCurrElement = knapsack_rec(cap - wt[n-1], val, wt, n-1, dp) + val[n-1];
+        }
+
+        int withoutCurrElement = knapsack_rec(cap,val,wt,n-1, dp); 
+
+        return dp[n][cap] = Math.max(pickCurrElement, withoutCurrElement);
+    }
+
+    public static int knapsack_tab(int totalCap, int[] val, int[] wt, int N, int[][] dp){
+        for(int idx = 0; idx <=N; idx++){
+            for(int cap = 0; cap <= totalCap; cap++){
+                if(idx == 0){
+                    dp[idx][cap] = 0;
+                    continue;
+                }
+
+                int pickCurrElement = 0;
+                if(cap - wt[idx-1] >= 0){
+                    pickCurrElement = dp[idx-1][cap-wt[idx-1]] + val[idx-1];
+                }
+
+                int withoutCurrElement = dp[idx-1][cap]; 
+
+                dp[idx][cap] = Math.max(pickCurrElement, withoutCurrElement);
+            }
+        }
+
+        return dp[N][totalCap];
+    }
+
+    public static int knapsack_tab_path(int totalCap, int[] val, int[] wt, int N, int[][] dp){
+        String[][] sdp = new String[N+1][totalCap+1];
+
+        for(int idx = 0; idx <=N; idx++){
+            for(int cap = 0; cap <= totalCap; cap++){
+                if(idx == 0){
+                    dp[idx][cap] = 0;
+                    sdp[idx][cap] = "";
+                    continue;
+                }
+
+                int pickCurrElement = 0;
+                if(cap - wt[idx-1] >= 0){
+                    pickCurrElement = dp[idx-1][cap-wt[idx-1]] + val[idx-1];
+                }
+
+                int withoutCurrElement = dp[idx-1][cap]; 
+
+                // dp[idx][cap] = Math.max(pickCurrElement, withoutCurrElement);
+                if(pickCurrElement > withoutCurrElement){
+                    dp[idx][cap] = dp[idx-1][cap-wt[idx-1]] + val[idx-1]; // picking current element
+                    sdp[idx][cap] = sdp[idx-1][cap-wt[idx-1]] + "," + wt[idx-1];
+                } else {
+                    dp[idx][cap] = dp[idx-1][cap];
+                    sdp[idx][cap] = sdp[idx-1][cap];
+                }
+            }
+        }
+        System.out.println("Weight of items picked to make max" + sdp[N][totalCap]);
+        return dp[N][totalCap];
+    }
+
+    static int knapsack(int W, int val[], int wt[]) {
+        int n = val.length;
+
+        int[][] dp = new int[n+1][W+1];
+        // for(int[] d: dp) Arrays.fill(d, -1);
+
+        return knapsack_tab(W,val,wt,n,dp);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
