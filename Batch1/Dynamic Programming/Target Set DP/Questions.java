@@ -430,6 +430,66 @@ class Questions {
         return knapsack_tab(W,val,wt,n,dp);
     }
 
+    // unbounded knapsack (can pick same item multiple times) -> https://www.geeksforgeeks.org/problems/knapsack-with-duplicate-items4201/1
+    static int knapSack(int val[], int wt[], int capacity) {
+        int[] dp = new int[capacity+1];
+
+        for(int cap=0; cap<=capacity; cap++){
+            for(int i=0; i<val.length; i++){
+                if(cap - wt[i] >= 0){
+                    dp[cap] = Math.max(dp[cap], dp[cap-wt[i]] + val[i]);
+                }
+            }
+        }
+
+        return dp[capacity];
+    }
+
+    static int knapSack(int val[], int wt[], int capacity) {
+        int[] dp = new int[capacity+1];
+
+        for(int idx = 0; idx<wt.length; idx++){
+            for(int cap = wt[idx]; cap <= capacity; cap++){
+                dp[cap] = Math.max(dp[cap - wt[idx]] + val[idx], dp[cap]);
+            }
+        }
+
+        return dp[capacity];
+    }
+
+    public int targetSumSubsets(int[] nums, int target, int csum, int n, int[][] dp){
+        if(n == 0){
+            return dp[n][csum] = csum == target ? 1 : 0;
+        }
+
+        if(dp[n][csum] != -1) return dp[n][csum];
+
+        int count = targetSumSubsets(nums, target, csum + nums[n-1], n-1, dp);
+        count += targetSumSubsets(nums, target, csum + (-nums[n-1]), n-1, dp);
+
+        return dp[n][csum] = count;
+    }
+
+    public int findTargetSumWays(int[] nums, int target) {
+        int n = nums.length;
+        int sum = 0;
+
+        for(int e: nums){
+            sum += e;
+        }
+
+        if(target > sum || target < -sum) return 0;
+
+        // because max negative is -sum, shifting everything by sum to take -sum -> 0
+        int newTar = target + sum;
+        int newStartingPoint = 0 + sum;
+        // range of sum is -sum to sum -> shifting to positive values -> 0 to 2*sum
+        int[][] dp = new int[n+1][2*sum + 1];
+        for(int[] d: dp) Arrays.fill(d, -1);
+
+        return targetSumSubsets(nums, newTar, newStartingPoint, n, dp);
+    }
+
 
 
 
