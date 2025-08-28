@@ -302,6 +302,149 @@ class Introduction {
         return lcs_tab(n,m,nums1,nums2);
     }
 
+    // Edit distance (leetcode 72) ======================================
+    public int minDistance_rec(String s1, String s2, int n, int m, int[][] dp){
+        if(n == 0 || m == 0){
+            return dp[n][m] = n == 0 ? m : n;
+        }
+
+        if(dp[n][m] != -1) return dp[n][m];
+
+        if(s1.charAt(n-1) == s2.charAt(m-1)){
+            return dp[n][m] = minDistance_rec(s1,s2,n-1,m-1,dp);
+        }    
+
+        int insert = minDistance_rec(s1,s2,n,m-1,dp);
+        int delete = minDistance_rec(s1,s2,n-1,m,dp);
+        int replace = minDistance_rec(s1,s2,n-1,m-1,dp);
+
+        return dp[n][m] = Math.min(insert, Math.min(delete, replace)) + 1;
+    }
+
+    public int minDistance_tab(String s1, String s2, int N, int M, int[][] dp){
+        for(int n=0; n<=N; n++){
+            for(int m=0; m<=M; m++){
+                if(n==0){
+                    dp[n][m] = m;
+                } else if(m==0){
+                    dp[n][m] = n;
+                } else if(s1.charAt(n-1) == s2.charAt(m-1)){
+                    dp[n][m] = dp[n-1][m-1];
+                } else {
+                    dp[n][m] = 1 + Math.min(dp[n][m-1], Math.min(dp[n-1][m], dp[n-1][m-1]));
+                }
+            }
+        }
+
+        return dp[N][M];
+    }
+
+    public int minDistance(String word1, String word2) {
+        int n = word1.length();
+        int m = word2.length();
+
+        int[][] dp = new int[n+1][m+1];
+        // for(int[] d: dp) Arrays.fill(d, -1);
+
+        // return minDistance_rec(word1,word2,n,m,dp);
+        return minDistance_tab(word1,word2,n,m,dp);
+    }
+
+    public boolean isMatch_rec(String s, String p, int n, int m,Boolean[][]dp){
+        if(n == 0 || m == 0){
+            if(n == 0 && m == 0) return dp[n][m] = true;
+            else if(m == 1 && p.charAt(m-1) == '*') return dp[n][m] = true;
+
+            return dp[n][m] = false;
+        }
+
+        if(dp[n][m] != null) return dp[n][m];
+
+        boolean res = false;
+        if(s.charAt(n-1) == p.charAt(m-1) || p.charAt(m-1) == '?'){
+            res = isMatch_rec(s,p,n-1,m-1,dp);
+        } else if(p.charAt(m-1) == '*'){
+            res = isMatch_rec(s,p,n-1,m) || isMatch_rec(s,p,n,m-1);
+        }
+
+        return dp[n][m] = res;
+    }
+
+    public boolean isMatch_tab(String s, String p, int N, int M, boolean[][]dp){
+        for(int i=0; i<=N; i++){
+            for(int j=0; j<=M; j++){
+                if(i==0 && j==0){
+                    dp[i][j] = true;
+                } else if(i==0 && j==1 && p.charAt(j-1) == '*'){
+                    dp[i][j] = true;
+                } else if(i == 0 || j == 0){
+                    dp[i][j] = false;
+                } else if(s.charAt(i-1) == p.charAt(j-1) || p.charAt(j-1) == '?'){
+                    dp[i][j] = dp[i-1][j-1];
+                } else if(p.charAt(j-1) == '*'){
+                    dp[i][j] = dp[i-1][j] || dp[i][j-1];
+                } 
+            }
+        }
+
+        return dp[N][M];
+    }
+
+    public String removeConsecutiveStars(String str){
+        StringBuilder sb = new StringBuilder();
+
+        for(int i=0; i<str.length(); i++){
+            char ch = str.charAt(i);
+
+            while(i<str.length() && str.charAt(i) == '*') i++;
+
+            sb.append(ch);
+            if(ch == '*') i--;
+        }
+
+        return sb.toString();
+    }
+
+    public boolean isMatch(String s, String p) {
+        p = removeConsecutiveStars(p);
+        int n = s.length();
+        int m = p.length();
+
+        // Boolean[][] dp = new Boolean[n+1][m+1]; // by default = null
+
+        // return isMatch_rec(s,p,n,m,dp);
+
+        boolean[][] dp = new boolean[n+1][m+1]; // by default = null
+
+        return isMatch_tab(s,p,n,m,dp);
+    }
+
+    // distinct Subsequences 2 (leetcode 940) ==========================================================
+    public int distinctSubseqII(String s) {
+        int n = s.length();
+        long mod = (long)(1e9+7);
+
+        long[] dp = new long[n + 1];
+
+        int[] loc = new int[26];
+        Arrays.fill(loc, -1);
+
+        for(int i=1; i<=n; i++){
+            char ch = s.charAt(i-1);
+
+            long res = (2*dp[i-1] + 1)%mod; 
+            int lastOccurence = loc[ch-'a'];
+
+            if(lastOccurence != -1){
+                res = (res - dp[lastOccurence-1] - 1)+mod; // removing duplicate subs, +mod in case negative res
+            }
+
+            loc[ch-'a'] = i;
+            dp[i] = res % mod;
+        }
+
+        return (int)(dp[n]); 
+    } 
 
 
 
