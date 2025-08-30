@@ -446,6 +446,32 @@ class Introduction {
         return (int)(dp[n]); 
     } 
 
+    // https://www.geeksforgeeks.org/problems/count-subsequences-of-type-ai-bj-ck4425/1 
+    // Subsequence of type aibjck
+    public int fun(String s) {
+        long sa = 0;
+        long sab = 0;
+        long sabc = 0;
+
+        long mod = (long)(1e9+7);
+
+        for(int i=0; i<s.length(); i++){
+            if(s.charAt(i) == 'a'){
+                sa = 2*sa + 1;
+            } else if(s.charAt(i) == 'b'){
+                sab = 2*sab + sa; // twice of subs ending with a^i b^j + subs ending at a
+            } else if(s.charAt(i) == 'c'){
+                sabc = 2*sabc + sab;
+            }
+
+            sa = sa % mod;
+            sab = sab % mod;
+            sabc = sabc % mod;
+        }
+
+        return (int)(sabc);
+    }
+
 
 
 
