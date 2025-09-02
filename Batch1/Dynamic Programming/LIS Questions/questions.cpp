@@ -48,3 +48,37 @@ int lengthOfLIS(vector<int>& nums) {
     return lis_tab(nums,dp);
 }
 
+// count of lis ===================
+// leetcode 673 =========================================
+int findNumberOfLIS(vector<int>& nums) {
+    int n = nums.size();
+
+    vector<int> dp(n,1);
+    vector<int> count(n,1);
+
+    for(int i=1; i<n; i++){
+        for(int j=i-1; j>=0; j--){
+            if(nums[j] < nums[i]){
+                if(dp[i] < dp[j] + 1){
+                    dp[i] = dp[j] + 1;
+                    count[i] = count[j];
+                } else if(dp[i] == dp[j] + 1){
+                    count[i] += count[j];
+                }
+            }
+        }
+    }
+
+    int lis_length = 0;
+    int lis_count = 0;
+    for(int i=0; i<n; i++){
+        if(dp[i] > lis_length){
+            lis_length = dp[i];
+            lis_count = count[i];
+        } else if(dp[i] == lis_length){
+            lis_count += count[i];
+        }
+    }
+
+    return lis_count;
+}
