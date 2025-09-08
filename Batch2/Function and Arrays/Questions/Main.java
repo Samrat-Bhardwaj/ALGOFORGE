@@ -37,12 +37,149 @@ class Main {
 
     public static int elementsGreaterThanX(int[] arr, int x){
         // write your code here
+        int n = arr.length;
+        int count = 0;
+
+        for(int i=0; i<n; i++){
+            int ele = arr[i];
+            if(ele > x){
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public static int spanOfArray(int[] arr){
+        int n = arr.length;
+
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+
+        for(int i=0; i<n; i++){
+            int ele = arr[i];
+
+            max = Math.max(max, ele);
+            // if(ele > max){
+            //     max = ele;
+            // }
+            min = Math.min(min, ele);
+            // if(ele < min){
+            //     min = ele;
+            // }
+        }
+
+        int span = max - min;
+        return span;
+    }
+
+    public static int findTarget(int[] arr, int tar){
+        int n = arr.length;
+
+        for(int i=0; i<n; i++){
+            int ele = arr[i];
+
+            if(ele == tar){
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public static void printBuildings(int[] heights){
+        int n = heights.length;
+
+        int maxHeight = Integer.MIN_VALUE;
+        for(int i=0; i<n; i++){
+            int currBuildingHeight = heights[i];
+
+            maxHeight = Math.max(maxHeight, currBuildingHeight);
+        }
+
+        int total_number_of_lines = maxHeight;
+        int currFloor = maxHeight;
+
+        while(currFloor > 0){
+            // go to every building and check if currFloor for that building exists or not
+            for(int i=0; i<n; i++){
+                int currBuildingHeight = heights[i];
+
+                if(currFloor <= currBuildingHeight){ // currFloor exists
+                    System.out.print("* ");
+                } else {
+                    System.out.print("  ");
+                }
+            }
+
+            // prepare for next line
+            System.out.println();
+            currFloor--;
+        }
+    }
+
+    public int[] sumOfTwoArrays(int[] arr1, int[] arr2){
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static int[] takeArrayInput(){
+        Scanner scn = new Scanner(System.in);
+
+        System.out.println("What should be the size of array?");
+
+        int size = scn.nextInt();
+
+        int[] arr = new int[size];
+
+        System.out.println("Enter values for your array");
+
+        for(int idx=0; idx < size; idx++){
+            int input = scn.nextInt();
+            arr[idx] = input;
+        }
+
+        return arr;
+    }
+
+    public static void printArray(int[] arr){
+        for(int i=0; i<arr.length; i++){
+            System.out.print(arr[i] + ", ");
+        }
     }
 
     public static void main(String[] args){
         Scanner scn = new Scanner(System.in);
 
-        int n = scn.nextInt();
+        // int n = scn.nextInt();
         // int r = scn.nextInt();
 
         // int ncr = findNCR(n,r);
@@ -51,13 +188,13 @@ class Main {
         // int num = scn.nextInt();
         // System.out.println(binaryToDecimal(num));
 
-        int[] arr = new int[n];
-        for(int i=0; i<n; i++){
-            arr[i] = scn.nextInt();
-        }
+        int[] arr1 = takeArrayInput();
+        int[] arr2 = takeArrayInput();
 
-        int x = scn.nextInt();
+        int[] res = sumOfTwoArrays(arr1, arr2);
+        printArray(res);
 
-        System.out.println(elementsGreaterThanX(arr,x));
+        // int x = scn.nextInt();
+        printBuildings(arr);
     }
 }
