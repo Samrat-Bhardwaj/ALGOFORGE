@@ -118,8 +118,46 @@ class Main {
         }
     }
 
-    public int[] sumOfTwoArrays(int[] arr1, int[] arr2){
+    public static int[] sumOfTwoArrays(int[] arr1, int[] arr2){
+        int n1 = arr1.length;
+        int n2 = arr2.length;
 
+        int resSize = Math.max(n1, n2) + 1;
+
+        int[] res = new int[resSize];
+
+        int i = arr1.length - 1;
+        int j = arr2.length - 1;
+        int k = res.length - 1;
+
+        int carry = 0;
+
+        while(k >= 0){
+            int csum = 0;
+
+            if(i >= 0){
+                csum += arr1[i];
+            }
+            if(j >= 0){
+                csum += arr2[j];
+            }
+            csum += carry;
+
+            if(csum > 9){
+                csum = csum % 10;
+                carry = 1;
+            } else {
+                carry = 0;
+            }
+
+            res[k] = csum;
+
+            i--;
+            j--;
+            k--;
+        }
+
+        return res;
     }
 
 
@@ -195,6 +233,6 @@ class Main {
         printArray(res);
 
         // int x = scn.nextInt();
-        printBuildings(arr);
+        // printBuildings(arr);
     }
 }
