@@ -35,16 +35,29 @@ class Main {
         return decimalNum;
     }
 
+    public static int elementsGreaterThanX(int[] arr, int x){
+        // write your code here
+    }
+
     public static void main(String[] args){
         Scanner scn = new Scanner(System.in);
 
-        // int n = scn.nextInt();
+        int n = scn.nextInt();
         // int r = scn.nextInt();
 
         // int ncr = findNCR(n,r);
         // System.out.println(ncr);
 
-        int num = scn.nextInt();
-        System.out.println(binaryToDecimal(num));
+        // int num = scn.nextInt();
+        // System.out.println(binaryToDecimal(num));
+
+        int[] arr = new int[n];
+        for(int i=0; i<n; i++){
+            arr[i] = scn.nextInt();
+        }
+
+        int x = scn.nextInt();
+
+        System.out.println(elementsGreaterThanX(arr,x));
     }
 }
