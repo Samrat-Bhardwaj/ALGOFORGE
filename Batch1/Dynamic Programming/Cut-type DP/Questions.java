@@ -217,6 +217,76 @@ class Questions {
         return cutStick_tab(len,cuts,dp);
     }
 
+    // Pallindrome Partitioning (Leetcode 132) ================================== 
+    public boolean[][] makeIsPallindrome(String s){
+        int n = s.length();
+
+        boolean[][] dp = new boolean[n][n];
+
+        for(int gap=0; gap<n; gap++){
+            for(int i=0, j=gap; j<n; i++, j++){
+                if(i==j){
+                    dp[i][j] = true;
+                } else if(i+1 == j){
+                    dp[i][j] = s.charAt(i) == s.charAt(j);
+                } else if(s.charAt(i) == s.charAt(j)){
+                    dp[i][j] = dp[i+1][j-1];
+                }
+            }
+        }
+
+        return dp;
+    }
+
+    public int minCut_rec(String s, int idx, boolean[][] isPallindrome,int[] dp){
+        if(isPallindrome[idx][s.length()-1] == true){
+            return dp[idx] = 0;
+        }
+
+        if(dp[idx] != 0) return dp[idx];
+
+        int res = (int)(1e8);
+        for(int cut=idx; cut<s.length(); cut++){
+            if(isPallindrome[idx][cut] == true){
+                res = Math.min(res, minCut_rec(s,cut+1,isPallindrome, dp) + 1);
+            }
+        }
+
+        return dp[idx] = res;
+    }
+
+    public int minCut_tab(String s, boolean[][] isPallindrome, int[] dp){
+        for(int idx=s.length()-1; idx>=0; idx--){
+            if(isPallindrome[idx][s.length()-1] == true){
+                dp[idx] = 0;
+                continue;
+            }
+
+
+            int res = (int)(1e8);
+            for(int cut=idx; cut<s.length(); cut++){
+                if(isPallindrome[idx][cut] == true){
+                    res = Math.min(res,dp[cut+1] + 1); //Math.min(res, minCut_rec(s,cut+1,isPallindrome, dp) + 1);
+                }
+            }
+
+            dp[idx] = res;
+        }
+
+        return dp[0];
+    }
+
+    public int minCut(String s) {
+        boolean[][] isPallindrome = makeIsPallindrome(s);
+        int[] dp = new int[s.length()];
+
+        // return minCut_rec(s, 0, isPallindrome,dp);
+        return minCut_tab(s,isPallindrome,dp);
+    }
+
+
+
+
 
 
 
