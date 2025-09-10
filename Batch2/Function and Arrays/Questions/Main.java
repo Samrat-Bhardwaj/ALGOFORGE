@@ -160,6 +160,96 @@ class Main {
         return res;
     }
 
+    public static void swapValues(int[] arr, int x, int y){
+        int valueAtX = arr[x];
+        int valueAtY = arr[y];
+
+        arr[x] = valueAtY;
+        arr[y] = valueAtX;
+    }
+
+    public static void reverseArray(int[] arr){
+        int n = arr.length;
+        int start = 0;
+        int end = n-1;
+
+        while(start < end){
+            swapValues(arr,start,end);
+
+            start++;
+            end--;
+        }
+    }
+
+    public static void reverseArray2(int[] arr){
+        int n = arr.length;
+        
+        for(int i=0; i<n/2; i++){
+            // swapValues(arr, i, n-i-1);
+
+            int temp = arr[i];
+            arr[i] = arr[n-i-1];
+            arr[n-i-1] = temp;
+        }
+    }
+
+    // rotate Array =============================================
+    public static void reverseArray(int[] arr, int start, int end){
+        while(start < end){
+            int temp = arr[start];
+
+            arr[start] = arr[end];
+            arr[end] = temp;
+
+            start++;
+            end--;
+        }
+    }
+
+    public static void rotateArray(int[] arr, int k){
+        int n = arr.length;
+
+        k = k % n;
+
+        if(k<0){
+            k = k + n;
+        }
+
+        reverseArray(arr, 0 , n-k-1); // reversing A
+        reverseArray(arr, n-k, n-1); // reversing B
+        reverseArray(arr, 0, n-1); // reversing A`B`
+    }
+
+    // Find inverse of array =============================================
+    public static int[] findInverseArray(int[] arr){
+        int n = arr.length;
+
+        int[] res = new int[n];
+
+        for(int i=0; i<n; i++){
+            int pos = arr[i];
+
+            res[pos] = i;
+        }
+
+        return res;
+    }
+
+    public static void printAllSubArrays(int[] arr){
+        int n = arr.length;
+        
+        for(int si = 0; si<n; si++){
+            for(int ei=si; ei<n; ei++){
+                // print array from si to ei
+
+                for(int k=si; k<=ei; k++){
+                    System.out.print(arr[k] + " ");
+                }
+
+                System.out.println();
+            }
+        }
+    }
 
 
 
@@ -226,11 +316,14 @@ class Main {
         // int num = scn.nextInt();
         // System.out.println(binaryToDecimal(num));
 
-        int[] arr1 = takeArrayInput();
-        int[] arr2 = takeArrayInput();
+        int[] arr = takeArrayInput();
+        // int k = scn.nextInt();
+        // int[] arr2 = takeArrayInput();
 
-        int[] res = sumOfTwoArrays(arr1, arr2);
-        printArray(res);
+        // int[] res = findInverseArray(arr);
+        // (arr,k);
+        // printArray(res);
+        printAllSubArrays(arr);
 
         // int x = scn.nextInt();
         // printBuildings(arr);
