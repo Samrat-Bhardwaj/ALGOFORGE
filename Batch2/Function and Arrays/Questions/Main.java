@@ -251,6 +251,147 @@ class Main {
         }
     }
 
+    // Find max sum of any subarray (N^3) =======================================
+    public static int maxSumSubArray(int[] nums){
+        int n = nums.length;
+
+        int maxSum = Integer.MIN_VALUE;
+
+        for(int si=0; si<n; si++){
+            for(int ei=si; ei<n; ei++){
+                // si to ei
+                int currSum = 0;
+                for(int k=si; k<=ei; k++){
+                    currSum += nums[k];
+                }
+                maxSum = Math.max(maxSum, currSum);
+            }
+        }
+
+        return maxSum;
+    }
+
+
+    // Find max sum of any subarray (N^2) =======================================
+    public static int maxSumSubArray2(int[] nums){
+        int n = nums.length;
+
+        int maxSum = Integer.MIN_VALUE;
+
+        for(int si=0; si<n; si++){
+            int currSum = 0;
+            for(int ei=si; ei<n; ei++){
+                currSum += nums[ei];
+                maxSum = Math.max(maxSum, currSum);
+            }
+        }
+
+        return maxSum;
+    }
+
+    public static int maxSumSubArrayWithIndices(int[] nums){
+        int n = nums.length;
+
+        int maxSum = Integer.MIN_VALUE;
+        int ansSI = -1;
+        int ansEI = -1;
+
+        for(int si=0; si<n; si++){
+            int currSum = 0;
+            for(int ei=si; ei<n; ei++){
+                currSum += nums[ei];
+                if(maxSum < currSum){
+                    ansSI = si;
+                    ansEI = ei;
+                    maxSum = currSum;
+                }
+            }
+        }
+
+        System.out.println("Subarray indices with largest sum is " + ansSI + "," + ansEI);
+        return maxSum;
+    }
+
+    // Max sum subarray using Kadane's algorithm (Leetcode 53) ==============================
+    public int maxSubArray(int[] nums) {
+        int n = nums.length;
+
+        int maxSum = Integer.MIN_VALUE;
+        int meh = 0;
+
+        for(int i=0; i<n; i++){
+            meh += nums[i];
+
+            maxSum = Math.max(maxSum, meh);
+
+            if(meh < 0){
+                meh = 0;
+            }
+        }
+
+        return maxSum;
+    }
+
+    // Max sum subarray using Kadane's algorithm (Leetcode 53) ==============================
+    public int maxSubArrayWithIndices(int[] nums) {
+        int n = nums.length;
+
+        int maxSum = Integer.MIN_VALUE;
+        int meh = 0;
+
+        int maxSum_si = -1;
+        int maxSum_ei = -1;
+
+        int curr_si = 0;
+
+        for(int idx=0; idx<n; idx++){
+            meh += nums[idx];
+
+            if(meh > maxSum){
+                maxSum = meh;
+
+                maxSum_si = curr_si;
+                maxSum_ei = idx; // today is when my subarray ends
+            }
+
+            if(meh < 0){
+                meh = 0;
+                curr_si = idx + 1; // tomorrow is when we start a new subarray
+            }
+        }
+
+        System.out.println("Subarray indices with largest sum is " + maxSum_si + "," + maxSum_ei);
+        return maxSum;
+    }
+
+    // print all substets 
+    public static void printSubsets(int[] nums){
+        int n = nums.length;
+
+        int totalSubsets = (int)Math.pow(2,n);
+
+        for(int i=0; i<totalSubsets; i++){
+            
+            int current_num = i;
+            String sub = "";
+
+            // convert current_num to binary
+            for(int idx = n-1; idx>=0; idx--){
+                int rem = current_num % 2;
+
+                if(rem == 0){ // nums[idx] said no
+                    sub = "_," + sub;
+                } else { // nums[idx] said yes
+                    sub = nums[idx] + "," + sub;
+                }
+
+                current_num = current_num/2;
+            }
+
+            System.out.println(sub);
+        }
+    }
+
 
 
 
@@ -322,8 +463,8 @@ class Main {
 
         // int[] res = findInverseArray(arr);
         // (arr,k);
-        // printArray(res);
-        printAllSubArrays(arr);
+        printSubsets(arr);
+        // System.out.println(maxSumSubArrayWithIndices(arr));
 
         // int x = scn.nextInt();
         // printBuildings(arr);
