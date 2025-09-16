@@ -135,6 +135,193 @@ class Questions {
         return count;
     }
 
+    // Cherry pickup 2 =================================================
+    // Leetcode 1463 ==============================================
+    public int cherryPickup_rec(int row, int col1, int col2, int[][] grid, int[][][] dp, int n, int m){
+        int cherries = 0;
+        if(col1 == col2){
+            cherries = grid[row][col1];
+        } else {
+            cherries = grid[row][col1] + grid[row][col2];
+        }
+
+        if(row == n-1){
+            return cherries;
+        }
+
+        if(dp[row][col1][col2] != -1) return dp[row][col1][col2];
+
+        int maxAns = 0;
+        for(int nextR1Pos = col1-1; nextR1Pos <= col1+1; nextR1Pos++){
+            for(int nextR2Pos = col2-1; nextR2Pos <= col2+1; nextR2Pos++){
+                if(nextR1Pos >=0 && nextR1Pos < m && nextR2Pos >=0 && nextR2Pos < m){
+                    maxAns = Math.max(maxAns,cherryPickup_rec(row+1, nextR1Pos, nextR2Pos, grid,dp,n,m));
+                }
+            }
+        }
+
+        return dp[row][col1][col2] = cherries + maxAns;
+    }
+
+    // dont let robot1 and robot2 cross each other =========================================
+    public int cherryPickup_rec2(int row, int col1, int col2, int[][] grid, int[][][] dp, int n, int m){
+        int cherries = grid[row][col1] + grid[row][col2];
+        if(row == n-1){
+            return cherries;
+        }
+
+        if(dp[row][col1][col2] != -1) return dp[row][col1][col2];
+
+        int maxAns = 0;
+        for(int nextR1Pos = col1-1; nextR1Pos <= col1+1; nextR1Pos++){
+            for(int nextR2Pos = col2-1; nextR2Pos <= col2+1; nextR2Pos++){
+                if(nextR1Pos >=0 && nextR1Pos < m && nextR2Pos >=0 && nextR2Pos < m && nextR1Pos < nextR2Pos){
+                    maxAns = Math.max(maxAns,cherryPickup_rec2(row+1, nextR1Pos, nextR2Pos, grid,dp,n,m));
+                }
+            }
+        }
+
+        return dp[row][col1][col2] = cherries + maxAns;
+    }
+
+    public int cherryPickup_tab(int[][] grid, int[][][] dp, int n, int m){
+        for(int row=n-1; row>=0; row--){
+            for(int col1=0; col1 < m; col1++){
+                for(int col2=col1+1; col2<m; col2++){ // not letting robot1 and robot2 cross each other
+
+                    int cherries = grid[row][col1] + grid[row][col2];
+                    if(row == n-1){
+                        dp[row][col1][col2] = cherries;
+                        continue;
+                    }
+
+                    int maxAns = 0;
+                    for(int nextR1Pos = col1-1; nextR1Pos <= col1+1; nextR1Pos++){
+                        for(int nextR2Pos = col2-1; nextR2Pos <= col2+1; nextR2Pos++){
+                            if(nextR1Pos >=0 && nextR1Pos < m && nextR2Pos >=0 && nextR2Pos < m && nextR1Pos < nextR2Pos){
+                                maxAns = Math.max(maxAns,dp[row+1][nextR1Pos][nextR2Pos]); //cherryPickup_rec2(row+1, nextR1Pos, nextR2Pos, grid,dp,n,m));
+                            }
+                        }
+                    }
+
+                    dp[row][col1][col2] = cherries + maxAns;
+                }
+            }
+        }
+
+        return dp[0][0][m-1];
+    }
+
+    // Also solve in 2*m*m space because we just need to look at next row
+
+
+    public int cherryPickup(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+
+        int[][][] dp = new int[n][m][m];
+        // for(int[][] d: dp){
+        //     for(int[] a: d){
+        //         Arrays.fill(a, -1);
+        //     }
+        // }
+
+        return cherryPickup_tab(grid,dp,n,m);
+    }
+
+    // cherry pickup ==================================
+    // leetcode 741 ===============================================================
+    public int rec(int r1, int c1, int r2, int c2, int[][] grid, int[][][][] dp, int n){
+        if(r1 == n-1 && c1 == n-1){
+            return dp[r1][c1][r2][c2] = grid[r1][c1];
+        }
+
+        int cherries = 0;
+        if(r1 == r2 && c1 == c2){
+            cherries = grid[r1][c1];
+        } else {
+            cherries = grid[r1][c1] + grid[r2][c2];
+        }
+
+        if(dp[r1][c1][r2][c2] != -1) return dp[r1][c1][r2][c2];
+
+        int[][] dirs = {{0,1,0,1},{0,1,1,0},{1,0,0,1},{1,0,1,0}};
+        int maxAns = Integer.MIN_VALUE;
+        for(int[] dir: dirs){
+            int newR1 = r1 + dir[0];
+            int newC1 = c1 + dir[1];
+            int newR2 = r2 + dir[2];
+            int newC2 = c2 + dir[3];
+
+            if(newR1 >= 0 && newC1 >=0 && newR2 >=0 && newC2 >=0 && newR1 < n && newC1 < n && 
+                newR2 < n && newC2 < n && grid[newR1][newC1]!=-1 && grid[newR2][newC2] !=-1){
+                    maxAns = Math.max(maxAns, rec(newR1, newC1, newR2, newC2, grid, dp, n));
+            }
+        }
+
+        return dp[r1][c1][r2][c2] = maxAns + cherries;
+    }
+
+    public int cherryPickup(int[][] grid) {
+        int n = grid.length;
+        int[][][][] dp = new int[n][n][n][n];
+
+        for(int[][][] d: dp){
+            for(int[][] a: d){
+                for(int[] b: a)
+                    Arrays.fill(b, -1);
+            }
+        }
+
+        return Math.max(rec(0,0,0,0,grid,dp,n),0);
+    }
+
+    // O(N^3) =================================================================
+    public int rec(int r1, int c1, int r2, int[][] grid, int[][][] dp, int n){
+        int c2 = r1 + c1 - r2;
+        if(r1 == n-1 && c1 == n-1){
+            return dp[r1][c1][r2] = grid[r1][c1];
+        }
+
+        int cherries = 0;
+        if(r1 == r2 && c1 == c2){
+            cherries = grid[r1][c1];
+        } else {
+            cherries = grid[r1][c1] + grid[r2][c2];
+        }
+
+        if(dp[r1][c1][r2] != -1) return dp[r1][c1][r2];
+
+        int[][] dirs = {{0,1,0,1},{0,1,1,0},{1,0,0,1},{1,0,1,0}};
+        int maxAns = Integer.MIN_VALUE;
+        for(int[] dir: dirs){
+            int newR1 = r1 + dir[0];
+            int newC1 = c1 + dir[1];
+            int newR2 = r2 + dir[2];
+            int newC2 = c2 + dir[3];
+
+            if(newR1 >= 0 && newC1 >=0 && newR2 >=0 && newC2 >=0 && newR1 < n && newC1 < n && 
+                newR2 < n && newC2 < n && grid[newR1][newC1]!=-1 && grid[newR2][newC2] !=-1){
+                    maxAns = Math.max(maxAns, rec(newR1, newC1, newR2, grid, dp, n));
+            }
+        }
+
+        return dp[r1][c1][r2] = maxAns + cherries;
+    }
+
+    public int cherryPickup(int[][] grid) {
+        int n = grid.length;
+        int[][][] dp = new int[n][n][n];
+
+        for(int[][] d: dp){
+            for(int[] a: d){
+                Arrays.fill(a, -1);
+            }
+        }
+
+        return Math.max(rec(0,0,0,grid,dp,n),0);
+    }
+
 
 
 
