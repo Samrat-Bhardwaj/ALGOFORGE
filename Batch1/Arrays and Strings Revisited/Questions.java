@@ -175,6 +175,182 @@ class Questions {
         return len;
     }
 
+    // Maximum number of vowels in substring of length k
+    public boolean isVowel(char ch){
+        if(ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u'){
+            return true;
+        }
+
+        return false;
+    }
+
+    public int maxVowels(String s, int k) {
+        int n = s.length();
+        int si = 0;
+        int ei = 0;
+
+        int currCount = 0;
+        int maxCount = 0;
+
+        while(ei < n){
+            if(isVowel(s.charAt(ei))){
+                currCount++;
+            }
+            ei++;
+
+            while(ei - si > k){ // every time there will be only one iteration, while can be replaced with if
+                if(isVowel(s.charAt(si))){
+                    currCount--;
+                }
+                si++;
+            }
+
+            if(ei - si == k){
+                maxCount = Math.max(currCount, maxCount);
+            }
+        }
+
+        return maxCount; 
+    }
+
+    // Maximum of a k size window (Better approaches in Stack & Queue)
+    // Leetcode 239 =================================================
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length;
+
+        int[] ans = new int[n-k+1];
+
+        // { nums[i], i }
+        PriorityQueue<int[]> pq = new PriorityQueue<>((int[] a, int[] b) -> {
+            return b[0] - a[0]; // max priorityQueue
+        });
+
+        for(int i=0; i<n; i++){
+            
+            while(pq.size() > 0 && pq.peek()[1] <= i-k){
+                pq.remove();
+            }
+            pq.add(new int[]{nums[i], i});
+
+            if(i >= k-1)
+                ans[i-k+1] = pq.peek()[0];
+        }
+
+        return ans;
+    }
+
+    // Longest subarray with sum = k
+    public int longestSubarray(int[] arr, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int ans = 0;
+        int csum = 0;
+        map.put(csum, -1);
+
+        for(int i=0; i<arr.length; i++){    
+            csum += arr[i];
+
+            if(map.containsKey(csum - k)){
+                ans = Math.max(ans, i - map.get(csum - k));
+            }
+            
+            if(map.containsKey(csum) == false){
+                map.put(csum, i);
+            }
+        }
+
+        return ans;
+    }
+
+    // Number of subarrays with sum = k
+    public int subarraySum(int[] nums, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int ans = 0;
+        int csum = 0;
+        map.put(csum, 1);
+
+        for(int i=0; i<nums.length; i++){
+            csum += nums[i];
+
+            ans += map.getOrDefault(csum-k,0);
+
+            map.put(csum, map.getOrDefault(csum,0) + 1);
+        }
+
+        return ans;
+    }
+
+    // leetcode 525 (Longest subarray with equal 0s and 1s)
+    public int findMaxLength(int[] nums) {
+        // longest subarray with sum  = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int ans = 0;
+        int csum = 0;
+        map.put(csum, -1);
+
+        for(int i=0; i<arr.length; i++){    
+            if(arr[i] == 0) csum--; // converting 0 to -1
+            else csum++; 
+
+            if(map.containsKey(csum)){
+                ans = Math.max(ans, i - map.get(csum));
+            }
+            
+            if(map.containsKey(csum) == false){
+                map.put(csum, i);
+            }
+        }
+
+        return ans;
+    }
+
+    // Count of subarray with equal 0s and 1s
+    // https://www.geeksforgeeks.org/problems/count-subarrays-with-equal-number-of-1s-and-0s-1587115620/1
+    public int countSubarray(int[] arr) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int ans = 0;
+        int csum = 0;
+        map.put(csum, 1);
+
+        for(int i=0; i<arr.length; i++){
+            if(arr[i] == 0) csum--; // converting 0 to -1
+            else csum++; 
+
+            ans += map.getOrDefault(csum,0);
+
+            map.put(csum, map.getOrDefault(csum,0) + 1);
+        }
+
+        return ans;
+    }
+
+    // https://leetcode.com/problems/fruit-into-baskets/description/
+    public int totalFruit(int[] fruits) {
+        int n = fruits.length;
+        int si = 0, ei =0, count=0, len=0;
+
+        int[] fre = new int[100001];
+
+        while(ei < n){
+            if(fre[fruits[ei]] == 0){
+                count++;
+            }
+            fre[fruits[ei]]++;
+            ei++;
+
+            while(count > 2){
+                if(fre[fruits[si]] == 1){
+                    count--;
+                }
+                fre[fruits[si]]--;
+                si++;
+            }
+
+            len = Math.max(len, ei-si); 
+        }
+
+        return len;
+    }
+
 
 
 
