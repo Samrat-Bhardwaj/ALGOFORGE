@@ -78,6 +78,130 @@ class Questions {
         System.out.println("Exit Point is: (" + row + "," + col + ")");
     }
 
+    // Wave traversal ====================================================================
+    public static void waveTraversal(int[][] arr){
+        int n = arr.length;
+        int m = arr[0].length;
+
+        for(int j=0; j<m; j++){
+            
+            if(j%2 == 0){
+                for(int i=0; i<n; i++){
+                    System.out.print(arr[i][j] + ", ");
+                }
+            } else {
+                for(int i=n-1; i>=0; i--){
+                    System.out.print(arr[i][j] + ", ");
+                }
+            }
+            
+            System.out.println();
+        }
+    }
+
+    // Spiral traversal ===============================================================
+    public static void spiralTraversal(int[][] arr){
+        int n = arr.length;
+        int m = arr[0].length;
+
+        int sr = 0;    // start_row
+        int sc = 0;    // start_column
+        int er = n-1;  // end_row
+        int ec = m-1;  // end_column
+
+        while(sr <= er && sc <= ec){
+            // left wall
+            for(int col=sc, row=sr; row<=er; row++){
+                System.out.print(arr[row][col] + ",");
+            }
+            sc++; 
+
+            // bottom wall
+            for(int row=er, col=sc; col<=ec ; col++){
+                System.out.print(arr[row][col] + ",");
+            }
+            er--;
+
+            // right wall
+            for(int col=ec, row=er; row>=sr; row--){
+                System.out.print(arr[row][col] + ",");
+            }
+            ec--;
+
+            // top wall
+            for(int row=sr, col=ec; col>=sc; col--){
+                System.out.print(arr[row][col] + ",");
+            }
+            sr++;
+
+            System.out.println();
+        }
+    }
+
+    // Transpose of a matrix ====================================
+    public static void transpose(int[][] arr){
+        int n = arr.length;
+
+        for(int i=0; i<n; i++){
+            for(int j=i; j<n; j++){
+
+                int temp = arr[i][j];
+                arr[i][j] = arr[j][i];
+                arr[j][i] = temp;
+            }
+        }
+    }
+
+    // rotate by 90 degrees =====================================================
+    public void reverseEveryRow(int[][] matrix){
+        int n = matrix.length;
+
+        for(int row=0; row<n; row++){
+            int[] arr = matrix[row];
+
+            int start = 0, end = n-1;
+            while(start < end){
+                int temp = arr[start];
+                arr[start] = arr[end];
+                arr[end] = temp;
+
+                start++;
+                end--;
+            }
+        }
+    }
+
+    public void rotate(int[][] matrix) {
+        transpose(matrix);
+        reverseEveryRow(matrix);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void main(String[] args){
         // int[][] A = new int[4][3];
         // int[][] B = new int[3][2];
@@ -87,7 +211,12 @@ class Questions {
 
         // print2DArray(res);
         
-        int[][] binaryMatrix = {{0,0,0,1,0,0},{0,1,0,0,0,0},{1,0,1,0,1,0},{0,1,0,1,1,0},{0,0,0,0,0,1}};
-        printExitPoint(binaryMatrix);
+        // int[][] binaryMatrix = {{0,0,0,1,0,0},{0,1,0,0,0,0},{1,0,1,0,1,0},{0,1,0,1,1,0},{0,0,0,0,0,1}};
+        // printExitPoint(binaryMatrix);
+
+        int[][] arr = {{1,2,3,4,5},{6,7,8,9,10},{11,12,13,14,15},{16,17,18,19,20},{21,22,23,24,25}};
+        transpose(arr);
+
+        print2DArray(arr);
     }
 }
