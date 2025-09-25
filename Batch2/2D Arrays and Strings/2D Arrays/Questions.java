@@ -176,6 +176,28 @@ class Questions {
         reverseEveryRow(matrix);
     }
 
+    // Search in 2D sorted matrix (https://www.geeksforgeeks.org/problems/search-in-a-matrix17201720/1)
+    public static boolean matSearch(int mat[][], int tar) {
+        int n = mat.length;
+        int m = mat[0].length;
+
+        int row = 0; 
+        int col = m-1;
+        // another starting can be {n-1,0}
+
+        while(row < n && col >= 0){
+            if(mat[row][col] == tar){
+                return true;
+            } else if(mat[row][col] < tar){
+                row++;
+            } else {
+                col--;
+            }
+        }
+
+        return false;
+    }
+
 
 
 
