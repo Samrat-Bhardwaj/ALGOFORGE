@@ -413,4 +413,150 @@ class BinarySearchQuestions {
         
         return mid;
     }
+
+    // leetcode 1539 ======================================
+    public int findKthPositive(int[] arr, int k) {
+        int idx = -1;
+
+        for(int i=0; i<arr.length; i++){
+            int expectedNum = i+1;
+
+            int diff = arr[i] - expectedNum;
+
+            if(diff < k){
+                idx = i; // the index till which k positives are not missing
+            } else {
+                break;
+            }
+        }
+
+        return idx + k + 1;
+    }
+
+    // in log(N);
+    public int findKthPositive(int[] arr, int k) {
+        int n = arr.length;
+        int left = 0;
+        int right = n-1;
+
+        while(left <= right){
+            int mid = (left + right)/2;
+
+            int diff = arr[mid] - (mid+1);
+
+            if(diff < k){
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return right + k + 1;
+    }
+
+    // Leetcode 33 (Search in rotated sorted array) ============================
+    public int search(int[] nums, int target) {
+        int n = nums.length;
+
+        int si = 0;
+        int ei = n-1;
+
+        while(si <= ei){
+            int mid = (si + ei)/2;
+
+            if(nums[mid] == target){
+                return mid;
+            } else if(nums[si] <= nums[mid]){ // this area is sorted, we can rely on it
+                if(nums[si] <= target && nums[mid] > target){
+                    ei = mid - 1;
+                } else {
+                    si = mid + 1;
+                }
+            } else { // if(nums[mid] < nums[ei])
+                if(nums[mid] < target && nums[ei] >= target){
+                    si = mid + 1;
+                } else {
+                    ei = mid - 1;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    // Leetcode 81 (Search in rotated sort array with duplicates)
+    public boolean search(int[] nums, int target) {
+        int n = nums.length;
+
+        int si = 0;
+        int ei = n-1;
+
+        while(si <= ei){
+            int mid = (si + ei)/2;
+
+            if(nums[mid] == target || nums[ei] == target){ // because we may eliminate ei, we should check ei as well
+                return true;    
+            } // removed nums[si] <= nums[mid] as duplicate elements (TC: 1,1,0,1,1,1)
+            else if(nums[si] < nums[mid]){ // this area is sorted, we can rely on it, 
+                if(nums[si] <= target && nums[mid] > target){
+                    ei = mid - 1;
+                } else {
+                    si = mid + 1;
+                }
+            } else if(nums[mid] < nums[ei]){ // if(nums[mid] < nums[ei])
+                if(nums[mid] < target && nums[ei] >= target){
+                    si = mid + 1;
+                } else {
+                    ei = mid - 1;
+                }
+            } else {
+                ei--; // or si++;
+            }
+        }
+
+        return false;
+    }  
+
+    // Leetcode 153 (Find minimum in rotated sorted array) ==========================
+    public int findMin(int[] nums) {
+        int n = nums.length;
+
+        int si = 0;
+        int ei = n-1;
+
+        while(si < ei){
+            int mid = (si + ei)/2;
+
+            if(nums[mid] > nums[ei]){ // right area is unsorted
+                si = mid + 1;
+            } else { // either both the area sorted, either left area is unsorted
+                ei = mid;
+            }
+        }
+
+        return nums[si];
+    }
+
+    // Leetcode 154 (Find minimum in rotated sorted array with duplicate elements) ==========================
+    // Worst case O(n), average log(N);
+    public int findMin(int[] nums) {
+        int n = nums.length;
+
+        int si = 0;
+        int ei = n-1;
+
+        while(si < ei){
+            int mid = (si + ei)/2;
+
+            if(nums[mid] > nums[ei]){ // right area is unsorted
+                si = mid + 1;
+            } else if(nums[si] > nums[mid]) { // either left area is unsorted
+                ei = mid;
+            } else { // both the area are sorted or both are unsorted, removing ei one by one
+                ei--;
+            }
+        }
+
+        return nums[si];
+    }
 }
