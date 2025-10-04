@@ -351,6 +351,145 @@ class Questions {
         return len;
     }
 
+    // ========================================= SUM PROBLEMS ====================================
+
+    // Leetcode 1 (Two Sum) ===========
+    public int[] twoSum(int[] nums, int target) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        for(int i=0; i<nums.length; i++){
+            int diff = target - nums[i];
+
+            if(map.containsKey(diff)){
+                return new int[]{map.get(diff), i};
+            }
+
+            map.put(nums[i],i);
+        }
+
+        return new int[]{};
+    }
+
+    // https://www.geeksforgeeks.org/problems/all-distinct-pairs-with-given-sum/1
+    public List<List<Integer>> distinctPairs(int[] arr, int target) {
+        Arrays.sort(arr);
+
+        int n = arr.length;
+        int i=0; int j=n-1;
+
+        List<List<Integer>> ans = new ArrayList<>();
+
+        while(i < j){
+            int sum = arr[i] + arr[j];
+
+            if(sum == target){
+                ans.add(Arrays.asList(arr[i],arr[j]));
+                i++;
+                j--;
+            } else if(sum < target){
+                i++;
+            } else {
+                j--;
+            }
+
+            // skipping over already seen elements
+            while(i>0 && i<j && arr[i-1] == arr[i]) i++;
+            while(j<n-1 && j>i && arr[j+1] == arr[j]) j--;
+        }
+
+        return ans;
+    }
+
+    // Generic function to return 2sum pairs from si to ei
+    public List<List<Integer>> makePairs(int[] arr, int target, int si, int ei) {
+        int i=si; int j=ei;
+        List<List<Integer>> ans = new ArrayList<>();
+        while(i < j){
+            int sum = arr[i] + arr[j];
+
+            if(sum == target){
+                ArrayList<Integer> smallAns = new ArrayList<>();
+                smallAns.add(arr[i]);
+                smallAns.add(arr[j]);
+                ans.add(smallAns);
+                // ans.add(Arrays.asList(arr[i],arr[j]));
+                i++;
+                j--;
+
+                // skipping over already seen elements to remove duplicate pairs
+                while(i<j && arr[i-1] == arr[i]) i++;
+                while(i<j && arr[j+1] == arr[j]) j--;
+            } else if(sum < target){
+                i++;
+            } else {
+                j--;
+            }            
+        }
+
+        return ans;
+    }
+    
+    // generic function to get triplets
+    public List<List<Integer>> threesum(int[] nums, int target, int si, int ei){
+        List<List<Integer>> ans = new ArrayList<>();
+        
+        for(int i=si; i<=ei; i++){
+            // removing duplicate elements
+            if(i>si && nums[i-1] == nums[i]) continue;
+
+            int fixedElement = nums[i];
+
+            int updatedTarget = target - fixedElement;
+
+            // returns all two sum pairs
+            List<List<Integer>> smallAns = makePairs(nums,updatedTarget,i+1,ei);
+            addFixedElement(ans,smallAns,fixedElement);
+        }
+
+        return ans;
+    }
+
+    public static void addFixedElement(List<List<Integer>> ans, List<List<Integer>> smallAns, int fixedElement){
+        for(List<Integer> sAns: smallAns){
+            sAns.add(fixedElement);
+            ans.add(sAns);
+        }
+    }
+
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+
+        return threesum(nums,0,0,nums.length-1);
+    }
+
+    public List<List<Integer>> foursum(int[] nums, int target, int si, int ei){
+        List<List<Integer>> ans = new ArrayList<>();
+        
+        for(int i=si; i<=ei; i++){
+            // removing duplicate elements
+            if(i>si && nums[i-1] == nums[i]) continue;
+
+            int fixedElement = nums[i];
+
+            int updatedTarget = target - fixedElement;
+
+            // returns all two sum pairs
+            List<List<Integer>> smallAns = threeSum(nums,updatedTarget,i+1,ei);
+            addFixedElement(ans,smallAns,fixedElement);
+        }
+
+        return ans;
+    }
+
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        Arrays.sort(nums);
+
+        return fourSum(nums,target,0,nums-length-1);
+    }
+
+    public List<List<Integer>> kSum(int[] nums, int target){
+        
+    }
 
 
 
