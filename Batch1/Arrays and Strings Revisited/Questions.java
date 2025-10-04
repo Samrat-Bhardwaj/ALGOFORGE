@@ -404,6 +404,7 @@ class Questions {
     public List<List<Integer>> makePairs(int[] arr, int target, int si, int ei) {
         int i=si; int j=ei;
         List<List<Integer>> ans = new ArrayList<>();
+
         while(i < j){
             int sum = arr[i] + arr[j];
 
@@ -428,7 +429,8 @@ class Questions {
 
         return ans;
     }
-    
+
+    // Three sum (Leetcode 15) ==========================================
     // generic function to get triplets
     public List<List<Integer>> threesum(int[] nums, int target, int si, int ei){
         List<List<Integer>> ans = new ArrayList<>();
@@ -462,6 +464,8 @@ class Questions {
         return threesum(nums,0,0,nums.length-1);
     }
 
+
+    // Four sum (Leetcode 18) =========================
     public List<List<Integer>> foursum(int[] nums, int target, int si, int ei){
         List<List<Integer>> ans = new ArrayList<>();
         
@@ -487,10 +491,141 @@ class Questions {
         return fourSum(nums,target,0,nums-length-1);
     }
 
-    public List<List<Integer>> kSum(int[] nums, int target){
-        
+    public List<List<Integer>> kSum(int[] nums, int target, int k, int si, int ei){
+        if(k == 2){
+            return makePairs(nums,target,si,ei);
+        }
+
+        List<List<Integer>> ans = new ArrayList<>();
+
+        for(int i=si; i<=ei; i++){
+            if(i > si && nums[i-1] == nums[i]) continue;
+
+            int fixedElement = nums[i];
+
+            int updatedTarget = target - fixedElement;
+
+            List<List<Integer>> smallAns = kSum(nums,updatedTarget,k-1,i+1,ei);
+            addFixedElement(ans, smallAns, fixedElement);
+        }
+
+        return ans;
     }
 
+    public List<List<Integer>> kSum(int[] nums, int target, int k){
+        Arrays.sort(nums);
+
+        return kSum(nums,target,k,0,nums.length-1);
+    }
+
+    // Count pairs with given sum (https://www.geeksforgeeks.org/problems/count-pairs-with-given-sum--150253/1)
+    int countPairs(int arr[], int target) {
+        HashMap<Integer,Integer> map = new HashMap<>();
+        int count = 0; 
+
+        for(int e: arr){
+            if(map.containsKey(target-e)){
+                count += map.get(target-e);
+            }
+
+            map.put(e, map.getOrDefault(e,0) + 1);
+        }
+
+        return count;
+    }
+
+    // Leetcode 454 (4 sum 2)
+    public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        HashMap<Integer,Integer> map = new HashMap<>();
+        int count = 0; 
+
+        // Making a frequency map of all the possible sums of any 2 arrays
+        for(int e: nums1){
+            for(int f: nums2){
+                map.put(e+f, map.getOrDefault(e+f,0)+1);
+            }
+        }
+
+        // adding frequency of target - current_sum (Same as above problem)
+        for(int a: nums3){
+            for(int b: nums4){
+                count += map.getOrDefault( 0 - (a+b),0);
+            }
+        }
+
+        return count;
+    }
+
+
+    // Moore's voting algorithm (Leetcode 169)
+    public int majorityElement(int[] nums) {
+        int candidate = -1;
+        int count = 0;
+
+        for(int i=0; i<nums.length; i++){
+            if(count == 0){
+                candidate = nums[i];
+                count = 1;
+                continue;
+            }
+            
+            if(nums[i] == candidate){
+                count++;
+            } else {
+                count--;
+            }
+        }
+
+        return candidate;
+    }
+
+    // Leetcode 229 ===============================================
+    public List<Integer> majorityElement(int[] nums) {
+        int candidate1 = -1;
+        int count1 = 0;
+
+        int candidate2 = -1;
+        int count2 = 0;
+
+        int n = nums.length;
+        
+        for(int e: nums){
+            if(count1 !=0 && candidate1 == e){
+                count1++;
+            } else if(count2 !=0 && candidate2 == e){
+                count2++;
+            }else if(count1 == 0){
+                candidate1 = e;
+                count1 = 1;
+            } else if(count2 == 0){
+                candidate2 = e;
+                count2 = 1;
+            } else {
+                count1--;
+                count2--;
+            }
+        }
+
+        // not neccessory that both the candidate are correct, verify them
+        count1=0;
+        count2=0;
+
+        for(int e: nums){
+            if(e == candidate1) count1++;
+            if(e == candidate2) count2++;
+        }
+
+
+        List<Integer> ans = new ArrayList<>();
+
+        if(count1 > (n/3))
+            ans.add(candidate1);
+
+        if(count2 > (n/3) && candidate1 != candidate2)
+            ans.add(candidate2);
+
+        return ans;
+    }
 
 
 
