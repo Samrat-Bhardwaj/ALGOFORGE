@@ -279,6 +279,24 @@ class Questions {
         return ans;
     }
 
+    // Number of subarrays with XOR = k (https://www.geeksforgeeks.org/problems/count-subarray-with-given-xor/1)
+    public long subarrayXor(int arr[], int k) {
+        HashMap<Integer,Long> map = new HashMap<>();
+        long ans = 0;
+        int cxor = 0;
+        map.put(cxor,1);
+        
+        for(int i=0; i<nums.length; i++){
+            cxor ^= nums[i];
+
+            ans += map.getOrDefault(cxor^k, 0);
+
+            map.put(cxor, map.getOrDefault(cxor,0) + 1);
+        }
+
+        return ans;
+    }
+
     // leetcode 525 (Longest subarray with equal 0s and 1s)
     public int findMaxLength(int[] nums) {
         // longest subarray with sum  = 0;
@@ -623,6 +641,86 @@ class Questions {
 
         if(count2 > (n/3) && candidate1 != candidate2)
             ans.add(candidate2);
+
+        return ans;
+    }
+
+    // Merge intervals without using stack (Inspiration from stack solution)
+    public int[][] merge(int[][] intervals) {
+        int n = intervals.length;
+
+        Arrays.sort(intervals, (int[] a, int[] b) -> { // this and other will be compared
+            if(a[0] == b[0]){
+                return a[1] - b[1];
+            }
+            return a[0] - b[0]; // increasing order sort, decreasing order (b - a);
+        });
+
+        ArrayList<int[]> merged = new ArrayList<>();
+        int[] prev = intervals[0];
+
+        for(int i=1; i<n; i++){
+            if(prev[1] >= intervals[i][0]){ // prev end time is smaller than curr start time
+                prev[1] = Math.max(prev[1], intervals[i][1]);
+            } else {
+                merged.add(prev);
+                prev = intervals[i];
+            }
+        }
+
+        merged.add(prev);
+        return merged.toArray(new int[merged.size()][]);
+    }
+
+
+    // Missing and Repeating Number in Space -> O(1), time-> O(N) (https://www.geeksforgeeks.org/problems/find-missing-and-repeating2512/1)
+    ArrayList<Integer> findTwoElement(int arr[]) {
+        // code here
+        ArrayList<Integer> ans = new ArrayList<>();
+
+        // how to find repeating number
+        for(int i=0; i<arr.length; i++){
+            int ele = Math.abs(arr[i]);
+
+            if(arr[ele-1] < 0){ // we have already seen this number
+                ans.add(ele);
+            } else {
+                arr[ele-1] *= -1;
+            }
+        }
+
+        // how to find missing number
+        for(int i=0; i<arr.length; i++){
+            if(arr[i] > 0){
+                ans.add(i+1); // we never saw (i+1) and hence the ith index is positive
+            }
+        }
+
+        // We should also fix the input data and make everything positive again
+        return ans;
+    }
+
+
+    // leetcode 152 ========
+    public int maxProduct(int[] nums) {
+        int ans = nums[0];
+
+        int minSoFar = nums[0];
+        int maxSoFar = nums[0];
+
+        for(int i=1; i<nums.length; i++){
+            if(nums[i] < 0){ // swap min and max
+                int temp = maxSoFar;
+                maxSoFar = minSoFar;
+                minSoFar = temp;
+            }
+
+            // either we can start a new subarray from here or continue with the previous one
+            maxSoFar = Math.max(nums[i], maxSoFar*nums[i]);
+            minSoFar = Math.min(nums[i], minSoFar*nums[i]);
+
+            ans = Math.max(ans, maxSoFar);
+        }
 
         return ans;
     }
