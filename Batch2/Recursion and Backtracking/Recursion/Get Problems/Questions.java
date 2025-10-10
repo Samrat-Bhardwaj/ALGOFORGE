@@ -88,10 +88,68 @@ class Questions {
         return allPaths;
     }
 
+    public static ArrayList<String> getMazePaths(int sr, int sc, int dr, int dc){
+        if(sr > dr || sc > dc){
+            return new ArrayList<>();
+        }
+        if(sr == dr && sc == dc){
+            ArrayList<String> baseAns = new ArrayList<>();
+            baseAns.add("");
+            return baseAns;
+        }
+
+        ArrayList<String> pathsAfterHStep = getMazePaths(sr,sc+1,dr,dc);
+        ArrayList<String> pathsAfterVStep = getMazePaths(sr+1,sc,dr,dc);
+
+        ArrayList<String> allPaths = new ArrayList<>();
+
+        for(String path: pathsAfterHStep){
+            allPaths.add("h" + path);
+        }
+
+        for(String path: pathsAfterVStep){
+            allPaths.add("v" + path);
+        }
+
+        return allPaths;
+    }
+
+    public static ArrayList<String> getMazePathsWithJumps(int sr, int sc, int dr, int dc){
+        if(sr == dr && sc == dc){
+            ArrayList<String> baseAns = new ArrayList<>();
+            baseAns.add("");
+            return baseAns;
+        }
+
+        ArrayList<String> allPaths = new ArrayList<>();
+
+        // horizontal jumps
+        for(int jump = 1; jump <= dc-sc; jump++){
+            ArrayList<String> pathsAfterHJump = getMazePathsWithJumps(sr, sc+jump, dr, dc);
+
+            for(String path: pathsAfterHJump){
+                allPaths.add("h" + jump + path);
+            }
+        }
+
+        // vertical jumps
+        for(int jump = 1; jump <= dr-sr; jump++){
+            ArrayList<String> pathsAfterVJump = getMazePathsWithJumps(sr+jump, sc, dr, dc);
+
+            for(String path: pathsAfterVJump){
+                allPaths.add("v" + jump + path);
+            }
+        }
+
+        return allPaths;
+    }
+
     public static void main(String[] args){
         // ArrayList<String> ans = getSubsequences("abc");
         // ArrayList<String> ans = getKeypadCombinations("84");
-        ArrayList<String> ans = getStairPaths(4);
+        // ArrayList<String> ans = getStairPaths(4);
+        // ArrayList<String> ans = getMazePaths(0,0,2,2);
+        ArrayList<String> ans = getMazePathsWithJumps(0,0,2,2);
 
         System.out.println(ans);
     }
