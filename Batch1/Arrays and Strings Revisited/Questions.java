@@ -725,6 +725,30 @@ class Questions {
         return ans;
     }
 
+    // Gas station (leetcode 134)
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int total_extra = 0;
+        int curr_extra = 0;
+        int start = 0;
+
+        for(int i=0; i<gas.length; i++){
+            total_extra += (gas[i] - cost[i]);
+
+            curr_extra += (gas[i] - cost[i]);
+
+            if(curr_extra < 0){ // we will start from next point again
+                curr_extra = 0; 
+                start = i+1;
+            }
+        }
+        // no possible ans if total gas is smaller than total cost
+        if(total_extra < 0){
+            return -1;
+        }
+        
+        return start;
+    }
+
 
 
 

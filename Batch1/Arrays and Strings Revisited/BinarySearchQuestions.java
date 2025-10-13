@@ -559,4 +559,48 @@ class BinarySearchQuestions {
 
         return nums[si];
     }
+
+    // Median of two sorted Arrays (Leetcode 4) ==============================
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        if(nums1.length > nums2.length){
+            int[] temp = nums1;
+            nums1 = nums2;
+            nums2 = temp;
+        }
+
+        int n1 = nums1.length;
+        int n2 = nums2.length;
+
+        int total_ele = n1 + n2;
+
+        int si = 0;
+        int ei = n1;
+
+        while(si <= ei){
+            int mid = (si + ei)/2;
+            int secondArrayLeftEle = (total_ele + 1)/2 - mid;
+
+            int ar = mid == n1 ? Integer.MAX_VALUE : nums1[mid];
+            int al = mid == 0 ? Integer.MIN_VALUE : nums1[mid-1];
+            int br = secondArrayLeftEle == n2 ? Integer.MAX_VALUE : nums2[secondArrayLeftEle];
+            int bl = secondArrayLeftEle == 0 ? Integer.MIN_VALUE : nums2[secondArrayLeftEle-1];
+
+            if(al <= br && bl <= ar){
+                if(total_ele % 2 == 0){
+                    int lmax = Math.max(al,bl);
+                    int rmin = Math.min(ar,br);
+
+                    return (lmax + rmin)/2.0;
+                } else {
+                    return Math.max(al,bl) * 1.0;
+                }
+            } else if(al > br){
+                ei = mid - 1;
+            } else {
+                si = mid + 1;
+            }
+        }
+
+        return 0.0;
+    }
 }
