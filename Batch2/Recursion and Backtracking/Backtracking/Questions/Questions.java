@@ -62,6 +62,38 @@ class Questions {
             }
         }
     }
+    public static void printBoard(int[][] board){
+        for(int i=0; i<board.length; i++){
+            for(int j=0; j<board[0].length; j++){
+                System.out.print(board[i][j] + ",\t" );
+            }
+            System.out.println();
+        }
+    }
+
+    public static void knightTour(int row, int col, int[][] board, int currentStep){
+        if(row < 0 || col < 0 || row >= board.length || col >= board.length || board[row][col] != 0){
+            return;
+        }
+
+        if(currentStep == 65){
+            printBoard(board);
+            return;
+        }
+
+        board[row][col] = currentStep;
+
+        knightTour(row-2,col-1,board,currentStep+1);
+        knightTour(row-2,col+1,board,currentStep+1);
+        knightTour(row-1,col+2,board,currentStep+1);
+        knightTour(row+1,col+2,board,currentStep+1);
+        knightTour(row+2,col+1,board,currentStep+1);
+        knightTour(row+2,col-1,board,currentStep+1);
+        knightTour(row+1,col-2,board,currentStep+1);
+        knightTour(row-1,col-2,board,currentStep+1);
+
+        board[row][col] = 0;
+    }
 
     // Homwork -> Leetcode 51, 52 
 
@@ -69,8 +101,11 @@ class Questions {
         // int[] arr = {2,5,3,1,4,6,0,-2,8};
         // printTargetSumSubsets(arr,0,8,"");
 
-        int n = 4;
-        boolean[][] board = new boolean[n][n];
-        nQueens(board,n,0);
+        // int n = 4;
+        // boolean[][] board = new boolean[n][n];
+        // nQueens(board,n,0);
+
+        int[][] board = new int[8][8];
+        knightTour(0,0,board,1);
     }
 }
