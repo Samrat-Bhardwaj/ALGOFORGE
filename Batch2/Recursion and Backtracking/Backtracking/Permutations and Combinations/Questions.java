@@ -60,6 +60,66 @@ class Questions {
         }
     }
 
+    // coin change combination, one coin can be used multiple time
+    public static void coinChangeCombinationsMultiple(int[] coins, int idx, int tar, String asf){
+        if(tar < 0) return;
+        if(tar == 0){
+            System.out.println(asf);
+            return;
+        }
+
+        if(idx == coins.length) return;
+
+        // coins[idx] said yes and we can use it again
+        coinChangeCombinationsMultiple(coins, idx, tar-coins[idx], asf + coins[idx] + ",");
+
+        // coins[idx] said no and all the times coins[idx] could've said yes is done
+        coinChangeCombinationsMultiple(coins, idx + 1, tar, asf);
+    }
+
+    // coin change combination, one coin can be used multiple time using for loop
+    public static void coinChangeCombinationsMultiple2(int[] coins, int idx, int tar, String asf){
+        if(tar < 0) return;
+        if(tar == 0){
+            System.out.println(asf);
+            return;
+        }
+
+        for(int j = idx; j<coins.length; j++){
+            coinChangeCombinationsMultiple2(coins, j, tar-coins[j], asf+coins[j]+","); // you can use jth coin again
+        }
+    }
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void main(String[] args){
         int[] coins = {2,3,4,6,5};
         // boolean[] vis = new boolean[coins.length];
@@ -68,6 +128,6 @@ class Questions {
         // coinChangePermutationsMultiple(coins,10,"");
 
         // printTargetSumSubsets(coins,0,10,"");
-        coinChangeCombinations(coins,0,10,"");
+        coinChangeCombinationsMultiple2(coins,0,10,"");
     }
 }

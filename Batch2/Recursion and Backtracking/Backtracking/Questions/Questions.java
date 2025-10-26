@@ -97,6 +97,87 @@ class Questions {
 
     // Homwork -> Leetcode 51, 52 
 
+    // Sudoku solver (Leetcode 37) ========================================
+    public boolean canPlaceNum(char[][] board, int row, int col, int num){
+        // checking all the rows in "col" column
+        for(int i=0; i<9; i++){
+            if(board[i][col] - '0' == num){
+                return false;
+            }
+        }
+
+        // check all the columns in "row" row
+        for(int j=0; j<board.length; j++){
+            if(board[row][j] - '0' == num){
+                return false;
+            }
+        }
+
+        // checking 3x3 cells
+        int start_row = (row/3)*3;
+        int start_col = (col/3)*3;
+
+        for(int i=start_row; i < start_row + 3; i++){
+            for(int j=start_col; j<start_col + 3; j++){
+                if(board[i][j] - '0' == num) return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean sudokuSolver(ArrayList<int[]> emptyCells, char[][] board, int idx){
+        if(idx == emptyCells.size()){
+            return true;
+        }
+
+        int row = emptyCells.get(idx)[0];
+        int col = emptyCells.get(idx)[1];
+
+        for(int num=1; num <= 9; num++){
+            if(canPlaceNum(board,row,col,num)){
+                board[row][col] = (char)(num + '0');
+
+                if(sudokuSolver(emptyCells, board, idx+1)) return true;
+
+                board[row][col] = '.';
+            }
+        }
+
+        return false;
+    }
+
+    public void solveSudoku(char[][] board) {
+        ArrayList<int[]> emptyCells = new ArrayList<>();
+
+        for(int i=0; i<9; i++){
+            for(int j=0; j<9; j++){
+                if(board[i][j] == '.'){
+                    emptyCells.add(new int[]{i,j});
+                }
+            }
+        }
+
+        sudokuSolver(emptyCells, board, 0);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void main(String[] args){
         // int[] arr = {2,5,3,1,4,6,0,-2,8};
         // printTargetSumSubsets(arr,0,8,"");
