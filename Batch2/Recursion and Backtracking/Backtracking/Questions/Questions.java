@@ -230,6 +230,19 @@ class Questions {
         return ans;
     }
 
+    public int totalNQueens(int n) {
+        // return nQueens(new boolean[n][n],n,0);
+
+        boolean[] colVis = new boolean[n];
+        boolean[] diagVis = new boolean[2*n-1];
+        boolean[] aDiagVis = new boolean[2*n-1];
+
+        return nQueensOptimised(0,colVis,diagVis,aDiagVis,n);
+    }
+
+
+    // N - Queens Most Optimized O(1 + rec) space =================================================
+
     // how to set Kth Bit true
     public int setKthBitTrue(int num, int k){
         int mask = (1 << k);
@@ -248,20 +261,59 @@ class Questions {
 
     // how to check Kth Bit is true or false
     public boolean checkKthBit(int num, int k){
-        
+        int mask = (1 << k);
+
+        return num & mask > 0;
+    }
+
+    public int NQueensMostOptimised(int row, int n, int colNum, int diagNum, int aDiagNum){
+        if(row == n){
+            return 1;
+        }
+
+        int ans=0;
+        for(int col = 0; col < n; col++){
+            if(checkKthBit(colNum,col) == false && (diagNum & (1 << (col-row + n-1)) > 0) && !checkKthBit(aDiagNum, row + col)){
+
+                colNum = colNum | (1 << col);
+                diagNum = diagNum | (1 << (col-row + n-1));
+                aDiagNum = setKthBitTrue(aDiagNum, row+col); // aDiagNum | (1 << (row+col))
+
+                NQueensMostOptimised(row+1,n,colNum,diagNum,aDiagNum);
+
+                colNum = colNum & ~(1 << col);
+                diagNum = diagNum & ~(1 << (col-row + n-1));
+                aDiagNum = aDiagNum & ~(1 << (row+col))
+            }
+        }
+        return ans;
     }
 
     public int totalNQueens(int n) {
-        // return nQueens(new boolean[n][n],n,0);
+        int colNum = 0;
+        int diagNum = 0;
+        int aDiagNum = 0;
 
-        boolean[] colVis = new boolean[n];
-        boolean[] diagVis = new boolean[2*n-1];
-        boolean[] aDiagVis = new boolean[2*n-1];
-
-        return nQueensOptimised(0,colVis,diagVis,aDiagVis,n);
+        return NQueensMostOptimised(0,n,colNum,diagNum,aDiagNum);
     }
+    
+    // HomeWORK  ================================================================
+    // leetcode 22 (IMPORTANT)
 
+    // leetcode 79
 
+    // leetcode 526 
+
+    // leetcode 1947
+
+    // leetcode 1986
+
+    // leetcode 282
+
+    // leetcode 301
+
+    // leetcode 980
+    
 
 
 
