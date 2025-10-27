@@ -161,6 +161,105 @@ class Questions {
         sudokuSolver(emptyCells, board, 0);
     }
 
+    // leetcode 52 ===================================
+    public static boolean isSafeToPlaceHere(boolean[][] board, int row, int col,int n){
+        // int[][] dirs = {{-1,-1},{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1}};
+
+        // We only need to look on top-left, top and top-right
+        int[][] dirs = {{-1,-1},{-1,0},{-1,1}};
+ 
+        for(int dis=1; dis<=n; dis++){ // dis <= row
+            for(int[] dir: dirs){
+                int nRow = row + dis * dir[0];
+                int nCol = col + dis * dir[1];
+
+                if(nRow >=0 && nCol >=0 && nRow < n && nCol < n && board[nRow][nCol] == true){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public static int nQueens(boolean[][] board, int n, int row){
+        if(row == n){
+            return 1;
+        }
+
+        int ans = 0;
+        for(int col=0; col<n; col++){
+            // if(isSafeToPlaceHere(board,row,col,n)){ // takes time of O(N)
+                // board[row][col] = true;
+                colVis[col] == false;
+                colVis[col] = true;
+
+                ans += nQueens(board, n, row+1);
+
+                // board[row][col] = false;
+                colVis[col] = false;
+            }
+        }
+
+        return ans;
+    }
+
+    // nQueen Optimised using col, diag and Anti-diagonal visited arrays =============================
+    public int nQueensOptimised(int row, boolean[] colVis, boolean[] diagVis, boolean[] aDiagVis, int n){
+        if(row == n){
+            return 1;
+        }   
+
+        int ans = 0;
+
+        for(int col = 0; col < n; col++){
+            if(colVis[col] == false && diagVis[col-row + n-1] == false && aDiagVis[row+col] == false){
+
+                colVis[col] = true;
+                diagVis[col - row + n - 1] = true;
+                aDiagVis[row+col] = true;
+
+                ans += nQueensOptimised(row+1, colVis, diagVis, aDiagVis, n);
+
+                colVis[col] = false;
+                diagVis[col - row + n - 1] = false;
+                aDiagVis[row+col] = false;
+            }
+        }
+
+        return ans;
+    }
+
+    // how to set Kth Bit true
+    public int setKthBitTrue(int num, int k){
+        int mask = (1 << k);
+        
+        int newNum = num | mask;
+        return newNum;
+    } 
+
+    // how to set Kth Bit false
+    public int setKthBitFalse(int num, int k){
+        int mask = ~(1 << k);
+
+        int newNum = num & mask;
+        return newNum;
+    }
+
+    // how to check Kth Bit is true or false
+    public boolean checkKthBit(int num, int k){
+        
+    }
+
+    public int totalNQueens(int n) {
+        // return nQueens(new boolean[n][n],n,0);
+
+        boolean[] colVis = new boolean[n];
+        boolean[] diagVis = new boolean[2*n-1];
+        boolean[] aDiagVis = new boolean[2*n-1];
+
+        return nQueensOptimised(0,colVis,diagVis,aDiagVis,n);
+    }
 
 
 
