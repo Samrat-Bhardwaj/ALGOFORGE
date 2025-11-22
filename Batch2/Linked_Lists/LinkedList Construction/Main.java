@@ -158,13 +158,14 @@ class LinkedList {
         this.size--;
     }
 
+    // TC : O(N^2)
     public void reverseLinkedListDataIteratively(){
         int i = 0;
         int j = size - 1;
 
-        while(i < j){
-            Node NodeAtI = getNodeAt(i);
-            Node NodeAtJ = getNodeAt(j);
+        while(i < j){ // O(N)
+            Node NodeAtI = getNodeAt(i); // O(N)
+            Node NodeAtJ = getNodeAt(j); // O(N)
 
             int dataAtI = NodeAtI.data;
             int dataAtJ = NodeAtJ.data;
@@ -176,6 +177,28 @@ class LinkedList {
             i++;
             j--;
         }
+    }
+
+    // TC : O(N)
+    public void reverseLinkedList(){
+        Node curr = head;
+        Node prev = null;
+
+        while(curr != null){
+            // find curr ka Next
+            Node currKaNext = curr.next;
+
+            // change connections -> point to prev node
+            curr.next = prev;
+
+            // move pointers for next iteration
+            prev = curr;
+            curr = currKaNext;
+        }
+
+        // prev pointer is not at new head;
+        tail = head; // new tail is now at original head
+        head = prev; // new head is now the last node (prev)
     }
 
     public void display(){
@@ -204,7 +227,7 @@ class Main {
 
         // System.out.println(ll.getNodeAt(4).data);
 
-        ll.reverseLinkedListDataIteratively();
+        ll.reverseLinkedList();
         ll.display();
     }
 }
