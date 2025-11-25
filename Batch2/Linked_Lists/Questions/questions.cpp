@@ -49,6 +49,80 @@ ListNode* reverseList(ListNode* head) {
         return slow->data;    
     }
 
+    ListNode* getMiddleNode(ListNode* head) {
+        ListNode* slow = head;
+        ListNode* fast = head;
+
+        while(fast->next != NULL && fast->next->next != NULL){ // first condition for odd-size LL, second for even
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        return slow;
+    }
+
+    // leetcode 143 (Re-order list)
+    void reorderList(ListNode* head) {
+        if(head == nullptr || head->next == nullptr){
+            return;
+        }
+
+        ListNode* mid = getMiddleNode(head);
+
+        // extracting second half as list
+        ListNode* secondHead = mid->next;
+        mid->next = nullptr;
+
+        secondHead = reverseList(secondHead);
+
+        // Creating answer list
+        ListNode* dummy = new ListNode(-1);
+        ListNode* curr = dummy;
+        ListNode* ptr1 = head;
+        ListNode* ptr2 = secondHead;
+
+        while(ptr1!= nullptr && ptr2 != nullptr){
+            // attaching ptr1
+            curr->next = ptr1;
+            ptr1 = ptr1->next;
+            curr = curr->next;
+
+            // attaching ptr2 to answer list
+            curr->next = ptr2;
+            ptr2 = ptr2->next;
+            curr = curr->next;
+        }
+
+        if(ptr1 != nullptr){
+            curr->next = ptr1;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int main(){
     return 0;
 }

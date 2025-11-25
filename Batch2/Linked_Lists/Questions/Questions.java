@@ -103,4 +103,182 @@ class Questions {
         
         return isPall;
     }
+
+    // leetcode 143 (Re-order list)
+    public void reorderList(ListNode head) {
+        if(head == null || head.next == null){
+            return;
+        }
+
+        ListNode mid = getMiddleNode(head);
+
+        // extracting second half as list
+        ListNode secondHead = mid.next;
+        mid.next = null;
+
+        secondHead = reverseList(secondHead);
+
+        // Creating answer list
+        ListNode dummy = new ListNode(-1);
+        ListNode curr = dummy;
+        ListNode ptr1 = head;
+        ListNode ptr2 = secondHead;
+
+        while(ptr1!= null && ptr2 != null){
+            // isolating ptr1
+            ListNode ptr1KaNext = ptr1.next;
+            ptr1.next = null;
+
+            // attaching ptr1 to answer list
+            curr.next = ptr1;
+
+            // move ptr1 and curr
+            ptr1 = ptr1KaNext;
+            curr = curr.next;
+
+            // isolating ptr2
+            ListNode ptr2KaNext = ptr2.next;
+            ptr2.next = null;
+
+            // attaching ptr2 to answer list
+            curr.next = ptr2;
+
+            // move ptr2 and curr
+            ptr2 = ptr2KaNext;
+            curr = curr.next;
+        }
+
+        if(ptr1 != null){
+            curr.next = ptr1;
+        }
+    }
+
+    // leetcode 328 (Separate odd and even indexed elements)
+    public ListNode oddEvenList(ListNode head) {
+        ListNode oddDummy = new ListNode(-1);
+        ListNode evenDummy = new ListNode(-1);
+
+        ListNode curr = head;
+        ListNode oddCurr = oddDummy;
+        ListNode evenCurr = evenDummy;
+
+        int pos = 1;
+
+        while(curr != null){
+            ListNode currKaNext = curr.next;
+            curr.next = null;
+
+            if(pos % 2 == 0){
+                evenCurr.next = curr;
+                evenCurr = evenCurr.next;
+            } else {
+                oddCurr.next = curr;
+                oddCurr = oddCurr.next;
+            }
+
+            curr = currKaNext;
+            pos++;
+        }
+
+        ListNode oddListHead = oddDummy.next;
+        ListNode evenListHead = evenDummy.next;
+
+        oddCurr.next = evenListHead;
+        return oddListHead;
+    }
+
+    // https://www.geeksforgeeks.org/problems/segregate-even-and-odd-nodes-in-a-linked-list5035/1
+    Node divide(Node head) {
+        Node oddDummy = new Node(-1);
+        Node evenDummy = new Node(-1);
+
+        Node curr = head;
+        Node evenCurr = evenDummy;
+        Node oddCurr = oddDummy;
+
+        while(curr != null){
+            Node currKaNext = curr.next;
+            curr.next = null;
+
+            if(curr.data % 2 == 0){
+                evenCurr.next = curr;
+                evenCurr = evenCurr.next;
+            } else {
+                oddCurr.next = curr;
+                oddCurr = oddCurr.next;
+            }
+
+            curr = currKaNext;
+        }
+
+        evenCurr.next = oddDummy.next;
+        return evenDummy.next;
+    }
+
+    // Leetcode 25 (Reverse nodes in k-group) 
+    class Solution {
+        public int getSize(ListNode head){
+            ListNode temp = head;
+            int size = 0;
+
+            while(temp != null){
+                size++;
+                temp = temp.next;
+            }
+            
+            return size;
+        }
+
+        ListNode tHead;
+        ListNode tTail;
+        public void addFirst(ListNode node){
+            if(tHead == null){
+                tHead = node;
+                tTail = node;
+            } else {
+                node.next = tHead;
+                tHead = node;
+            }
+        }
+
+        public ListNode reverseKGroup(ListNode head, int k) {
+            ListNode oHead = null;
+            ListNode oTail = null;
+            tHead = null;
+            tTail = null;
+
+            int size = getSize(head);
+            ListNode curr = head;
+
+            while(size >= k){
+                int K = k;
+
+                // remove next K nodes and make smaller list
+                while(K-- > 0){
+                    ListNode currKaNext = curr.next;
+                    curr.next = null;
+
+                    addFirst(curr);
+
+                    curr = currKaNext;
+                    size--;
+                }
+
+                // attach smaller (temp) list to original list
+                if(oHead == null){
+                    oHead = tHead;
+                    oTail = tTail;
+                } else {
+                    oTail.next = tHead;
+                    oTail = tTail;
+                }
+
+                tHead = null;
+                tTail = null;
+            }
+
+            oTail.next = curr;
+            return oHead;
+        }
+    }
 }
