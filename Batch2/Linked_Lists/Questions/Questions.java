@@ -281,4 +281,110 @@ class Questions {
             return oHead;
         }
     }
+
+    // Leetcode 138 (Copy list with random pointer) ===========================================================
+    class Solution {
+        public Node addCopyNodes(Node head){
+            Node curr = head;
+
+            while(curr != null){
+                Node currKaNext = curr.next;
+
+                Node copyNode = new Node(curr.val);
+
+                // inserting in between
+                curr.next = copyNode;
+                copyNode.next = currKaNext;
+
+                // move curr
+                curr = currKaNext;
+            }
+
+            return head;
+        }
+
+        public void assignRandom(Node head){
+            Node curr = head;
+
+            while(curr != null){
+                Node copyNode = curr.next;
+
+                if(curr.random != null){
+                    copyNode.random = curr.random.next;
+                }
+                
+                curr = curr.next.next;
+            }
+        }
+
+        public Node removeCopyList(Node head){
+            Node dummy = new Node(-1);
+            Node curr = head;
+            Node copyCurr = dummy;
+
+            while(curr != null){
+                Node copyNode = curr.next;
+                Node currKaNext = curr.next.next;
+
+                copyCurr.next = copyNode;
+                curr.next = currKaNext;
+
+                curr = currKaNext;
+                copyCurr = copyCurr.next;
+            }
+
+            return dummy.next;
+        }
+
+        public Node copyRandomList(Node head) {
+            head = addCopyNodes(head);
+            assignRandom(head);
+
+            return removeCopyList(head);
+        }
+    }
+
+    // Leetcode 83 Delete duplicates keeping the first one ================================
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode curr = head;
+
+        while(curr != null && curr.next != null){
+            if(curr.val == curr.next.val){ // in case of duplicate, remove the next node by changing curr.next
+                curr.next = curr.next.next;
+            } else { // in case no duplicate, move to next 
+                curr = curr.next;
+            }
+        }
+
+        return head;
+    }
+
+    // leetcode 82 Delete all the duplicates ==============================================
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null || head.next == null){
+            return head;
+        }
+
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+
+        ListNode curr = dummy;
+
+        while(curr.next != null && curr.next.next != null){
+            if(curr.next.val == curr.next.next.val){
+                ListNode temp = curr.next;
+                int duplicateValue = curr.next.val;
+
+                while(temp!=null && temp.val == duplicateValue){
+                    temp = temp.next;
+                }
+
+                curr.next = temp;
+            } else {
+                curr = curr.next;
+            }
+        }
+
+        return dummy.next;
+    }
 }
