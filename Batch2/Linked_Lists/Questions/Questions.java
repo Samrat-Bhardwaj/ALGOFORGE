@@ -387,4 +387,116 @@ class Questions {
 
         return dummy.next;
     }
+
+    // Leetcode 237 (How to virtually delete a node) =====================================
+    public void deleteNode(ListNode node) {
+        ListNode nodeKaNext = node.next;
+
+        // delete the next node
+        node.next = node.next.next;
+        
+        // copy nodeKaNext data here
+        node.val = nodeKaNext.val;
+    }
+
+    // Leetcode 114 (LinkedList cycle)======================================
+    public boolean hasCycle(ListNode head) {
+        if(head == null || head.next == null){
+            return false;
+        }
+
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+
+            if(slow == fast){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Find the starting point of LinkedList cycle (Leetcode 142)
+    public ListNode detectCycle(ListNode head) {
+        if(head == null || head.next == null){
+            return null;
+        }
+
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+
+            if(slow == fast){
+                break;
+            }
+        }
+
+        if(slow != fast){ // no cycle exist
+            return null;
+        }
+
+        // Find starting point
+        fast = head;
+        while(slow != fast){
+            slow = slow.next;
+            fast = fast.next;
+        }
+
+        return slow; // or return fast;
+    }
+
+    // Get intersection point of Y Linkedlist (Leetcode 160) ===================
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode temp = headA;
+
+        while(temp.next != null){
+            temp = temp.next;
+        }
+
+        ListNode tailA = temp;
+
+        tailA.next = headA; // or headB
+        ListNode intersectionNode = detectCycle(headB); // if tail is connected to headB, send headA here
+
+        tailA.next = null; // fixing the list again
+
+        return intersectionNode;
+    }
+
+    // Leetcode 21 (Merge two sorted lists) ================================
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode temp1 = list1;
+        ListNode temp2 = list2;
+
+        ListNode dummy = new ListNode(-1);
+        ListNode curr = dummy;
+
+        while(temp1 != null && temp2 != null){
+            if(temp1.val < temp2.val){
+                curr.next = temp1;
+                temp1 = temp1.next;
+            } else {
+                curr.next = temp2;
+                temp2 = temp2.next;
+            }
+
+            curr = curr.next;
+        }
+
+        // connect rest of the lists
+        if(temp2 == null){
+            curr.next = temp1;
+        } else {
+            curr.next = temp2;
+        }
+
+        return dummy.next;
+    }
 }
