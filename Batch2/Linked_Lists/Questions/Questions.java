@@ -499,4 +499,128 @@ class Questions {
 
         return dummy.next;
     }
-}
+
+    // Doubly LinkedList Question (Design Broswer History - Leetcode 1472) =========================================
+
+    class BrowserHistory {
+        class Node {
+            String data;
+            Node next;
+            Node prev;
+
+            public Node(String data){
+                this.data = data;
+            }
+        }
+    
+        Node curr;
+        public BrowserHistory(String homepage) {
+            curr = new Node(homepage);
+        }
+        
+        public void visit(String url) {
+            Node newNode = new Node(url);
+
+            // attaching new Url node at the end
+            curr.next = newNode;
+            newNode.prev = curr;
+
+            // moving curr to new url node
+            curr = newNode;
+        }
+        
+        public String back(int steps) {
+            while(curr.prev != null && steps-- > 0){
+                curr = curr.prev;
+            }
+
+            return curr.data;
+        }
+        
+        public String forward(int steps) {
+            while(curr.next != null && steps-- > 0){
+                curr = curr.next;
+            }
+
+            return curr.data;
+        }
+    }
+
+    // Leetcode 92 (Revese linkedlist from left idx to right) ===================
+    public ListNode getNodeAt(ListNode head, int idx){ // 1-base indexing
+        ListNode temp = head;
+
+        while(idx > 1){
+            temp = temp.next;
+            idx--;
+        }
+
+        return temp;
+    }
+
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+
+        ListNode leftPrev = getNodeAt(dummy,left);
+        ListNode rightPrev = getNodeAt(dummy,right+1);
+
+        ListNode leftNext = leftPrev.next;
+        ListNode rightNext = rightPrev.next;
+
+        // removing the list to be reversed
+        leftPrev.next = null;
+        rightPrev.next = null;
+
+        // reverse the list (reversing the list from leftNext to rightPrev)
+        ListNode reversedListHead = reverseList(leftNext);
+
+        // add the list back
+        leftPrev.next = reversedListHead; // leftPrev.next = rightPrev;
+        leftNext.next = rightNext; 
+
+        return dummy.next;
+    }
+
+    // Leetcode 1669 =======================================
+    public ListNode getNodeAt(ListNode head, int idx){ // 0-base indexing
+        ListNode temp = head;
+
+        while(idx > 0){
+            temp = temp.next;
+            idx--;
+        }
+
+        return temp;
+    }
+
+    public ListNode getTail(ListNode head){
+        ListNode temp = head;
+        while(temp.next != null){
+            temp = temp.next;
+        }
+
+        return temp;
+    }
+
+    public ListNode mergeInBetween(ListNode list1, int a, int b, ListNode list2) {
+        ListNode leftPrev = getNodeAt(list1,a-1);
+        ListNode rightPrev = getNodeAt(list1,b);
+
+        ListNode rightNext = rightPrev.next;
+
+        // removing the list
+        leftPrev.next = null;
+        rightPrev.next = null;
+
+        ListNode list2Tail = getTail(list2);
+
+        // adding secondList
+        leftPrev.next = list2;
+        list2Tail.next = rightNext;
+
+        return list1;
+    }
+
+    // Homework Leetcode 2074 (https://leetcode.com/problems/reverse-nodes-in-even-length-groups/description/)
+} 
