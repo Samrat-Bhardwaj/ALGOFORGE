@@ -350,76 +350,119 @@ class Questions {
 
     // to submit on GFG (^ dont have left to right precedence but right to left)
     class Solution {
-    public int precedence(char ch){
-        if(ch == '^'){
-            return 3;
-        }else if(ch == '+' || ch == '-'){
-            return 1;
-        } else if(ch == '/' || ch == '*'){ 
-            return 2;
-        } else {
-            return 0;
-        }
-    }
-    
-    public String infixToPrefix(String exp) {
-        // code here
-        Stack<Character> operators = new Stack<>();
-        Stack<String> prefix = new Stack<>();
-
-        for(int i=0; i<exp.length(); i++){
-            char ch = exp.charAt(i);
-
-            if(ch == '('){
-                operators.push(ch);
-            } else if(ch == '+' || ch == '-' || ch == '/' || ch == '*' || ch =='^'){
-
-                while(operators.size() > 0 && (precedence(operators.peek()) > precedence(ch) || (precedence(operators.peek()) == precedence(ch) && ch !='^'))){
-
-                    char op = operators.pop();
-
-                    // create prefix
-                    String v2 = prefix.pop();
-                    String v1 = prefix.pop();
-
-                    String preRes = op + v1 + v2;
-                    prefix.push(preRes);
-                }
-
-                operators.push(ch);
-            } else if(ch == ')'){
-
-                while(operators.peek() != '('){
-                    char op = operators.pop();
-
-                    // create prefix
-                    String v2 = prefix.pop();
-                    String v1 = prefix.pop();
-
-                    String preRes = op + v1 + v2;
-                    prefix.push(preRes);
-                }
-                
-                operators.pop();
+        public int precedence(char ch){
+            if(ch == '^'){
+                return 3;
+            }else if(ch == '+' || ch == '-'){
+                return 1;
+            } else if(ch == '/' || ch == '*'){ 
+                return 2;
             } else {
-                prefix.push(ch + "");
+                return 0;
             }
         }
+        
+        public String infixToPrefix(String exp) {
+            // code here
+            Stack<Character> operators = new Stack<>();
+            Stack<String> prefix = new Stack<>();
 
-        while(operators.size() > 0){
-            char op = operators.pop();
+            for(int i=0; i<exp.length(); i++){
+                char ch = exp.charAt(i);
 
-            // create prefix
-            String v2 = prefix.pop();
-            String v1 = prefix.pop();
+                if(ch == '('){
+                    operators.push(ch);
+                } else if(ch == '+' || ch == '-' || ch == '/' || ch == '*' || ch =='^'){
 
-            String preRes = op + v1 + v2;
-            prefix.push(preRes);
+                    while(operators.size() > 0 && (precedence(operators.peek()) > precedence(ch) || (precedence(operators.peek()) == precedence(ch) && ch !='^'))){
+
+                        char op = operators.pop();
+
+                        // create prefix
+                        String v2 = prefix.pop();
+                        String v1 = prefix.pop();
+
+                        String preRes = op + v1 + v2;
+                        prefix.push(preRes);
+                    }
+
+                    operators.push(ch);
+                } else if(ch == ')'){
+
+                    while(operators.peek() != '('){
+                        char op = operators.pop();
+
+                        // create prefix
+                        String v2 = prefix.pop();
+                        String v1 = prefix.pop();
+
+                        String preRes = op + v1 + v2;
+                        prefix.push(preRes);
+                    }
+                    
+                    operators.pop();
+                } else {
+                    prefix.push(ch + "");
+                }
+            }
+
+            while(operators.size() > 0){
+                char op = operators.pop();
+
+                // create prefix
+                String v2 = prefix.pop();
+                String v1 = prefix.pop();
+
+                String preRes = op + v1 + v2;
+                prefix.push(preRes);
+            }
+
+            return prefix.peek();
+        }
+    }
+
+    // Homework problems -> Prefix to infix, postfix to infix conversion 
+
+
+    // Leetcode 239
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length;
+
+        int[] ngr = new int[n];
+        Stack<Integer> st = new Stack<>();
+
+        for(int i=0; i<n; i++){
+            while(st.size() > 0 && nums[st.peek()] < nums[i]){
+                ngr[st.pop()] = i;
+            }
+
+            st.push(i);
         }
 
-        return prefix.peek();
+        while(st.size() > 0){
+            ngr[st.pop()] = n;
+        }
+
+        int[] ans = new int[n-k+1];
+        int answerIdx = 0;
+
+        for(int idx=0; idx<ans.length; idx++){ // idx = starting point of window
+            if(answerIdx < idx){
+                answerIdx = idx;
+            }
+
+            while(ngr[answerIdx] < idx + k){
+                answerIdx = ngr[answerIdx];
+            }
+
+            ans[idx] = nums[answerIdx];
+        }
+        
+        return ans;
     }
-}
+
+
+
 
 
 
