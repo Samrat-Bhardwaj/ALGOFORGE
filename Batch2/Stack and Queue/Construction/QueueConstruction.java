@@ -1,15 +1,53 @@
 class MyQueue {
     final int maxSize = 7;
+    private int[] data;
+    private int front;
+    private int size;
 
-    public MyQueue(){}
+    public MyQueue(){
+        data = new int[maxSize];
+        front = 0;
+        size = 0;
+    }
 
-    public void add(int val){}
+    public void add(int val){
+        if(size == maxSize){
+            System.out.println("Queue Overflow");
+            return;
+        }
 
-    public int pop(){}
+        int idx = (front + size) % data.length;
+        data[idx] = val;
 
-    public int peek(){}
+        size++;
+    }
 
-    public int size(){}
+    public int pop(){
+        if(size == 0){
+            System.out.println("Queue empty Exception!!");
+            return -1;
+        }
+
+        int frontEle = data[front];
+
+        front = (front + 1) % data.length;
+        size--;
+
+        return frontEle;
+    }
+
+    public int peek(){
+        if(size == 0){
+            System.out.println("Queue empty Exception!!");
+            return -1;
+        }
+
+        return data[front];
+    }
+
+    public int size(){
+        return size;
+    }
 }
 
 class QueueConstruction {
