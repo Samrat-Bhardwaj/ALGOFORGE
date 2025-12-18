@@ -8,59 +8,31 @@ class MyQueue {
 
     // O(1)
     public void add(int val){
-        data.push(val);
+        
     }
 
-    // O(N)
+    // O(1)
     public int remove(){
         if(data.size() == 0){
             System.out.println("Queue is empty!!");
             return -1;
         }
 
-        Stack<Integer> temp = new Stack<>();
-
-        // remove everything to get to bottom value in stack
-        while(data.size() > 1){
-            temp.push(data.pop());
-        }
-
-        int queueFrontValue = data.pop();
-
-        // fill original stack again
-        while(temp.size() > 0){
-            data.push(temp.pop());
-        }
-
-        return queueFrontValue;
+        return data.pop();
     }
 
-    // O(N)
+    // O(1)
     public int peek(){
         if(data.size() == 0){
             System.out.println("Queue is empty!!");
             return -1;
         }
 
-        Stack<Integer> temp = new Stack<>();
-
-        // remove everything to get to bottom value in stack
-        while(data.size() > 1){
-            temp.push(data.pop());
-        }
-
-        int queueFrontValue = data.peek(); // do not remove as its peek
-        
-        // fill original stack again
-        while(temp.size() > 0){
-            data.push(temp.pop());
-        }
-
-        return queueFrontValue;
+        return data.peek();
     }
 }
 
-class QueueUsingStackAddEfficient {
+class QueueUsingStackRemoveEfficient {
     public static void main(String[] args){
         MyQueue que = new MyQueue();
 
