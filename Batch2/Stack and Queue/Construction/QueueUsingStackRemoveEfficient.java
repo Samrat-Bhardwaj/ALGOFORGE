@@ -6,9 +6,21 @@ class MyQueue {
         data = new Stack<>();
     }
 
-    // O(1)
+    // O(N)
     public void add(int val){
-        
+        Stack<Integer> temp = new Stack<>();
+
+        // store values somewhere else
+        while(data.size() > 0){
+            temp.push(data.pop());
+        }
+
+        data.push(val);
+
+        // replenish data values
+        while(temp.size() > 0){
+            data.push(temp.pop());
+        }
     }
 
     // O(1)
