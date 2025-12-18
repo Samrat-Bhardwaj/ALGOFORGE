@@ -6,52 +6,40 @@ class MyStack {
         data = new LinkedList<>();
     }
 
-    // O(1)
     public void push(int val){
-        data.addLast(val);
+        LinkedList<Integer> newData = new LinkedList<>();
+        newData.addLast(val);
+
+        // push old data
+        while(data.size() > 0){
+            newData.addLast(data.removeFirst());
+        }
+
+        data = newData;
     }
 
-    // O(N)
+    // O(1)
     public int pop(){
         if(data.size() == 0){
             System.out.println("Stack empty Exception!!");
             return -1;
         }
 
-        LinkedList<Integer> newData = new LinkedList<>();
-        while(data.size() > 1){
-            int frontValue = data.removeFirst();
-            newData.addLast(frontValue);
-        }
-
-        int stackTopValue = data.removeFirst();
-        data = newData;
-
-        return stackTopValue;
+        return data.removeFirst();
     }
 
-    // O(N)
+    // O(1)
     public int peek(){
         if(data.size() == 0){
             System.out.println("Stack empty Exception!!");
             return -1;
         }
 
-        LinkedList<Integer> newData = new LinkedList<>();
-        while(data.size() > 1){
-            int frontValue = data.removeFirst();
-            newData.addLast(frontValue);
-        }
-
-        int stackTopValue = data.removeFirst();
-        newData.addLast(stackTopValue);
-        data = newData;
-        
-        return stackTopValue;
+        return data.getFirst();
     }
 }
 
-class StackUsingQueuePushEfficient {
+class StackUsingQueuePopEfficient {
     public static void main(String[] args){
         MyStack st = new MyStack();
 
