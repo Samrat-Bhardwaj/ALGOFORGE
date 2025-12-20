@@ -461,6 +461,142 @@ class Questions {
         return ans;
     }
 
+    // Leetcode 56 (Merge intervals) ===========================================
+    class Pair {
+        int startTime;
+        int endTime;
+
+        public Pair(int startTime, int endTime){
+            this.startTime = startTime;
+            this.endTime = endTime;
+        }
+    }
+
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, (int[] a, int[] b) -> {    
+            return a[0] - b[0]; // increasing order on the basis of 0th index, for decreasing b[0] - a[0];
+        });
+
+        int n = intervals.length;
+        Pair[] timeIntervals = new Pair[n];        
+
+        for(int i=0; i<n; i++){
+            timeIntervals[i] = new Pair(intervals[i][0], intervals[i][1]);
+        }
+
+        Stack<Pair> st = new Stack<>();
+
+        for(int i=0; i<n; i++){
+            Pair current = timeIntervals[i];
+            
+            if(st.size() > 0 && st.peek().endTime >= current.startTime){
+                Pair prev = st.pop();
+
+                current.startTime = prev.startTime; // ??
+                current.endTime = Math.max(prev.endTime, current.endTime);
+            }
+
+            st.push(current);
+        }
+
+        int[][] ans = new int[st.size()][2];
+        // order of answer doesn't matter
+        for(int i=0; i<ans.length; i++){
+            ans[i][0] = st.peek().startTime;
+            ans[i][1] = st.peek().endTime;
+
+            st.pop();
+        }
+
+        // for increasing order (not required in this question), reverse the answer array
+        // for(int i=0; i<ans.length/2; i++){
+        //     int[] temp = ans[i];
+
+        //     ans[i] = ans[ans.length - i - 1];
+        //     ans[ans.length - i - 1] = temp;
+        // }
+
+        return ans;
+    }
+
+    // Leetcode 155 (Min Stack) in O(N) extra space ========================================= 
+    class MinStack {
+        Stack<Integer> data;
+        Stack<Integer> minSoFar;
+
+        public MinStack() {
+            data = new Stack<>();
+            minSoFar = new Stack<>();
+        }
+        
+        public void push(int val) {
+            if(minSoFar.size() == 0 || val <= minSoFar.peek()){
+                minSoFar.push(val); // new minimum
+            }
+
+            data.push(val);
+        }
+        
+        public void pop() {
+            // why .equals rather than "==" => because "Integer" object is being compared and not "int"
+            if(minSoFar.peek().equals(data.peek())){
+                minSoFar.pop();
+            }
+
+            data.pop();
+        }
+        
+        public int top() {
+            return data.peek();
+        }
+        
+        public int getMin() {
+            return minSoFar.peek();
+        }
+    }
+
+    // Leetcode 155 (Min Stack) in O(1) extra space ========================================= 
+    class MinStack {
+        Stack<Long> data;
+        long min;
+        public MinStack() {
+            data = new Stack<>();
+        }
+        
+        public void push(int val) {
+            long x = val;
+            if(data.size() == 0){
+                min = x;
+                data.push(x);
+            } else if(x < min){
+                data.push(2*x - min);
+                min = x;
+            } else {
+                data.push(x);
+            }
+        }
+        
+        public void pop() {
+            if(data.peek() < min){
+                long prev_min = 2*min - data.peek();
+                min = prev_min;
+            }
+
+            data.pop();
+        }
+        
+        public int top() {
+            if(data.peek() < min){
+                return (int)min;
+            }
+
+            return Math.toIntExact(data.peek());
+        }
+        
+        public int getMin() {
+            return (int)min;
+        }
+}
 
 
 
