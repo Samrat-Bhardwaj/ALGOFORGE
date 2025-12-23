@@ -596,7 +596,119 @@ class Questions {
         public int getMin() {
             return (int)min;
         }
+
+    // Leetcode 503(Next greater element in circular array) ===========================
+    public int[] nextGreaterElements(int[] nums) {
+        int n = nums.length;
+
+        Stack<Integer> st = new Stack<>();
+
+        int[] ngr = new int[n];
+        Arrays.fill(ngr, -1); // O(N)
+
+        for(int i=0; i<2*n; i++){
+            while(st.size() > 0 && nums[st.peek()] < nums[i%n]){
+                ngr[st.pop()] = nums[i%n];
+            }
+
+            if(i < n){
+                st.push(i);
+            }
+        }
+
+        return ngr;
+    }
+
+    // Validate stack sequences (Leetcode 946) ==================================
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        int n = pushed.length;
+        Stack<Integer> st = new Stack<>();
+
+        int j = 0; // to traverse on popped
+
+        for(int i=0; i<n; i++){
+            while(st.size() > 0 && st.peek() == popped[j]){
+                st.pop();
+                j++;
+            }
+
+            st.push(pushed[i]);
+        }
+
+        while(st.size() > 0 && st.peek() == popped[j]){
+            st.pop();
+            j++;
+        }
+
+        return j == n; // st.isEmpty();
+    }
+
+    // leetcode 921 (Minimum add to make parentheses valid) ============================
+    public int minAddToMakeValid(String s) {
+        int opening_bracket_req = 0;
+        int extra_opening_bracket = 0;
+
+        for(int i=0; i<s.length(); i++){
+            if(s.charAt(i) == '('){
+                extra_opening_bracket++;
+            } else {
+                if(extra_opening_bracket == 0){
+                    opening_bracket_req++;
+                } else {
+                    extra_opening_bracket--;
+                }
+            }
+        }
+
+        return extra_opening_bracket + opening_bracket_req; 
+    }
+
+    // Leetcode 1541 [Min insertions where one '(' is equal to 2 '))'  ]
+    public int minInsertions(String s) {
+        int n = s.length();
+        int extra_ob = 0;
+        int ob_requirement = 0;
+        int cb_requirement = 0;
+
+        for(int i=0; i<n; i++){
+            if(s.charAt(i) == '('){
+                extra_ob++;
+            } else {
+                // check if one ')' or two
+                if(i+1 < n && s.charAt(i+1) == ')'){
+                    i++;
+                } else {
+                    cb_requirement++;
+                }
+
+                if(extra_ob == 0){
+                    ob_requirement++;
+                } else {
+                    extra_ob--;
+                }
+            }
+        }
+
+        return 2*extra_ob + ob_requirement + cb_requirement;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
 
 
 
