@@ -693,6 +693,53 @@ class Questions {
     }
 
 
+    // leetcode 678 (Valid parentheses with *)
+    public boolean checkValidString(String s) {
+        int max = 0;
+        int min = 0;
+
+        for(int i=0; i<s.length(); i++){
+            char ch = s.charAt(i);
+
+            if(ch == '('){
+                max++;
+                min++;
+            } else if(ch == ')'){
+                max--;
+                min--;
+            } else {
+                max++; // considering * as '('
+                min--; // considering * as ')'
+            }
+
+            if(max < 0){ // more closing brackets was seen so far
+                return false;
+            }
+
+            if(min < 0){ // we considered some star to be ')' which we shouldn't have
+                min = 0;
+            }
+        }
+
+        return min == 0; // if min > 0, we had more opening brackets
+    }
+
+    public boolean find132pattern(int[] nums) {
+        int n = nums.length;
+
+        int[] minSoFar = new int[n];
+        int min = nums[0];
+
+        for(int i=0; i<n; i++){
+            min = Math.min(min, nums[i]);
+            minSoFar[i] = min;
+        }
+
+        // minSoFar[idx] = minimum from 0th index to "idx" index (first number in pattern)
+
+        // find 32
+    }
+
 
 
 
