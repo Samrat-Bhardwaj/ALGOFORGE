@@ -891,6 +891,7 @@ class Questions {
         return totalWater;
     }
 
+    // Leetcode 42 (Traping rain water using Stack in one iteration) ===================================
     public int trap(int[] height) {
         int totalWater = 0;
         Stack<Integer> st = new Stack<>();
@@ -918,16 +919,42 @@ class Questions {
         return totalWater;
     }
 
+    // Leetcode 42 (Trapping rain water in O(1) space)
+    public int trap(int[] height) {
+        int n = height.length;
 
+        int left = 0;
+        int right = n-1;
 
+        int lmax = height[0];
+        int rmax = height[n-1];
+        int totalWater = 0;
 
+        while(left < right){
+            if(lmax <= rmax){
+                totalWater += lmax - height[left];
 
+                left++;
+                lmax = Math.max(lmax, height[left]);
+            } else {
+                totalWater += rmax - height[right];
 
+                right--;
+                rmax = Math.max(rmax, height[right]);
+            }
+        }
 
-
-
-
+        return totalWater;
+    }
 }
+
+
+
+
+
+
+
+
 
 
 
