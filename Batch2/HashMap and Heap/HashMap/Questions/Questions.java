@@ -111,6 +111,67 @@ class Questions {
         return res;
     }
 
+    // All common elements (https://www.geeksforgeeks.org/problems/common-elements5420/1)
+    public static ArrayList<Integer> commonElements(int a[], int b[]) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        for(int ele: a){
+            if(map.containsKey(ele) == false){
+                map.put(ele, 1);
+            } else {
+                int olderFre = map.get(ele);
+                map.put(ele, olderFre + 1);
+            }
+        }
+
+        ArrayList<Integer> ans = new ArrayList<>();
+        for(int ele: b){
+            if(map.containsKey(ele) && map.get(ele) > 0){
+                ans.add(ele);
+
+                // reduce frequence
+                int currentFre = map.get(ele);
+                map.put(ele, currentFre - 1);
+            }
+        }
+        // result should be sorted
+        Collections.sort(ans);
+
+        return ans;
+    }
+
+    // Leetcode 128 (Longest consecutive sequence) =========================================
+    public int longestConsecutive(int[] nums) {
+        HashSet<Integer> set = new HashSet<>();
+
+        for(int ele: nums){
+            set.add(ele);
+        }    
+
+        int maxLen = 0;
+
+        for(int ele: nums){
+            if(set.contains(ele) == false) continue;
+
+            int left = ele - 1;
+            int right = ele + 1;
+
+            while(set.contains(left)){
+                set.remove(left);
+                left--;
+            }
+
+            while(set.contains(right)){
+                set.remove(right);
+                right++;
+            }
+
+            maxLen = Math.max(maxLen, right - left - 1);
+        }
+
+        return maxLen;
+    }
+
 
 
 
