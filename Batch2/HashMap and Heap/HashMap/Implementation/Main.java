@@ -31,6 +31,7 @@ class Main {
             }
         }
 
+        // O(1)
         private int findBucketIndex(K key){
             int hc = key.hashCode(); // -16 || 5;
             int bucketIndex = Math.abs(hc) % number_of_buckets;
@@ -38,6 +39,7 @@ class Main {
             return bucketIndex;
         }
 
+        // Avg O(1)
         private int findKeyIndex(K key, int bucketIndex){
             int keyIndex = 0;
 
@@ -51,6 +53,7 @@ class Main {
             return -1;
         }        
 
+        // Avg O(1)
         public void put(K key, V value){
             int bucketIndex = findBucketIndex(key);
             int keyIndex = findKeyIndex(key, bucketIndex);
@@ -73,6 +76,7 @@ class Main {
             }
         }
 
+        // O(N)
         private void rehash(){
             this.size = 0;
             this.number_of_buckets *= 2;
@@ -91,6 +95,7 @@ class Main {
             }
         }
 
+        // Avg O(1)
         public V get(K key){
             int bucketIndex = findBucketIndex(key);
             int keyIndex = findKeyIndex(key, bucketIndex);
@@ -104,6 +109,7 @@ class Main {
             }
         }
 
+        // Avg O(1)
         public boolean containsKey(K key){
             int bucketIndex = findBucketIndex(key);
             int keyIndex = findKeyIndex(key, bucketIndex);
@@ -117,6 +123,7 @@ class Main {
             // return keyIndex != -1;
         }
 
+        // Avg O(1)
         public V remove(K key){
             int bucketIndex = findBucketIndex(key);
             int keyIndex = findKeyIndex(key, bucketIndex);
@@ -129,6 +136,7 @@ class Main {
             }
         }
 
+        // O(N)
         public ArrayList<K> keySet(){
             ArrayList<K> keys = new ArrayList<>();
 
@@ -139,6 +147,11 @@ class Main {
             }
 
             return keys;
+        }
+
+        // O(1)
+        public int size(){  
+            return this.size;
         }
     }
     
