@@ -8,7 +8,7 @@ class Main {
             K key;
             V value;
 
-            public HashMapNode(K key, V Value){
+            public HashMapNode(K key, V value){
                 this.key = key;
                 this.value = value;
             }
@@ -38,7 +38,7 @@ class Main {
             return bucketIndex;
         }
 
-        public int findKeyIndex(K key, int bucketIndex){
+        private int findKeyIndex(K key, int bucketIndex){
             int keyIndex = 0;
 
             for(HashMapNode node : buckets[bucketIndex]){
@@ -67,20 +67,103 @@ class Main {
             } 
 
             // check if you want to rehash
+            double lambda = this.size * 1.0 / number_of_buckets;
+            if(lambda >= 2.0){
+                rehash();
+            }
         }
 
-        public V get(K key){}
+        private void rehash(){
+            this.size = 0;
+            this.number_of_buckets *= 2;
+            // save old data
+            LinkedList<HashMapNode>[] oldBuckets = buckets;
+            // create new data
+            LinkedList<HashMapNode>[] newBuckets = new LinkedList[number_of_buckets];
+            // buckets should be referring to new data
+            this.buckets = newBuckets;
+            initializeBuckets();
+            
+            for(int i=0; i<oldBuckets.length; i++){
+                for(HashMapNode node: oldBuckets[i]){
+                    this.put(node.key, node.value);
+                }
+            }
+        }
 
-        public boolean containsKey(K key){}
+        public V get(K key){
+            int bucketIndex = findBucketIndex(key);
+            int keyIndex = findKeyIndex(key, bucketIndex);
 
-        public V remove(K key){}
+            if(keyIndex == -1){
+                return null;
+            } else {
+                HashMapNode node = buckets[bucketIndex].get(keyIndex);
 
-        public ArrayList<K> keySet(){}
+                return node.value;
+            }
+        }
+
+        public boolean containsKey(K key){
+            int bucketIndex = findBucketIndex(key);
+            int keyIndex = findKeyIndex(key, bucketIndex);
+
+            if(keyIndex == -1){
+                return false;
+            } else {
+                return true;
+            }
+
+            // return keyIndex != -1;
+        }
+
+        public V remove(K key){
+            int bucketIndex = findBucketIndex(key);
+            int keyIndex = findKeyIndex(key, bucketIndex);
+
+            if(keyIndex == -1){
+                return null;
+            } else {
+                HashMapNode node = buckets[bucketIndex].remove(keyIndex);
+                return node.value;
+            }
+        }
+
+        public ArrayList<K> keySet(){
+            ArrayList<K> keys = new ArrayList<>();
+
+            for(int i=0; i<buckets.length; i++){
+                for(HashMapNode node: buckets[i]){
+                    keys.add(node.key);
+                }
+            }
+
+            return keys;
+        }
     }
     
     public static void main(String[] args){
         HashMap<String,Integer> map = new HashMap<>();
 
         map.put("India",100);
+        map.put("China",50);
+        map.put("Ireland",54);
+        map.put("Indonesia",51);
+
+        System.out.println(map.keySet());     
+        System.out.println(map.get("India"));     
+        System.out.println(map.remove("China"));     
+        System.out.println(map.containsKey("China"));     
+        System.out.println(map.get("XYZ")); 
+
+        map.put("India",101);    
+        System.out.println(map.get("India"));   
+
+        map.put("Indiaaaaa",100);
+        map.put("Chinaaaaa",50);
+        map.put("Irelandddd",54);
+        map.put("Indonesiaaaa",51);  
+        map.put("Indonesiaa",51);  
+        System.out.println(map.keySet());     
     }
 }
