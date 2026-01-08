@@ -38,7 +38,36 @@ class Main {
             return bucketIndex;
         }
 
-        public void put(K key, V value){}
+        public int findKeyIndex(K key, int bucketIndex){
+            int keyIndex = 0;
+
+            for(HashMapNode node : buckets[bucketIndex]){
+                if(node.key.equals(key)){
+                    return keyIndex;
+                }
+                keyIndex++;
+            }
+
+            return -1;
+        }        
+
+        public void put(K key, V value){
+            int bucketIndex = findBucketIndex(key);
+            int keyIndex = findKeyIndex(key, bucketIndex);
+
+            if(keyIndex == -1){ // no such key in our hashmap
+                HashMapNode newNode = new HashMapNode(key,value);
+
+                buckets[bucketIndex].add(newNode);
+                this.size++;
+            } else { // update existing key,value pair
+                HashMapNode node = buckets[bucketIndex].get(keyIndex);
+
+                node.value = value;
+            } 
+
+            // check if you want to rehash
+        }
 
         public V get(K key){}
 
