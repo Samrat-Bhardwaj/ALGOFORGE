@@ -66,6 +66,31 @@ vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
     return ans;
 }
 
+// Leetcode 1497 (Can array be divided into pairs divisible by k)
+bool canArrange(vector<int>& arr, int k) {
+    vector<int> remFre(k,0);
+
+    for(int ele: arr){
+        int rem = (ele % k + k) % k;
+        remFre[rem]++;
+    }
+
+    for(int i=0; i<k; i++){
+        if(i==0){
+            if(remFre[i]%2 != 0){
+                return false;
+            }
+        } else {
+            int requiredRem = k - i;
+            if(remFre[i] != remFre[requiredRem]){
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 
 
 

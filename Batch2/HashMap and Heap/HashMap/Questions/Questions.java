@@ -172,6 +172,60 @@ class Questions {
         return maxLen;
     }
 
+    // Leetcode 1497 (Can array be divided into pairs divisible by k)
+    public boolean canArrange(int[] arr, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        for(int i=0; i<arr.length; i++){
+            // int rem = (arr[i]%k + k) % k; -> handles both positive and negative number 
+            
+            int rem = arr[i] % k;
+            if(rem < 0){
+                rem += k;
+            }
+
+            int requiredRem = (k - rem)%k;
+            if(map.containsKey(requiredRem) && map.get(requiredRem) > 0){
+                map.put(requiredRem, map.get(requiredRem) - 1);
+            } else {
+                map.put(rem, map.getOrDefault(rem,0) + 1);
+            }
+        }
+
+        for(int key: map.keySet()){
+            if(map.get(key) != 0){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Leetcode 1497 (Can array be divided into pairs divisible by k)
+    public boolean canArrange(int[] arr, int k){
+        int[] remFre = new int[k];
+
+        for(int ele: arr){
+            int rem = (ele % k + k) % k;
+            remFre[rem]++;
+        }
+
+        for(int i=0; i<k; i++){
+            if(i==0){
+                if(remFre[i]%2 != 0){
+                    return false;
+                }
+            } else {
+                int requiredRem = k - i;
+                if(remFre[i] != remFre[requiredRem]){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 
 
 
