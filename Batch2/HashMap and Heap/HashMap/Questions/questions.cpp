@@ -91,6 +91,21 @@ bool canArrange(vector<int>& arr, int k) {
     return true;
 }
 
+int findSubarray(vector<int> &arr) {
+    unordered_map<int,int> mp;
+    int csum = 0, count = 0;
+    mp[csum]++;
+
+    for(int e: arr){
+        csum += e;
+        
+        count += mp[csum];
+        mp[csum]++;
+    }
+
+    return count;
+}
+
 
 
 

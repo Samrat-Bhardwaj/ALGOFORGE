@@ -226,6 +226,115 @@ class Questions {
         return true;
     }
 
+    // Longest subarray with sum = 0 (https://www.geeksforgeeks.org/problems/largest-subarray-with-0-sum/1)
+    int maxLength(int arr[]) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int ans = 0;
+
+        int csum = 0; 
+        map.put(csum, -1);
+
+        for(int i=0; i<arr.length; i++){
+            csum += arr[i];
+
+            if(map.containsKey(csum)){
+                ans = Math.max(ans, i - map.get(csum));
+            } else {
+                map.put(csum, i);
+            }
+        }
+
+        return ans;
+    }
+    
+    // Number of subarrays with sum = 0 (https://www.geeksforgeeks.org/problems/zero-sum-subarrays1825/1)
+    public int findSubarray(int[] arr) {
+        HashMap<Integer,Integer> map = new HashMap<>();
+        int count = 0;
+
+        int csum = 0;
+        map.put(csum,1);
+
+        for(int e: arr){
+            csum += e;
+
+            // count += map.getOrDefault(csum,0);
+            // map.put(csum, map.getOrDefault(csum,0) + 1);
+
+            if(map.containsKey(csum)){
+                count += map.get(csum);
+                map.put(csum, map.get(csum) + 1);
+            } else {
+                map.put(csum,1);
+            }
+        }
+
+        return count;
+    }
+
+    // Longest subarray with sum = k (https://www.geeksforgeeks.org/problems/longest-sub-array-with-sum-k0809/1)
+    public int longestSubarray(int[] arr, int k) {
+        HashMap<Integer,Integer> map = new HashMap<>();
+        int ans = 0;
+
+        int csum = 0;
+        map.put(csum, -1);
+
+        for(int i=0; i<arr.length; i++){
+            csum += arr[i];
+
+            if(map.containsKey(csum - k)){
+                ans = Math.max(ans, i - map.get(csum - k));
+            } 
+
+            if(map.containsKey(csum) == false){
+                map.put(csum, i);
+            }
+        }
+
+        return ans;
+    }
+
+    // Number of subarrays with sum = k (Leetcode 560)
+    public int subarraySum(int[] nums, int k) {
+        HashMap<Integer,Integer> map = new HashMap<>();
+        int count = 0;
+
+        int csum = 0;
+        map.put(csum,1);
+
+        for(int e: nums){
+            csum += e;
+
+            count += map.getOrDefault(csum-k,0);
+            map.put(csum, map.getOrDefault(csum,0) + 1);
+        }
+
+        return count;
+    }
+
+    // leetcode 974 (Number of subarrays divisible by k)
+    public int subarraysDivByK(int[] nums, int k) {
+        HashMap<Integer,Integer> map = new HashMap<>();
+        int count = 0;
+
+        int csum = 0;
+        map.put(csum,1);
+
+        for(int e: nums){
+            csum += e;
+
+            int rem = csum%k;
+            if(rem < 0){
+                rem += k;
+            }
+
+            count += map.getOrDefault(rem,0);
+            map.put(rem, map.getOrDefault(rem,0) + 1);
+        }
+
+        return count;
+    }
 
 
 
