@@ -306,8 +306,17 @@ class Questions {
         for(int e: nums){
             csum += e;
 
-            count += map.getOrDefault(csum-k,0);
-            map.put(csum, map.getOrDefault(csum,0) + 1);
+            // count += map.getOrDefault(csum-k,0);
+            // map.put(csum, map.getOrDefault(csum,0) + 1);
+            if (map.containsKey(csum - k)) { 
+                count += map.get(csum - k);
+            }
+
+            if (!map.containsKey(csum)) {
+                map.put(csum, 1); 
+            } else {
+                map.put(csum, map.get(csum) + 1);
+            }
         }
 
         return count;
@@ -334,6 +343,74 @@ class Questions {
         }
 
         return count;
+    }
+
+    // Leetcode 525 =====================================
+    public int findMaxLength(int[] nums) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int ans = 0;
+
+        int csum = 0; 
+        map.put(csum, -1);
+
+        for(int i=0; i<nums.length; i++){
+            csum += (nums[i] == 0 ? -1 : nums[i]);
+
+            if(map.containsKey(csum)){
+                ans = Math.max(ans, i - map.get(csum));
+            } else {
+                map.put(csum, i);
+            }
+        }
+
+        return ans;
+    }
+
+    class RandomizedSet {
+        ArrayList<Integer> data;
+        HashMap<Integer,Integer> map; // valVsIndex
+
+        public RandomizedSet() {
+            data = new ArrayList<>();
+            map = new HashMap<>();
+        }
+        
+        public boolean insert(int val) {
+            if(map.containsKey(val)){
+                return false;
+            }
+
+            map.put(val, data.size()); // value is inserted at data.size() index
+            data.add(val);
+
+            return true;
+        }
+        
+        public boolean remove(int val) {
+            if(map.containsKey(val) == false){
+                return false;
+            } 
+
+            // find which idx this value is at
+            int valIdx =  map.get(val);
+            
+            int lastIdxValue = data.get(data.size()-1);
+            
+            // swap with last index
+            swap(valIdx,data.size()-1); 
+            map.put(lastIdxValue, valIdx);
+
+            // remove last index(val)
+            data.remove(data.size()-1);
+            map.remove(val);
+
+            return true;       
+        }
+        
+        public int getRandom() {
+            int randomIdx = (int)(Math.random() * data.size());
+            return data.get(randomIdx);
+        }
     }
 
 
