@@ -439,18 +439,6 @@ class Questions {
             size++;
         }
 
-        public void removeFirst(){ // assuming it will be called only when size > maxCapactiy => size will be atleast 2
-            if(head == tail){
-                head = null;
-                tail = null;
-            } else {
-                head = head.next;
-                head.prev = null;
-            }
-
-            size--;
-        }
-
         public void removeNode(Node toRemove){
             if(head == tail){
                 head = null;
@@ -467,6 +455,9 @@ class Questions {
 
                 toRemoveKaPrev.next = toRemoveKanext;
                 toRemoveKanext.prev = toRemoveKaPrev;
+                // isolating toRemove node
+                toRemove.next = null;
+                toRemove.prev = null;
             }
 
             size--;
@@ -487,11 +478,37 @@ class Questions {
         }
         
         public int get(int key) {
-            
+            if(map.containsKey(key) == false){
+                return -1;
+            }
+
+            Node nodeWithKey = map.get(key);
+            // remove node 
+            removeNode(nodeWithKey);
+            // add at last
+            addLast(nodeWithKey);
+
+            return nodeWithKey.value;
         }
         
         public void put(int key, int value) {
-            
+            if(map.containsKey(key)){ // update value
+                Node nodeWithKey = map.get(key);
+                nodeWithKey.value = value;
+
+                get(key); // so that its now most recently used
+            } else {
+                Node nn = new Node(key,value);
+
+                addLast(nn);
+                map.put(key, nn);
+
+                if(size > maxCapacity){
+                    int headKey = head.key;
+                    removeNode(head);
+                    map.remove(headKey);
+                }
+            }
         }
     }
 
