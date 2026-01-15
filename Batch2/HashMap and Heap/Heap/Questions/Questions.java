@@ -109,6 +109,51 @@ class Questions {
         }
     }
 
+    // Merge k sorted arrays ( https://www.geeksforgeeks.org/problems/merge-k-sorted-arrays/1 )
+    class Pair {
+        int row;
+        int col;
+        int val;
+
+        Public Pair(int row, int col, int val){
+            this.row = row;
+            this.col = col;
+            this.val = val;
+        }
+    }
+    public ArrayList<Integer> mergeArrays(int[][] mat) {
+        // {row, col, mat[row][col]}
+        // PriorityQueue<int[]> pq = new PriorityQueue<>((int[] a, int[] b) -> {
+        //     return a[2] - b[2];
+        // });
+
+        PriorityQueue<Pair> pq = new PriorityQueue<>((Pair a, Pair b) -> {
+            return a.val - b.val;
+        });
+
+        ArrayList<Integer> ans = new ArrayList<>();
+
+        for(int i=0; i<mat.length; i++){
+            // pq.add(new int[]{i,0,mat[i][0]});
+            pq.add(new Pair(i,0,mat[i][0]));
+        }
+
+        while(pq.size() > 0){
+            Pair top = pq.remove();
+
+            int row = top.row;
+            int col = top.col;
+            int val = top.val;
+
+            ans.add(val);
+            
+            if(col + 1 < mat[row].length){
+                pq.add(new Pair(row, col+1, mat[row][col+1]));
+            }
+        }
+
+        return ans;
+    }
 
 
 
