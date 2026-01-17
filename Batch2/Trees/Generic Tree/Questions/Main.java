@@ -51,8 +51,42 @@ class Main {
         }
     }
 
-    public static int size(TreeNode root){
+    public static int getSize(TreeNode root){
+        int totalSize = 0;
+        
+        for(TreeNode child: root.children){
+            totalSize += getSize(child);
+        }
 
+        return totalSize + 1;
+    }
+
+    public static int getMaximum(TreeNode root){
+        int treeMax = root.data;
+
+        for(TreeNode child: root.children){
+            int childMax = getMaximum(child);
+
+            treeMax = Math.max(treeMax, childMax);
+        }
+
+        return treeMax;
+    }
+
+    public static int getHeight(TreeNode root){
+        if(root == null){
+            return -1;
+        }
+
+        int treeHeight = -1;
+
+        for(TreeNode child: root.children){
+            int childHeight = getHeight(child);
+
+            treeHeight = Math.max(treeHeight, childHeight);
+        }
+
+        return treeHeight + 1;
     }
 
     public static void main(String[] args){
@@ -61,6 +95,6 @@ class Main {
         TreeNode root = constructTree(dataArray);
 
         // display(root);
-        System.out.println(size(root));
+        System.out.println(getHeight(root));
     }
 }
