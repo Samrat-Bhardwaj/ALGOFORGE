@@ -1,0 +1,34 @@
+Preorder -> 10
+Traversing on edge from 10 -> 20
+Preorder -> 20
+Traversing on edge from 20 -> 50
+Preorder -> 50
+Postorder -> 50
+Traversing on edge from 50 -> 20
+Traversing on edge from 20 -> 60
+Preorder -> 60
+Postorder -> 60
+Traversing on edge from 60 -> 20
+Postorder -> 20
+Traversing on edge from 20 -> 10
+Traversing on edge from 10 -> 30
+Preorder -> 30
+Postorder -> 30
+Traversing on edge from 30 -> 10
+Traversing on edge from 10 -> 40
+Preorder -> 40
+Traversing on edge from 40 -> 80
+Preorder -> 80
+Postorder -> 80
+Traversing on edge from 80 -> 40
+Traversing on edge from 40 -> 90
+Preorder -> 90
+Postorder -> 90
+Traversing on edge from 90 -> 40
+Traversing on edge from 40 -> 100
+Preorder -> 100
+Postorder -> 100
+Traversing on edge from 100 -> 40
+Postorder -> 40
+Traversing on edge from 40 -> 10
+Postorder -> 10
