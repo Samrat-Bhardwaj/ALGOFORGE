@@ -242,6 +242,40 @@ class Main {
         return new ArrayList<>();
     }
 
+    public static TreeNode findLCA(TreeNode root, int tar1, int tar2){
+        ArrayList<TreeNode> ntrPath1 = nodeToRootPath(root, tar1);
+        ArrayList<TreeNode> ntrPath2 = nodeToRootPath(root, tar2);
+
+        int i = ntrPath1.size() - 1;
+        int j = ntrPath2.size() - 1;
+
+        while(i >= 0 && j>= 0 && ntrPath1.get(i).data == ntrPath2.get(j).data){
+            i--;
+            j--;
+        }
+
+        return ntrPath1.get(i+1); // ntrPath2.get(j+1)
+    }
+
+    public static boolean isMirror(TreeNode n1, TreeNode n2){
+        if(n1.data != n2.data || n1.children.size() != n2.children.size()){
+            return false;
+        }
+
+        for(int i=0, j=n2.children.size()-1; j>=0; i++,j--){
+            boolean isChildrenMirror = isMirror(n1.children.get(i), n2.children.get(j));
+
+            if(isChildrenMirror == false){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean isTreeSymmetric(TreeNode root){
+        return isMirror(root, root); // for any tree to be symmetric, it should be mirror image of itself
+    }
 
 
 
@@ -283,6 +317,6 @@ class Main {
 
         // display(root);
 
-        System.out.println(nodeToRootPath(root, 110));
+        System.out.println(findLCA(root, 60,120).data);
     }
 }
