@@ -208,7 +208,38 @@ class Main {
     }
 
     public static boolean find(TreeNode root, int target){
-        
+        if(root.data == target){
+            return true;
+        }
+
+        for(TreeNode child: root.children){
+            boolean targetExists = find(child, target);
+
+            if(targetExists){ // don't look at any further children
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static ArrayList<TreeNode> nodeToRootPath(TreeNode root, int target){
+        if(root.data == target){
+            ArrayList<TreeNode> bans = new ArrayList<>();
+            bans.add(root);
+            return bans;
+        }
+
+        for(TreeNode child: root.children){
+            ArrayList<TreeNode> subPath = nodeToRootPath(child, target);
+
+            if(subPath.size() > 0){
+                subPath.add(root);
+                return subPath;
+            }
+        }
+
+        return new ArrayList<>();
     }
 
 
@@ -244,12 +275,14 @@ class Main {
 
         TreeNode root = constructTree(dataArray);
 
-        display(root);
+        // display(root);
         // System.out.println(getHeight(root));
-        System.out.println(" ================== After Question ======================= ");
+        // System.out.println(" ================== After Question ======================= ");
 
-        lineariseTree(root);
+        // lineariseTree(root);
 
-        display(root);
+        // display(root);
+
+        System.out.println(nodeToRootPath(root, 110));
     }
 }
