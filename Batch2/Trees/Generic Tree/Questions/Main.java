@@ -186,7 +186,30 @@ class Main {
         return lastChildTail;
     }
 
+    public static void lineariseTree(TreeNode root){
 
+        //after this loop there will only be one child
+
+        for(int i=root.children.size()-2; i>=0; i--){
+
+            TreeNode lastnode = root.children.remove(i+1);
+
+            root.children.get(root.children.size()-1).children.add(lastnode);
+
+        }
+
+        
+
+        //if child is there
+
+        if(root.children.size()>0)
+            lineariseTree(root.children.get(0));
+
+    }
+
+    public static boolean find(TreeNode root, int target){
+        
+    }
 
 
 
@@ -217,7 +240,7 @@ class Main {
 
     public static void main(String[] args){
         // int[] dataArray = {10,20,50,-1,60,-1,-1,30,70,-1,-1,40,80,-1,90,110,-1,120,-1,-1,100,-1,-1,-1};
-        int[] dataArray = {10,20,50,-1,60,-1,-1,30,70,-1,80,100,-1,110,-1,-1,90,-1,-1,40,120,-1,-1,-1};
+        int[] dataArray = {10,20,50,-1,60,-1,-1,30,70,-1,80,100,-1,110,-1,-1,90,-1,-1,40,120,-1,130,-1,-1,-1};
 
         TreeNode root = constructTree(dataArray);
 
@@ -225,7 +248,7 @@ class Main {
         // System.out.println(getHeight(root));
         System.out.println(" ================== After Question ======================= ");
 
-        lineariseGT_better(root);
+        lineariseTree(root);
 
         display(root);
     }
