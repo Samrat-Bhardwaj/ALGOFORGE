@@ -162,6 +162,104 @@ class Questions {
         return root;
     }
 
+    //======================================== Binary Tree Construction Questions ====================================
+
+    // Make tree from preorder and inorder (Leetcode 105) =========
+    public TreeNode buildTree(int[] preorder, int preSi, int preEi, int[] inorder, int inSi, int inEi){
+        if(preSi > preEi){
+            return null;
+        }
+
+        if(preSi == preEi){
+            return new TreeNode(preorder[preSi]);
+        }
+
+        TreeNode root = new TreeNode(preorder[preSi]);
+
+        int rootIdx = inSi;
+        int leftTreeElements = 0;
+
+        while(rootIdx <= inEi && inorder[rootIdx] != root.val){
+            rootIdx++;
+            leftTreeElements++;
+        }
+
+        root.left = buildTree(preorder, preSi+1, preSi+leftTreeElements, inorder, inSi, rootIdx-1);
+        root.right = buildTree(preorder, preSi+leftTreeElements+1, preEi, inorder, rootIdx+1, inEi);
+
+        return root;
+    }
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        int size = preorder.length;
+
+        return buildTree(preorder,0,size-1,inorder,0,size-1);
+    }
+
+    // Make Tree from postOrder and inorder (Leetcode 106) ================
+    public TreeNode buildTree(int[] postorder, int poSi, int poEi, int[] inorder, int inSi, int inEi){
+        if(inSi > inEi){
+            return null;
+        }
+
+        if(poSi == poEi){
+            return new TreeNode(postOrder[poEi]);
+        }
+
+        TreeNode root = new TreeNode(postorder[poEi]);
+
+        int rootIdx = inSi;
+        int leftTreeElements = 0;
+
+        while(rootIdx <= inEi && inorder[rootIdx] != root.val){ // first condition is optional if second base case is written
+            rootIdx++;
+            leftTreeElements++;
+        }
+
+        root.left = buildTree(postorder, poSi, poSi + leftTreeElements - 1, inorder, inSi, rootIdx-1);
+        root.right = buildTree(postorder, poSi + leftTreeElements, poEi - 1, inorder, rootIdx+1, inEi);
+
+        return root;
+    }
+
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        int size = inorder.length;
+
+        return buildTree(postorder, 0, size-1, inorder, 0, size-1);
+    }
+
+
+    // Make Tree frm preorder and postorder (Leetcode 889) ================
+    public TreeNode buildTree(int[] preorder, int preSi, int preEi, int[] postorder, int poSi, int poEi){
+        if(preSi > preEi){
+            return null;
+        }
+
+        if(preSi == preEi){
+            return new TreeNode(preorder[preSi]);
+        }
+
+        TreeNode root = new TreeNode(preorder[preSi]);
+
+        int idx = poSi;
+
+        while(idx <= poEi && postorder[idx] != preorder[preSi + 1]){ // finding root of left subtree in post order
+            idx++;
+        }
+
+        int leftTreeElements = idx - poSi + 1;
+
+        root.left = buildTree(preorder, preSi + 1, preSi + leftTreeElements, postorder, poSi, idx);
+        root.right = buildTree(preorder, preSi + leftTreeElements + 1, preEi, postorder, idx+1, poEi - 1);
+        
+        return root;
+    }
+
+    public TreeNode constructFromPrePost(int[] preorder, int[] postorder) {
+        int size = preorder.length;
+
+        return buildTree(preorder, 0, size-1, postorder, 0, size-1);
+    }
     
 
 
