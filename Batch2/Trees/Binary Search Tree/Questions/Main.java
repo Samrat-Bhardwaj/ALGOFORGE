@@ -182,6 +182,126 @@ class Main {
 
     // Make BST from postorder https://www.geeksforgeeks.org/problems/construct-bst-from-post-order/1
 
+    // Is BST (https://www.geeksforgeeks.org/problems/check-for-bst/1) ======================================
+    class BstPair {
+        int max;
+        int min;
+        boolean isBst;
+
+        public BstPair(){}
+
+        public BstPair(int max, int min, boolean isBst){
+            this.max = max;
+            this.min = min;
+            this.isBst = isBst;
+        }
+    }
+    
+    public BstPair checkIfBst(Node root){
+        if(root == null){
+            return new BstPair(Integer.MIN_VALUE, Integer.MAX_VALUE, true); // -inf, inf, true
+        }
+
+        BstPair leftPair = checkIfBst(root.left);
+        BstPair rightPair = checkIfBst(root.right);
+
+        BstPair ansPair = new BstPair();
+
+        ansPair.isBst = leftPair.isBst && rightPair.isBst && leftPair.max < root.data && root.data < rightPair.min;
+
+        ansPair.min = Math.min(leftPair.min, root.data); // leftPair.min should always be minimum except when root.left = null
+        ansPair.max = Math.max(rightPair.max, root.data); // rightPair.max should always be max except when root.right = null
+        
+        return ansPair;
+    }
+
+    public boolean isBST(Node root) {
+        return checkIfBst(root).isBst;
+    }
+
+    // Leetcode 1373 (Maximum sum of a BST subtree) ==========================================
+    class Solution {
+
+        class BstPair {
+            int max;
+            int min;
+            boolean isBst;
+            int sum; // sum of current tree
+            int maxSum; // maximum sum of any BST subtree
+
+            public BstPair(){}
+
+            public BstPair(int max, int min, boolean isBst, int sum, int maxSum){
+                this.max = max;
+                this.min = min;
+                this.isBst = isBst;
+                this.sum = sum;
+                this.maxSum = maxSum;
+            }
+        }
+
+        public BstPair findMaxBSTSum(TreeNode root){
+            if(root == null){
+                return new BstPair(Integer.MIN_VALUE,Integer.MAX_VALUE,true,0,0);
+            }
+
+            BstPair leftPair = findMaxBSTSum(root.left);
+            BstPair rightPair = findMaxBSTSum(root.right);
+
+        
+            int maxSumSoFar = Math.max(leftPair.maxSum, rightPair.maxSum);
+
+            // checking if tree is bst or not
+            if(!leftPair.isBst || !rightPair.isBst || leftPair.max >= root.val || rightPair.min <= root.val){
+                return new BstPair(12,13,false,45,maxSumSoFar); // only concerned with maxSum
+            }
+            
+            int minOfTree = Math.min(leftPair.min, root.val);
+            int maxOfTree = Math.max(rightPair.max, root.val);
+            int sumOfTree = leftPair.sum + rightPair.sum + root.val;
+
+            int maxSum = Math.max(maxSumSoFar, sumOfTree);
+
+            return new BstPair(maxOfTree,minOfTree,true,sumOfTree,maxSum);
+        }
+
+
+        public int maxSumBST(TreeNode root) {
+            return findMaxBSTSum(root).maxSum;
+        }
+    }
+
+    // Leetcode 98 (Validate BST) ========================================
+    class Solution {
+        // inorder travel with a previous node to check everything is increasing or not
+        TreeNode prev;
+        public boolean isIncreasing(TreeNode root){
+            if(root == null) return true;
+
+            if(isIncreasing(root.left) == false) return false; 
+
+            if(prev == null){
+                prev = root;
+            } else if(prev.val >= root.val){
+                return false;
+            }
+
+            prev = root;
+
+            if(isIncreasing(root.right) == false) return false; 
+
+            return true;
+        }
+
+        public boolean isValidBST(TreeNode root) {
+            prev = null;
+
+            return isIncreasing(root);
+        }
+    }
+
+
+
 
 
 
