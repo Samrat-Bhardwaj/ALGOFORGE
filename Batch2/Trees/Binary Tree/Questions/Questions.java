@@ -260,6 +260,57 @@ class Questions {
 
         return buildTree(preorder, 0, size-1, postorder, 0, size-1);
     }
+
+    // Binary Tree Width 
+    public void traverse(TreeNode root, int verticalLevel, int[] minMax){
+        if(root == null){
+            return;
+        }
+
+        minMax[0] = Math.min(minMax[0], verticalLevel);
+        minMax[1] = Math.max(minMax[1], verticalLevel);
+
+        traverse(root.left, verticalLevel - 1, minMax);
+        traverse(root.right, verticalLevel + 1, minMax);
+    }
+
+    public int widthOfBinaryTree(TreeNode root){
+        int[] minMax = new int[2];
+
+        traverse(root, 0, minMax);
+
+        int width = minMax[1] - minMax[0] + 1;
+
+        return width;
+    }
+
+    // Vertical level order (https://www.geeksforgeeks.org/problems/print-a-binary-tree-in-vertical-order/1)
+    class Pair {
+        Node node;
+        int verticalLevel;
+
+        public Pair(Node node, int verticalLevel){
+            this.node = node;
+            this.verticalLevel = verticalLevel;
+        }
+    }
+
+    public ArrayList<ArrayList<Integer>> verticalOrder(Node root) {
+        int[] minMax = new int[2];
+
+        traverse(root, 0, minMax);
+
+        int shift = -minMax[0];
+
+        int width = minMax[1] - minMax[0] + 1;
+        
+        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
+
+        for(int i=0; i<width; i++){
+            ans.add(new ArrayList<Integer>());
+        }
+
+    }
     
 
 
