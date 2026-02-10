@@ -261,7 +261,7 @@ class Questions {
         return buildTree(preorder, 0, size-1, postorder, 0, size-1);
     }
 
-    // Binary Tree Width 
+    // ============================================================== Binary Tree View Problems ==========================================
     public void traverse(TreeNode root, int verticalLevel, int[] minMax){
         if(root == null){
             return;
@@ -285,33 +285,313 @@ class Questions {
     }
 
     // Vertical level order (https://www.geeksforgeeks.org/problems/print-a-binary-tree-in-vertical-order/1)
-    class Pair {
-        Node node;
-        int verticalLevel;
+    class Solution {
+        class Pair {
+            Node node;
+            int verticalLevel;
 
-        public Pair(Node node, int verticalLevel){
-            this.node = node;
-            this.verticalLevel = verticalLevel;
+            public Pair(Node node, int verticalLevel){
+                this.node = node;
+                this.verticalLevel = verticalLevel;
+            }
+        }
+
+        public void traverse(Node root, int verticalLevel, int[] minMax){
+            if(root == null) return;
+
+            minMax[0] = Math.min(minMax[0], verticalLevel);
+            minMax[1] = Math.max(minMax[1], verticalLevel);
+
+            traverse(root.left, verticalLevel - 1, minMax);
+            traverse(root.right, verticalLevel + 1, minMax);
+        }
+
+        public ArrayList<ArrayList<Integer>> verticalOrder(Node root) {
+            int[] minMax = new int[2];
+
+            traverse(root, 0, minMax);
+
+            int shift = -minMax[0];
+
+            int width = minMax[1] - minMax[0] + 1;
+            
+            ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
+
+            for(int i=0; i<width; i++){
+                ans.add(new ArrayList<Integer>());
+            }
+
+            LinkedList<Pair> que = new LinkedList<>();
+            que.addLast(new Pair(root,shift));
+
+            while(que.size() > 0){
+                int size = que.size();
+
+                while(size-- > 0){
+                    Pair front = que.removeFirst();
+
+                    Node node = front.node;
+                    int currentLevel = front.verticalLevel;
+
+                    ans.get(currentLevel).add(node.data);
+
+                    if(node.left != null){
+                        que.addLast(new Pair(node.left, currentLevel - 1));
+                    }
+
+                    if(node.right != null){
+                        que.addLast(new Pair(node.right, currentLevel + 1));
+                    }
+                }
+            }
+
+            return ans;
         }
     }
 
-    public ArrayList<ArrayList<Integer>> verticalOrder(Node root) {
-        int[] minMax = new int[2];
+    // Vertical order sum (https://www.geeksforgeeks.org/problems/vertical-sum/1) ==============
+    class Solution {
+        class Pair {
+            Node node;
+            int verticalLevel;
 
-        traverse(root, 0, minMax);
-
-        int shift = -minMax[0];
-
-        int width = minMax[1] - minMax[0] + 1;
-        
-        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
-
-        for(int i=0; i<width; i++){
-            ans.add(new ArrayList<Integer>());
+            public Pair(Node node, int verticalLevel){
+                this.node = node;
+                this.verticalLevel = verticalLevel;
+            }
         }
 
+        public void traverse(Node root, int verticalLevel, int[] minMax){
+            if(root == null) return;
+
+            minMax[0] = Math.min(minMax[0], verticalLevel);
+            minMax[1] = Math.max(minMax[1], verticalLevel);
+
+            traverse(root.left, verticalLevel - 1, minMax);
+            traverse(root.right, verticalLevel + 1, minMax);
+        }
+
+        public ArrayList<Integer> verticalSum(Node root) {
+            int[] minMax = new int[2];
+            traverse(root,0,minMax);
+            
+            int shift = -minMax[0]; 
+
+            int width = minMax[1] - minMax[0] + 1;
+
+            ArrayList<Integer> ans = new ArrayList<>();
+            for(int i=0; i<width; i++){
+                ans.add(0); // initialising sum of every vertical level with 0
+            }
+
+            LinkedList<Pair> que = new LinkedList<>();
+            que.add(new Pair(root,shift));
+
+            while(que.size() > 0){
+                int size = que.size();
+                
+                while(size-- > 0){
+                    Pair front = que.removeFirst();
+                    Node node = front.node;
+                    int currentLevel = front.verticalLevel;
+
+                    ans.set(currentLevel, ans.get(currentLevel) + node.data);
+
+                    if(node.left != null){
+                        que.add(new Pair(node.left, currentLevel - 1));
+                    }
+
+                    if(node.right != null){
+                        que.add(new Pair(node.right, currentLevel + 1));
+                    }
+                }
+            }
+
+            return ans;
+        }
+    }
+
+    // Bottom view of Binary Tree(https://www.geeksforgeeks.org/problems/bottom-view-of-binary-tree/1)
+    class Solution {
+        class Pair {
+            Node node;
+            int verticalLevel;
+
+            public Pair(Node node, int verticalLevel){
+                this.node = node;
+                this.verticalLevel = verticalLevel;
+            }
+        }
+
+        public void traverse(Node root, int verticalLevel, int[] minMax){
+            if(root == null) return;
+
+            minMax[0] = Math.min(minMax[0], verticalLevel);
+            minMax[1] = Math.max(minMax[1], verticalLevel);
+
+            traverse(root.left, verticalLevel - 1, minMax);
+            traverse(root.right, verticalLevel + 1, minMax);
+        }
+
+        public ArrayList<Integer> bottomView(Node root) {
+            int[] minMax = new int[2];
+            traverse(root,0,minMax);
+            
+            int shift = -minMax[0]; 
+
+            int width = minMax[1] - minMax[0] + 1;
+
+            ArrayList<Integer> ans = new ArrayList<>();
+            for(int i=0; i<width; i++){
+                ans.add(0); // initialising sum of every vertical level with 0
+            }
+
+            LinkedList<Pair> que = new LinkedList<>();
+            que.add(new Pair(root,shift));
+
+            while(que.size() > 0){
+                int size = que.size();
+                
+                while(size-- > 0){
+                    Pair front = que.removeFirst();
+                    Node node = front.node;
+                    int currentLevel = front.verticalLevel;
+
+                    ans.set(currentLevel, node.data);
+
+                    if(node.left != null){
+                        que.add(new Pair(node.left, currentLevel - 1));
+                    }
+
+                    if(node.right != null){
+                        que.add(new Pair(node.right, currentLevel + 1));
+                    }
+                }
+            }
+
+            return ans;
+        }
     }
     
+    // Top view of Binary Tree(https://www.geeksforgeeks.org/problems/top-view-of-binary-tree/1)
+    class Solution {
+        class Pair {
+            Node node;
+            int verticalLevel;
+
+            public Pair(Node node, int verticalLevel){
+                this.node = node;
+                this.verticalLevel = verticalLevel;
+            }
+        }
+
+        public void traverse(Node root, int verticalLevel, int[] minMax){
+            if(root == null) return;
+
+            minMax[0] = Math.min(minMax[0], verticalLevel);
+            minMax[1] = Math.max(minMax[1], verticalLevel);
+
+            traverse(root.left, verticalLevel - 1, minMax);
+            traverse(root.right, verticalLevel + 1, minMax);
+        }
+
+        public ArrayList<Integer> topView(Node root) {
+            int[] minMax = new int[2];
+            traverse(root,0,minMax);
+            
+            int shift = -minMax[0]; 
+
+            int width = minMax[1] - minMax[0] + 1;
+
+            ArrayList<Integer> ans = new ArrayList<>();
+            for(int i=0; i<width; i++){
+                ans.add(null); // initialising sum of every vertical level with 0
+            }
+
+            LinkedList<Pair> que = new LinkedList<>();
+            que.add(new Pair(root,shift));
+
+            while(que.size() > 0){
+                int size = que.size();
+                
+                while(size-- > 0){
+                    Pair front = que.removeFirst();
+                    Node node = front.node;
+                    int currentLevel = front.verticalLevel;
+                    
+                    if(ans.get(currentLevel) == null){
+                        ans.set(currentLevel, node.data);
+                    }
+                    
+                    if(node.left != null){
+                        que.add(new Pair(node.left, currentLevel - 1));
+                    }
+
+                    if(node.right != null){
+                        que.add(new Pair(node.right, currentLevel + 1));
+                    }
+                }
+            }
+
+            return ans;
+        }
+    }
+
+    // Diagonal Tree Traveral (https://www.geeksforgeeks.org/problems/diagonal-traversal-of-binary-tree/1)
+    class Tree {
+        public void traverse(Node root, int diagonalLevel, int[] minMax){
+            if(root == null) return;
+
+            minMax[0] = Math.min(minMax[0], diagonalLevel);
+
+            traverse(root.left, diagonalLevel - 1, minMax);
+            traverse(root.right, diagonalLevel + 0, minMax);
+        }
+
+        public int findDiagonalWidth(Node root){
+            int[] minMax = new int[2]; // we only need to find min, max will always be 0
+
+            traverse(root, 0, minMax);
+
+            int width = -minMax[0] + 1; // minMax[1] - minMax[0] + 1
+            return width;
+        }
+
+        public void traverseDiagonally(Node root, int diagonalLevel, ArrayList<ArrayList<Integer>> diagonalOrder){
+            if(root == null) return;
+
+            diagonalOrder.get(diagonalLevel).add(root.data);
+
+            // question want to get left subtree answer first
+            traverseDiagonally(root.left, diagonalLevel - 1, diagonalOrder);
+            traverseDiagonally(root.right, diagonalLevel + 0, diagonalOrder);
+        }
+
+        public ArrayList<Integer> diagonal(Node root) {
+            int[] minMax = new int[2]; // we only need to find min, max will always be 0
+
+            traverse(root, 0, minMax);
+
+            int width = -minMax[0] + 1; // minMax[1] - minMax[0] + 1
+            int shift = -minMax[0];
+            
+            ArrayList<ArrayList<Integer>> diagonalOrder = new ArrayList<>();
+
+            for(int i=0; i<width; i++){
+                diagonalOrder.add(new ArrayList<>());
+            }
+
+            traverseDiagonally(root,shift,diagonalOrder);
+
+            //Convert 2d arraylist to 1d
+            ArrayList<Integer> ans = new ArrayList<>();
+            for(int i=diagonalOrder.size()-1; i>=0; i--){
+                ans.addAll(diagonalOrder.get(i));
+            }
+
+            return ans;
+        }
+    }
 
 
 
