@@ -77,23 +77,86 @@ class DiameterQuestions {
     }
 
     // Method 3 => Only find height, while finding height, keep calculating diameter ===============================================
-    public static int findHeight3(TreeNode root, int[] maximumDiamter){
+    public static int findHeight3(TreeNode root, int[] maximumDiameter){
         if(root == null) return -1;
 
-        int leftHeight = findHeight3(root.left, maximumDiamter);
-        int rightHeight = findHeight3(root.right, maximumDiamter);
+        int leftHeight = findHeight3(root.left, maximumDiameter);
+        int rightHeight = findHeight3(root.right, maximumDiameter);
 
         int currNodeDiameter = leftHeight + rightHeight + 2;
-        maximumDiamter[0] = Math.max(maximumDiamter[0], currNodeDiameter);
+        maximumDiameter[0] = Math.max(maximumDiameter[0], currNodeDiameter);
 
         return Math.max(leftHeight, rightHeight) + 1;
     }
 
     public static int findDiameter3(TreeNode root){
-        int[] maximumDiamter = new int[1];
-        findHeight3(root, maximumDiamter);
+        int[] maximumDiameter = new int[1];
+        findHeight3(root, maximumDiameter);
 
-        return maximumDiamter[0];
+        return maximumDiameter[0];
+    }
+
+    // Find maximum path sum from leaf to leaf (https://www.geeksforgeeks.org/problems/maximum-path-sum/1)
+    class Solution {
+        int maxLeafToNode(Node root, int[] maxLeafToLeaf){
+            if(root == null){
+                return (int)(-1e8);
+            }
+
+            if(root.left == null && root.right == null){
+                return root.data;
+            }
+
+            int leftMaxLTN = maxLeafToNode(root.left, maxLeafToLeaf);
+            int rightMaxLTN = maxLeafToNode(root.right, maxLeafToLeaf);
+
+            if(root.left != null && root.right != null){
+                maxLeafToLeaf[0] = Math.max(maxLeafToLeaf[0], leftMaxLTN + root.data + rightMaxLTN);
+            }
+
+            return Math.max(leftMaxLTN, rightMaxLTN) + root.data;
+        }
+        
+        int maxPathSum(Node root) {
+            int[] maxLeafToLeaf = new int[1];
+            maxLeafToLeaf[0] = (int)(-1e8);
+
+            int maxleafToRoot = maxLeafToNode(root, maxLeafToLeaf);
+
+            if(root.left != null && root.right != null){
+                return maxLeafToLeaf[0];
+            } else { // if any one of left or right is null, leafToRoot can be a possible ans
+                return Math.max(maxleafToRoot,maxLeafToLeaf[0]);
+            }
+        }
+    }
+
+    // Maximum path sum of node to node (Leetcode 124) =================================
+    class Solution {
+        public int findMaxNodeToCurrentPathSum(TreeNode root, int[] maxNodeToNode){
+            if(root == null){
+                return (int)(-1e8);
+            }
+
+            int leftMaxPathSum = findMaxNodeToCurrentPathSum(root.left, maxNodeToNode);
+            int rightMaxPathSum = findMaxNodeToCurrentPathSum(root.right, maxNodeToNode);
+
+            int maxPathSumIncludingRoot = Math.max(leftMaxPathSum + root.val, rightMaxPathSum + root.val);
+            int maxPathSum = Math.max(maxPathSumIncludingRoot, root.val);
+
+            maxNodeToNode[0] = Math.max(maxNodeToNode[0], Math.max(maxPathSum, leftMaxPathSum + root.val + rightMaxPathSum));
+
+            return maxPathSum;
+        }
+
+        public int maxPathSum(TreeNode root) {
+            int[] maxNodeToNode = new int[1];
+            maxNodeToNode[0] = (int)(-1e8);
+
+            findMaxNodeToCurrentPathSum(root,maxNodeToNode);
+
+            return maxNodeToNode[0];
+        }
     }
 
 
