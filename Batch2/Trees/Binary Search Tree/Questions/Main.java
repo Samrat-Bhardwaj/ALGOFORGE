@@ -300,6 +300,88 @@ class Main {
         }
     }
 
+    // Leetcode 99 (Validate BST) =====================================
+    class Solution {
+        public void getInorder(TreeNode root, ArrayList<TreeNode> inorder){
+            if(root == null){
+                return;
+            }
+            
+            getInorder(root.left, inorder);
+
+            inorder.add(root);
+
+            getInorder(root.right, inorder);
+        }
+
+        public void recoverTree(TreeNode root) {
+            ArrayList<TreeNode> inorder = new ArrayList<>();
+            getInorder(root, inorder);
+
+            TreeNode a = null, b = null;
+            TreeNode prev = inorder.get(0);
+
+            for(int i=1; i<inorder.size(); i++){
+                TreeNode curr = inorder.get(i);
+
+                if(prev.val >= curr.val){
+                    b = curr;
+                    if(a == null){
+                        a = prev;
+                    } else {
+                        break;
+                    }
+                }
+
+                prev = curr;
+            }
+
+            int temp = a.val;
+            a.val = b.val;
+            b.val = temp;
+        }
+    }
+
+    // Leetcode 99 better O(1) extra space ====================================
+    class Solution {
+        TreeNode prev;
+        TreeNode a;
+        TreeNode b;
+
+        public boolean inorderTraverse(TreeNode root){
+            if(root == null) return false;
+
+            if(inorderTraverse(root.left)) return true;
+
+            if(prev!= null && prev.val >= root.val){
+                b = root;
+                if(a == null){
+                    a = prev;
+                } else {
+                    return true; // found a,b -> no need to traverse more
+                }
+            }
+
+            prev = root;
+
+            if(inorderTraverse(root.right)) return true;
+
+            return false;
+        }
+
+        public void recoverTree(TreeNode root) {
+            prev = null;
+            a = null;
+            b = null;
+
+            inorderTraverse(root);
+
+            int temp = a.val;
+            a.val = b.val;
+            b.val = temp;
+        }
+    }
+
 
 
 
