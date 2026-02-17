@@ -382,6 +382,156 @@ class Main {
         }
     }
 
+    // BST Iterator (Leetcode 173) =========================================
+    class BSTIterator {
+        Stack<TreeNode> st;
+
+        public void addTillLeftMost(TreeNode node){
+            while(node != null){
+                st.push(node);
+                node = node.left;
+            }
+        }
+
+        public BSTIterator(TreeNode root) {
+            st = new Stack<>();
+            addTillLeftMost(root);
+        }
+        
+        public int next() {
+            TreeNode topNode = st.pop();
+
+            if(topNode.right != null){ // get nextGreater on top 
+                addTillLeftMost(topNode.right);
+            }
+
+            return topNode.val;
+        }
+        
+        public boolean hasNext() {
+            return st.size() > 0;
+        }
+    }
+
+    // Leetcode 230, Kth Smallest element =================================================================
+    // Method 1 = Recursive inorder travel  (O(rec space))
+    // Method 2 = Morris traversal but only till kth inorder (Input Tree ruin, O(1) space)
+    // Method 3 = using stack (O(h) space)
+    public void addTillLeftMost(Stack<TreeNode> st, TreeNode node){
+        while(node != null){
+            st.push(node);
+            node = node.left;
+        }
+    }
+
+    public int kthSmallest(TreeNode root, int k) {
+        Stack<TreeNode> st = new Stack<>();
+
+        addTillLeftMost(st,root);
+        // removing k-1 elements so that kth element is on top after this loop
+        while(k-- > 1){
+            TreeNode topNode = st.pop();
+
+            if(topNode.right != null){ // get nextGreater on top 
+                addTillLeftMost(st,topNode.right);
+            }
+        }
+
+        return st.peek().val;
+    }
+
+    // Find predecessor and successor -> O(K) avg time -> (https://www.geeksforgeeks.org/problems/predecessor-and-successor/1)
+    class Solution {
+        Node prev;
+        Node pred;
+        Node succ;
+
+        public boolean inorderTraverse(Node root, int key){
+            if(root == null) return false;
+
+            if(inorderTraverse(root.left, key)) return true;
+
+            if(root.data < key){
+                pred = root;
+            } else if(succ == null && root.data > key){
+                succ = root;
+                return true;
+            }
+
+            prev = root;
+
+            if(inorderTraverse(root.right, key)) return true;
+
+            return false;
+        }
+
+        public ArrayList<Node> findPreSuc(Node root, int key) {
+            prev = null;
+            pred = null;
+            succ = null;
+
+            inorderTraverse(root, key);
+
+            ArrayList<Node> ans = new ArrayList<>();
+            ans.add(pred);
+            ans.add(succ);
+
+            return ans;
+        }
+    }
+
+    // Find pred and succ O(logN - Average) ========================================
+    public Node findRightMost(Node temp){
+        while(temp.right != null){
+            temp = temp.right;
+        }
+
+        return temp;
+    }
+
+    public Node findLeftMost(Node temp){
+        while(temp.left != null){
+            temp = temp.left;
+        }
+
+        return temp;
+    }
+
+    public ArrayList<Node> findPreSuc(Node root, int key) {
+        Node pred = null;
+        Node succ = null;
+
+        Node curr = root;
+
+        while(curr != null){
+            if(curr.data < key){
+                pred = curr; // parent is just smaller if there is no leftSubtree of curr node when curr.data == key
+                curr = curr.right;
+            } else if(curr.data > key){
+                succ = curr; // parent is just greater if there is no rightSubtree of curr node when curr.data == key
+                curr = curr.left;
+            } else {
+                // find just smaller -> rightMost of left subtree
+                if(curr.left != null){
+                    pred = findRightMost(curr.left);
+                }
+
+                // find just greater -> leftMost of right subtree
+                if(curr.right != null){
+                    succ = findLeftMost(curr.right);
+                }
+                break;
+            }
+        }
+
+        ArrayList<Node> ans = new ArrayList<>();
+        ans.add(pred);
+        ans.add(succ);
+
+        return ans;
+    }
+
+
 
 
 

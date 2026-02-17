@@ -593,6 +593,38 @@ class Questions {
         }
     }
 
+    // Binary tree to doubly LinkedList (https://www.geeksforgeeks.org/problems/binary-tree-to-dll/1)
+    class Solution {
+        Node head;
+        Node prev;
+
+        public void traverseInorder(Node root){
+            if(root == null) return;
+
+            traverseInorder(root.left);
+
+            if(prev == null){
+                head = root;
+            } else {
+                prev.right = root; // prev node and its subtrees are already visited, can ruin structure
+                root.left = prev; // left subtree is already visited, can ruin structure
+            }
+
+
+            prev = root;
+            traverseInorder(root.right);
+        }
+
+        Node bToDLL(Node root) {
+            head = null;
+            prev = null;
+
+            traverseInorder(root);
+
+            return head;
+        }
+    }
+
 
 
    
