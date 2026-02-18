@@ -625,6 +625,181 @@ class Questions {
         }
     }
 
+    // flatten binary tree (Same as generic ) => Leetcode 114 =================================
+    public TreeNode flattenBinaryTree(TreeNode root){
+        if(root == null){
+            return null;
+        }
+
+        if(root.left == null && root.right == null){
+            return root;
+        }
+
+        TreeNode leftKaTail = flattenBinaryTree(root.left);
+        TreeNode rightKaTail = flattenBinaryTree(root.right);
+
+        TreeNode leftSubTree = root.left;
+        TreeNode rightSubTree = root.right;
+
+        root.left = null;
+        if(leftSubTree != null){
+            root.right = leftSubTree;
+            leftKaTail.right = rightSubTree;
+        }
+
+        return rightSubTree != null ? rightKaTail : leftKaTail;
+    }
+
+    public void flatten(TreeNode root) {
+        return flattenBinaryTree(root);
+    }
+
+    // flatten binary tree (Using postorder traversal) => Leetcode 114 =================================
+    class Solution {
+        TreeNode prev;
+
+        public void flattenBT(TreeNode root){
+            if(root == null) return;
+
+            flattenBT(root.right);
+            flattenBT(root.left);
+
+            root.right = prev;
+            root.left = null;
+
+            prev = root;
+        }
+
+        public void flatten(TreeNode root) {
+            prev = null;
+
+            flattenBT(root);
+        }
+    }
+
+    // Leetcode 116 (Populating next right pointer in a perfect binary Tree) ===================================
+    public Node connect(Node root) {
+        if(root == null) return root;
+        
+        Node curr = root;
+        Node first = root.left;
+
+        while(first != null){
+            curr.left.next = curr.right;
+
+            if(curr.next == null){ // current level is over, move to next level
+                curr = first;
+                first = first.left;
+            } else {
+                Node next = curr.next;
+
+                curr.right.next = next.left;
+
+                curr = next;
+            }
+        }
+
+        return root;
+    }
+
+    // Populating next right pointers of incomplete tree (Leetcode 117) =============================
+    public Node connect(Node root) {
+        Node curr = root;
+        Node firstNodeOfNextLevel = null;
+        Ndoe prev = null;
+
+        while(curr != null){
+            // work for current level
+            while(curr != null){
+                if(curr.left != null){
+                    if(prev == null){ // this is the first node of next level
+                        firstNodeOfNextLevel = curr.left;
+                        prev = curr.left;
+                    } else {
+                        prev.next = curr.left;
+                        prev = curr.left;
+                    }
+                }
+
+                if(curr.right != null){
+                    if(prev == null){ // this is the first node of next level
+                        firstNodeOfNextLevel = curr.right;
+                        prev = curr.right;
+                    } else {
+                        prev.next = curr.right;
+                        prev = curr.right;
+                    }
+                }
+
+                curr = curr.next;
+            }
+
+            // moving curr to start of next level and re-initialising next level variables
+            curr = firstNodeOfNextLevel;
+            firstNodeOfNextLevel = null;
+            prev = null;
+        }
+
+        return root;
+    }
+
+    // Homework => https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
+
+    // Leetcode 979 (Distribute coins) ==================================
+    public int findTotalMoves(TreeNode root, int[] totalMoves){
+        if(root == null) return 0;
+
+        int leftTreeRequirement = findTotalMoves(root.left, totalMoves);
+        int rightTreeRequirement = findTotalMoves(root.right, totalMoves);
+
+        totalMoves[0] += Math.abs(leftTreeRequirement) + Math.abs(rightTreeRequirement);
+
+        return leftTreeRequirement + rightTreeRequirement + root.val - 1;
+    }
+
+    public int distributeCoins(TreeNode root) {
+        int[] totalMoves = new int[1];
+
+        findTotalMoves(root, totalMoves);
+
+        return totalMoves[0];
+    }
+
+    // Binary tree cameras (Leetcode 968) ================================
+    class Solution {
+        // -1 => need camera
+        // 0 => no need of camera
+        // 1 => i am camera
+
+        int totalCameras;
+        public int cameraRequired(TreeNode root){
+            if(root == null) return 0;
+
+            int leftReq = cameraRequired(root.left);
+            int rightReq = cameraRequired(root.right);
+
+            if(leftReq == -1 || rightReq == -1){
+                totalCameras++; // left or right child needs camera, put one here
+                return 1;
+            }
+
+            if(leftReq == 1 || rightReq == 1){
+                return 0; // left child or right child is camera, no need of camera
+            }
+
+            return -1; // neither left is camera, neither right, needs coverage
+        }
+
+        public int minCameraCover(TreeNode root) {
+            totalCameras = 0;
+            
+            if(cameraRequired(root) == -1){
+                totalCameras++;
+            }
+
+            return totalCameras;
+        }
+    }
 
 
    
