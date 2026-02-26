@@ -122,7 +122,7 @@ class Questions {
             for(int j=0; j<m; j++){
                 if(grid[i][j] == 1){
                     int currentArea = getArea(i,j,n,m,grid);
-                    
+
                     maxArea = Math.max(maxArea, currentArea);
                 }
             }
@@ -130,6 +130,84 @@ class Questions {
 
         return maxArea;
     }
+
+    // Leetcode 130 (Surrounded regions) =============================================
+    public void convertRegionToHash(int row, int col, int n, int m, char[][] board){
+        board[row][col] = '#';
+
+        int[][] dirs = {{-1,0},{0,1},{1,0},{0,-1}};
+
+        for(int[] dir: dirs){
+            int nRow = row + dir[0];
+            int nCol = col + dir[1];
+
+            if(nRow >=0 && nRow < n && nCol >=0 && nCol < m && board[nRow][nCol] == 'O'){
+                convertRegionToHash(nRow,nCol,n,m,board);
+            }
+        }
+    }
+
+    public void solve(char[][] board) {
+        int n = board.length;
+        int m = board[0].length;
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(i==0 || j==0 || i==n-1 || j==m-1){
+                    if(board[i][j] == 'O'){
+                        convertRegionToHash(i,j,n,m,board);
+                    }
+                }
+            }
+        }
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(board[i][j] == 'O'){ // surrounded region
+                    board[i][j] = 'X';
+                } else if(board[i][j] == '#'){
+                    board[i][j] = 'O';
+                }
+            }
+        }
+    }
+
+    // Perimeter of island (Leetcode 463) ========================================
+    public int islandPerimeter(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+
+        int totalOnes = 0;
+        int totalNbr = 0;
+        int[][] dirs = {{-1,0},{0,1},{1,0},{0,-1}};
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(grid[i][j] == 1){
+                    totalOnes++;
+
+                    for(int[] dir: dirs){
+                        int x = i + dir[0];
+                        int y = j + dir[1];
+
+                        if(x >=0 && y>=0 && x<n && y<m && grid[x][y] == 1){
+                            totalNbr++;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        return 4*totalOnes - totalNbr;
+    }
+
+
+
+
+
+
+
 
 
 
