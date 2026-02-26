@@ -202,6 +202,59 @@ class Questions {
         return 4*totalOnes - totalNbr;
     }
 
+    // Topological Sort Questions ======================================================================
+
+    // Is course schedule possible (leetcode 207) =============
+    class Solution {
+        public ArrayList<Integer>[] makeGraph(int N, int[][] edges){
+            ArrayList<Integer>[] graph = new ArrayList[N];
+
+            for(int i=0; i<N; i++){
+                graph[i] = new ArrayList<>();
+            }
+
+            for(int[] edge: edges){
+                int u = edge[0];
+                int v = edge[1];
+
+                graph[u].add(v);
+            }
+
+            return graph;
+        }
+
+        public boolean checkIfCycle(int src, ArrayList<Integer>[] graph, int[] vis){
+            vis[src] = 1;
+
+            for(int nbr: graph[src]){
+                if(vis[nbr] == 1){
+                    return true;
+                } else if(vis[nbr] == 2){
+                    continue;
+                } else {
+                    if(checkIfCycle(nbr,graph,vis)) return true;
+                }
+            }
+
+            vis[src] = 2;
+            return false;
+        }
+
+        public boolean canFinish(int numCourses, int[][] prerequisites) {
+            ArrayList<Integer>[] graph = makeGraph(numCourses, prerequisites);
+
+            int[] vis = new int[numCourses];
+
+            for(int i=0; i<numCourses; i++){
+                if(vis[i] == 0){
+                    if(checkIfCycle(i,graph,vis)) return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
 
 
 
