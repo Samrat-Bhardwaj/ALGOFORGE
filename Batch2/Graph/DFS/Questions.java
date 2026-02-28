@@ -255,6 +255,108 @@ class Questions {
         }
     }
 
+    // Course schedule 2 (Leetcode 210) ==================================================
+    class Solution {
+        public ArrayList<Integer>[] makeGraph(int N, int[][] edges){
+            ArrayList<Integer>[] graph = new ArrayList[N];
+
+            for(int i=0; i<N; i++){
+                graph[i] = new ArrayList<>();
+            }
+
+            for(int[] edge: edges){
+                int u = edge[0];
+                int v = edge[1];
+
+                graph[u].add(v);
+            }
+
+            return graph;
+        }
+
+        public boolean topo_dfs_isCycle(int src, ArrayList<Integer>[] graph, int[] vis, ArrayList<Integer> topologicalOrder){
+            vis[src] = 1;
+            
+            for(int nbr: graph[src]){
+                if(vis[nbr] == 1){
+                    return true;
+                } else if(vis[nbr] == 2){
+                    continue;
+                } else {
+                    if(topo_dfs_isCycle(nbr,graph,vis,topologicalOrder)){
+                        return true;
+                    }
+                }
+            }
+
+
+            vis[src] = 2;
+            topologicalOrder.add(src);
+
+            return false;
+        }
+
+        public int[] findOrder(int numCourses, int[][] prerequisites) {
+            ArrayList<Integer>[] graph = makeGraph(numCourses, prerequisites);
+
+            int[] vis = new int[numCourses];
+            ArrayList<Integer> topologicalOrder = new ArrayList<>();
+
+            for(int i=0; i<numCourses; i++){
+                if(vis[i] == 0){
+                    if(topo_dfs_isCycle(i,graph,vis,topologicalOrder)){
+                        return new int[]{};
+                    }
+                }
+            }
+
+            // converting to array before returning 
+            return arrayList.stream().mapToInt(Integer::intValue).toArray();
+        }
+    }
+
+    // Leetcode 802, find eventual safe states  ===================================
+    public boolean checkIfCycle(int src, int[][] graph, int[] vis){
+        vis[src] = 1;
+
+        for(int nbr: graph[src]){
+            if(vis[nbr] == 1){
+                return true;
+            } else if(vis[nbr] == 2){
+                continue;
+            } else {
+                if(checkIfCycle(nbr, graph, vis)){
+                    return true;
+                }
+            }
+        }
+
+        vis[src] = 2;
+        return false;
+    }
+
+    public List<Integer> eventualSafeNodes(int[][] graph) {
+        int N = graph.length;
+
+        int[] vis = new int[N];
+
+        ArrayList<Integer> safeStates = new ArrayList<>();
+
+        for(int i=0; i<N; i++){
+            if(vis[i] == 0){
+                checkIfCycle(i,graph,vis);
+            }
+        }
+
+        for(int i=0; i<N; i++){
+            if(vis[i] == 2){
+                safeStates.add(i);
+            }
+        }
+
+        return safeStates;
+    }
+
 
 
 
