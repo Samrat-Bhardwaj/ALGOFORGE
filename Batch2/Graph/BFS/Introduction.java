@@ -62,6 +62,38 @@ class Introduction {
         }
     }
 
+    // Mark visited at insertion 
+    public static void BFS_2(int src, ArrayList<Edge>[] graph, int N){
+        boolean[] vis = new boolean[N];
+
+        LinkedList<Integer> que = new LinkedList<>();
+        que.add(src);
+        vis[src] = true;
+
+        int level = 0;
+
+        while(que.size() > 0){
+            System.out.print("Nodes at distance " + level +"-> ");
+            int size = que.size();
+
+            while(size-- > 0){
+                int vtx = que.removeFirst();
+                System.out.print(vtx + ",");
+
+                for(Edge e: graph[vtx]){
+                    int nbr = e.v;
+
+                    if(vis[nbr] == false){
+                        que.add(nbr);
+                        vis[nbr] = true;
+                    } 
+                }
+            }
+            level++;
+            System.out.println();
+        }
+    }
+
 
 
     // Construction utils
@@ -89,6 +121,6 @@ class Introduction {
         addEdge(graph,5,7,8);
         addEdge(graph,6,7,8);
 
-        BFS_1(0,graph,N);
+        BFS_2(0,graph,N);
     }
 }
