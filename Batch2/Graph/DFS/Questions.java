@@ -357,6 +357,103 @@ class Questions {
         return safeStates;
     }
 
+    // Find number of strongly connected Components (https://www.geeksforgeeks.org/problems/strongly-connected-components-kosarajus-algo/1)
+    class Solution {
+        public ArrayList<Integer>[] makeDirectedGraph(int N, int[][] edges){
+            @SuppressWarnings("unchecked")
+            ArrayList<Integer>[] graph = new ArrayList[N];
+
+            for(int i=0; i<N; i++){
+                graph[i] = new ArrayList<>();
+            }
+
+            for(int[] edge: edges){
+                int u = edge[0];
+                int v = edge[1];
+
+                graph[u].add(v);
+            }
+
+            return graph;
+        }
+
+        // dfs to fill order of dfs
+        public void dfs_fillStack(int src, ArrayList<Integer>[] graph, boolean[] vis, Stack<Integer> st){
+            vis[src] = true;
+
+            for(int nbr: graph[src]){
+                if(!vis[nbr]){
+                    dfs_fillStack(nbr,graph,vis,st);
+                }
+            }
+
+            st.push(src);
+        }
+
+        // reverse graph
+        public ArrayList<Integer>[] reverseGraph(int N, ArrayList<Integer>[] graph){
+            @SuppressWarnings("unchecked")
+            ArrayList<Integer>[] reversedGraph = new ArrayList[N];
+
+            for(int i=0; i<N; i++){
+                reversedGraph[i] = new ArrayList<>();
+            }
+
+            for(int u=0; u<N; u++){
+                for(int v: graph[u]){
+                    reversedGraph[v].add(u);
+                }
+            }
+
+            return reversedGraph;
+        }
+        
+        // traverse on reversed graph
+        public void dfs_findSCC(int src, boolean[] vis,ArrayList<Integer>[] reversedGraph){
+            vis[src] = true;
+
+            for(int nbr: reversedGraph[src]){
+                if(!vis[nbr]){
+                    dfs_findSCC(nbr,vis,reversedGraph);
+                }
+            }
+        }
+
+        // Main function to get strongly connected components
+        public int getSCC(int N, int[][] edges){
+            ArrayList<Integer>[] graph = makeDirectedGraph(N,edges);
+            Stack<Integer> st = new Stack<>();
+            boolean[] vis = new boolean[N];
+
+            // step 1: random order dfs
+            for(int i=0; i<N; i++){
+                if(!vis[i]){
+                    // step 2: note the order of dfs in stack
+                    dfs_fillStack(i,graph,vis,st);
+                }
+            }
+
+            // step 3, reverse edge
+            ArrayList<Integer>[] reversedGraph = reverseGraph(N, graph);
+            int scc_count = 0;
+            vis = new boolean[N];
+            while(st.size() > 0){
+                int vtx = st.pop();
+
+                if(vis[vtx]) continue;
+            
+                dfs_findSCC(vtx,vis,reversedGraph);
+                scc_count++;        
+            }
+
+            return scc_count;
+        }  
+        // Function to find number of strongly connected components in the graph
+        public int kosaraju(int V, int[][] edges) {
+            return getSCC(V, edges);
+        }
+    }
+
 
 
 
