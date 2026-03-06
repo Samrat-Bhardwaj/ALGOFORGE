@@ -285,4 +285,191 @@ class Questions {
 
         return true;
     }
+
+    // Leetcode 208 using Kahn's algorithm ===========================
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        ArrayList<Integer>[] graph = new ArrayList[numCourses];
+        int[] indegree = new int[numCourses];
+
+        for(int i=0; i<numCourses; i++){
+            graph[i] = new ArrayList<>();
+        }
+
+        for(int[] edge: prerequisites){
+            int u = edge[1];
+            int v = edge[0];
+
+            indegree[v]++;
+            graph[u].add(v);
+        }
+
+        LinkedList<Integer> que = new LinkedList<>();
+        ArrayList<Integer> topologicalOrder = new ArrayList<>();
+
+        for(int i=0; i<numCourses; i++){
+            if(indegree[i] == 0){
+                que.addLast(i);
+            }
+        }
+
+        while(que.size() > 0){
+            int u = que.removeFirst();
+            topologicalOrder.add(u);
+
+            for(int v: graph[u]){
+                indegree[v]--;
+
+                if(indegree[v] == 0){
+                    que.addLast(v);
+                }
+            }
+        }
+
+        if(topologicalOrder.size() != numCourses){
+            return new int[]{}; // no order possible
+        }
+
+        return topologicalOrder.stream().mapToInt(i -> i).toArray();
+    }
+
+    // Leetcode 329 (Longest Increasing Path) ==============================
+    public int longestIncreasingPath(int[][] matrix) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+
+        int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+        int[][] indegree = new int[n][m];
+        LinkedList<Integer> que = new LinkedList<>();
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+
+                int smallerNbrElements = 0;
+
+                for(int[] dir: dirs){
+                    int x = i + dir[0];
+                    int y = j + dir[1];
+
+                    if(x>=0 && y>=0 && x<n && y<m && matrix[i][j] > matrix[x][y]){
+                        smallerNbrElements++;
+                    }
+                }
+
+                indegree[i][j] = smallerNbrElements;
+                if(indegree[i][j] == 0){
+                    que.addLast(i*m + j);
+                }
+            }
+        }
+
+        int length = 1;
+
+        while(que.size() > 0){
+            int size = que.size();
+
+            while(size-- > 0){
+                int cell = que.removeFirst();
+
+                int i = cell/m;
+                int j = cell%m;
+
+                for(int[] dir: dirs){
+                    int x = i + dir[0];
+                    int y = j + dir[1];
+
+                    if(x>=0 && y>=0 && x<n && y<m && matrix[i][j] < matrix[x][y]){
+                        indegree[x][y]--;
+                        if(indegree[x][y] == 0){
+                            que.addLast(x*m+y);
+                        }
+                    }
+                }
+            }
+
+            length++;
+        }
+
+        return length - 1;
+    }
+
+    // ================================= BIPARTITE GRAPH ==========================================
+
+    // all acyclic and even length cycle graph are bipartite 
+    // we need to check if we have any odd length cycle in the graph 
+
+    // Leetcode 785 ===========
+    public boolean checkIfOddCycle(int[][] graph, int[] vis, int src){
+        LinkedList<Integer> que = new LinkedList<>();
+
+        int color = 0;
+        que.addLast(src);
+
+        while(que.size() > 0){
+            int size = que.size();
+
+            while(size-- > 0){
+                int vtx = que.removeFirst();
+
+                if(vis[vtx] != -1 && vis[vtx] != color){ // already visited with some other color -> odd length cycle
+                    return true;
+                }
+
+                vis[vtx] = color;
+
+                for(int nbr: graph[vtx]){
+                    if(vis[nbr] == -1){
+                        que.addLast(nbr);
+                    }
+                }
+            }
+
+            color = (color+1)%2;
+        }
+
+        return false;
+    }
+
+    public boolean isBipartite(int[][] graph) {
+        int N = graph.length;
+        int[] vis = new int[N];
+
+        Arrays.fill(vis, -1); // vector<int> vis(n,-1);
+
+        for(int i=0; i<N; i++){
+            if(vis[i] == -1){
+                if(checkIfOddCycle(graph,vis,i)) return false;
+            }
+        }
+
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
