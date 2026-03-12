@@ -401,4 +401,140 @@ class Questions {
             return true;
         }
     }
+
+    // Questions on MST (Kruskal) ==================================
+    class Solution {
+        int[] par;
+        int[] size;
+
+        public int findPar(int u){
+            if(par[u] == u) return u;
+
+            return par[u] = findPar(par[u]);
+        }
+
+        public void merge(int p1, int p2){
+            if(size[p1] > size[p2]){
+                par[p2] = p1;
+                size[p1] += size[p2];
+            } else {
+                par[p1] = p2;
+                size[p2] += size[p1];
+            }
+        }
+
+        public int minCostConnectPoints(int[][] points) {
+            int n = points.length;
+
+            par = new int[n];
+            size = new int[n];
+
+            for(int i=0; i<n; i++){
+                par[i] = i;
+                size[i] = 1;
+            }
+
+            int[][] edges = new int[(n*(n-1))/2][3];
+            int k = 0;
+
+            for(int i=0; i<n; i++){
+                for(int j=i+1; j<n; j++){
+                    edges[k][0] = i;
+                    edges[k][1] = j;
+                    edges[k][2] = Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]);
+                    k++;
+                }
+            }
+
+            // Kruskal
+            Arrays.sort(edges, (int[] a, int[] b)->{
+                return a[2] - b[2];
+            });
+
+            int totalCost = 0;
+            for(int[] edge: edges){
+                int u = edge[0];
+                int v = edge[1];
+                int w = edge[2];
+
+                int p1 = findPar(u);
+                int p2 = findPar(v);
+
+                if(p1 != p2){
+                    merge(p1,p2);
+                    totalCost += w;
+                }
+            }
+
+            return totalCost;
+        }
+    }
+
+    // Leetcode 1168 (https://leetcode.ca/all/1168.html) ==================================
+    class Solution {
+        int[] par;
+        int[] size;
+
+        public int findPar(int u){
+            if(par[u] == u) return u;
+
+            return par[u] = findPar(par[u]);
+        }
+
+        public void merge(int p1, int p2){
+            if(size[p1] > size[p2]){
+                par[p2] = p1;
+                size[p1] += size[p2];
+            } else {
+                par[p1] = p2;
+                size[p2] += size[p1];
+            }
+        }
+
+        public int minCostToSupplyWater(int[] wells, int[][] pipes, int n){
+            par = new int[n];
+            size = new int[n];
+
+            for(int i=0; i<n; i++){
+                par[i] = i;
+                size[i] = 1;
+            }
+
+            int[][] edges = new int[pipes.length + n][3];
+            int k = 0;
+            for(int[] pipe: pipes){
+                edges[k] = pipe;
+                k++;
+            }
+
+            // changings wells to edges => wells[2] = {0,3,wells[2]}
+            for(int i=0; i<n; i++){
+                edges[k][0] = 0;
+                edges[k][1] = i+1;
+                edges[k][2] = wells[i];
+                k++;
+            }
+
+            Arrays.sort(edges, (int[] a, int[] b)->{
+                return a[2] - b[2];
+            });
+
+            int totalCost = 0;
+            for(int[] edge: edges){
+                int u = edge[0];
+                int v = edge[1];
+                int w = edge[2];
+
+                int p1 = findPar(u);
+                int p2 = findPar(v);
+
+                if(p1 != p2){
+                    merge(p1,p2);
+                    totalCost += w;
+                }
+            }
+
+            return totalCost;
+        }
+    }
 }
