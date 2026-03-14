@@ -69,6 +69,68 @@ class Prims {
         return mstGraph;
     }
 
+    // https://www.geeksforgeeks.org/problems/minimum-spanning-tree/1
+    class Solution {
+        public ArrayList<int[]>[] makeGraph(int N, int[][] edges){
+            ArrayList<int[]>[] graph = new ArrayList[N];
+
+            for(int i=0; i<N; i++){
+                graph[i] = new ArrayList<>();
+            }
+
+            for(int[] edge: edges){
+                int u = edge[0];
+                int v = edge[1];
+                int w = edge[2];
+
+                graph[u].add(new int[]{v,w});
+                graph[v].add(new int[]{u,w});
+            }
+
+            return graph;
+        }
+
+        public int spanningTree(int V, int[][] edges) {
+            ArrayList<int[]>[] graph = makeGraph(V, edges);
+
+            // {vtx, nbr, wt}
+            PriorityQueue<int[]> pq = new PriorityQueue<>((int[] a, int [] b) -> {
+                return a[2] - b[2];
+            });
+            boolean[] vis = new boolean[V];
+
+            int edgeCount = 0;
+            int totalWeight = 0;
+
+            pq.add(new int[]{0,-1,0});
+
+            while(edgeCount < V - 1){
+                int[] top = pq.poll();
+                int vtx = top[0];
+                int par = top[1];
+                int wt = top[2];
+
+                if(vis[vtx]) continue;
+                vis[vtx] = true;
+                
+                if(par != -1){ // no need to create MST, just increase edgeCount
+                    totalWeight += wt;
+                    edgeCount++;
+                }
+                
+                for(int[] edge: graph[vtx]){
+                    int nbr = edge[0], edgeWeight = edge[1];
+
+                    if(!vis[nbr]){
+                        pq.add(new int[]{nbr,vtx,edgeWeight});
+                    }
+                }
+            }
+
+            return totalWeight;
+        }
+    }
+
 
 
 
