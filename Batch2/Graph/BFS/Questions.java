@@ -512,6 +512,49 @@ class Questions {
         }
     }
 
+    // Word ladder without graph (leetcode 127)
+    class Solution {
+        public boolean isSimilar(String a, String b){
+            int diff_char = 0;
+
+            for(int i=0; i<a.length(); i++){
+                if(a.charAt(i) != b.charAt(i)){
+                    diff_char++;
+                }
+            }
+
+            return diff_char == 1;
+        }
+
+        public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+            LinkedList<String> que = new LinkedList<>();
+            HashSet<String> vis = new HashSet<>();
+
+            int level = 1;
+            que.addLast(beginWord);
+            vis.add(beginWord);
+
+            while(que.size() > 0){
+                int size = que.size();
+
+                while(size-- > 0){
+                    String vtx = que.removeFirst();
+
+                    for(String word: wordList){
+                        if(!vis.contains(word) && isSimilar(word,vtx)){
+                            if(word.equals(endWord)) return level+1;
+                            vis.add(word);
+                            que.addLast(word);
+                        }
+                    }
+                }
+                level++;
+            }
+
+            return 0;
+        }
+    }
+
 
 
 
