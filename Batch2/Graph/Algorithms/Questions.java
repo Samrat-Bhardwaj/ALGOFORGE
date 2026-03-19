@@ -256,4 +256,72 @@ class Questions {
             return paths[n-1];
         }
     }
+
+    // Leetcode 787 (Cheapest flight within k stop (Bellman ford)) ======
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        int dis = new int[n];
+        Arrays.fill(dis,(int)(1e8));
+
+        dis[src] = 0;
+
+        // k stops => k+1 iterations
+        for(int i=1; i<= k+1; i++){
+            int[] ndis = Arrays.copyOf(dis,n);
+
+            for(int[] edge: flights){
+                int u = edge[0];
+                int v = edge[1];
+                int w = edge[2];
+
+                if(dis[u] + w < ndis[v]){
+                    ndis[v] = dis[u] + w;
+                }
+            }
+
+            dis = ndis;
+        }
+
+        return dis[dst] == (int)(1e8) ? -1 : dis[dst];
+    }
+
+    // Leetcode 778 (Swin in rising water)
+    public int swimInWater(int[][] grid) {
+        int n = grid.length;
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>((int[] a, int[] b)->{
+            return a[1] - b[1];
+        });
+        boolean[][] vis = new boolean[n][n]; // no need of dis, we can't get a better answer if we traverse twice on a same cell, hence will visit only once
+        int[][] dirs = {{0,1},{1,0},{0,-1},{-1,0}};
+
+        pq.add(new int[]{0,grid[0][0]});
+        vis[0][0] = true;
+
+        while(pq.size() > 0){
+            int[] top = pq.remove();
+            int vtx = top[0];
+            int maxSoFar = top[1];
+
+            int i = vtx/n;
+            int j = vtx%n;
+
+            if(i == n-1 && j==n-1){
+                return maxSoFar;
+            }
+
+            for(int[] dir: dirs){
+                int x = i + dir[0];
+                int y = j + dir[1];
+
+                if(x>=0 && y>=0 && x<n && y<n && !vis[x][y]){
+                    vis[x][y] = true;
+
+                    int cost = Math.max(maxSoFar, grid[x][y]);
+                    pq.add(new int[]{x*n + y, cost});
+                }
+            }
+        }
+
+        return -1;
+    }
 }

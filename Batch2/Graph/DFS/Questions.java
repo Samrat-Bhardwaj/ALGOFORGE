@@ -454,6 +454,87 @@ class Questions {
         }
     }
 
+    // Count sub-islands (Leetcode 1905) =====================================
+    class Solution {
+        int[][] dirs = {{0,1},{1,0},{0,-1},{-1,0}};
+        public boolean dfs_isSub(int i, int j, int[][] A, int[][] B, int n, int m){
+            B[i][j] = 0;
+
+            boolean isSubIsland = true;
+            if(A[i][j] == 0){
+                isSubIsland = false;
+            }
+
+            for(int[] dir: dirs){
+                int x = i + dir[0];
+                int y = j + dir[1];
+
+                if(x>=0 && y>=0 && x<n && y<m && B[x][y] == 1){
+                    isSubIsland = dfs_isSub(x,y,A,B,n,m) && isSubIsland; // even if isSubisland is false, we want to mark the whole island visited
+                }
+            }
+
+            return isSubIsland;  
+        }
+        public int countSubIslands(int[][] A, int[][] B) {
+            int n = A.length;
+            int m = A[0].length;
+
+            int count = 0;
+
+            for(int i=0; i<n; i++){
+                for(int j=0; j<m; j++){
+                    if(B[i][j] == 1){
+                        if(dfs_isSub(i,j,A,B,n,m)){
+                            count++;
+                        }
+                    }
+                }
+            }
+
+            return count;    
+        }
+    }
+
+    // Count distinct islands (https://www.geeksforgeeks.org/problems/number-of-distinct-islands/1) ================ 
+    class Solution {
+        int[][] dirs = {{0,1},{1,0},{0,-1},{-1,0}};
+
+        void dfs_fillShape(int i, int j, int sr, int sc, int n, int m, ArrayList<String> shape, int[][] grid){
+            grid[i][j] = 0;
+
+            shape.add("(" + (sr - i) + "," + (sc-j) + ")");
+
+            for(int[] dir: dirs){
+                int x = i + dir[0];
+                int y = j + dir[1];
+
+                if(x>=0 && y>=0 && x<n && y<m && grid[x][y] == 1){
+                    dfs_fillShape(x,y,sr,sc,n,m,shape,grid);
+                }
+            }
+        }
+
+        int countDistinctIslands(int[][] grid) {
+            int n = grid.length;
+            int m = grid[0].length;
+
+            HashSet<ArrayList<String>> set = new HashSet<>();
+
+            for(int i=0; i<n; i++){
+                for(int j=0; j<m; j++){
+                    if(grid[i][j] == 1){
+                        ArrayList<String> shape = new ArrayList<>();
+                        dfs_fillShape(i,j,i,j,n,m,shape,grid);
+                        set.add(shape);
+                    }
+                }
+            }
+            
+            return set.size();
+        }
+    }
+
 
 
 

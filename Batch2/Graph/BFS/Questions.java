@@ -555,6 +555,96 @@ class Questions {
         }
     }
 
+    // Word ladder with Graph (Using index)
+    class Solution {
+        public boolean isSimilar(String a, String b){
+            int diff_char = 0;
+
+            for(int i=0; i<a.length(); i++){
+                if(a.charAt(i) != b.charAt(i)){
+                    diff_char++;
+                }
+            }
+
+            return diff_char == 1;
+        }
+
+        public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+            wordList.add(0,beginWord);
+
+            int N = wordList.size();
+            ArrayList<Integer>[] graph = new ArrayList[N];
+            for(int i=0; i<N; i++){
+                graph[i] = new ArrayList<>();
+            }
+
+            for(int u=0; u<N; u++){
+                for(int v=u+1; v<N; v++){
+                    if(isSimilar(wordList.get(u), wordList.get(v))){
+                        graph[u].add(v);
+                        graph[v].add(u);
+                    }
+                }
+            }
+
+            LinkedList<Integer> que = new LinkedList<>();
+            boolean[] vis = new boolean[N];
+            int level = 1;
+
+            que.addLast(0);
+
+            while(que.size()  > 0){
+                int size = que.size();
+                while(size-- > 0){
+                    int vtx = que.removeFirst();
+
+                    for(int v: graph[vtx]){
+                        if(!vis[v]){
+                            if(wordList.get(v).equals(endWord)) return level+1;
+                            vis[v] = true;
+                            que.addLast(v);
+                        }
+                    }
+                }
+                level++;
+            }
+
+            return 0;
+        }
+    }
+
+    // Word ladder with Graph (Using strings)
+    class Solution {
+        public boolean isSimilar(String a, String b){
+            int diff_char = 0;
+
+            for(int i=0; i<a.length(); i++){
+                if(a.charAt(i) != b.charAt(i)){
+                    diff_char++;
+                }
+            }
+
+            return diff_char == 1;
+        }
+
+        public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+            HashMap<String,HashSet<String>> graph = new HashMap<>();
+
+            for(int i=0; i<wordList.size(); i++){
+                if(graph.containsKey(wordList.get(i))){
+                    continue;
+                }
+                graph.put(wordList.get(i), new HashSet<>());
+
+                for(int j=0; j<wordList.size(); j++){
+                    if(isSimilar(wordList.get(i), wordList.get(j))){
+                        graph.get(wordList.get(i)).add(wordList.get(j));
+                    }
+                }
+            }
+        }
+    }
+
 
 
 
