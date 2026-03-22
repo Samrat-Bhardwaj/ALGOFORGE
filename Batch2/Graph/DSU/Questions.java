@@ -537,4 +537,79 @@ class Questions {
             return totalCost;
         }
     }
+
+    // Accounts merge (Leetcode 721) =====================================
+    class Solution {
+        public String findPar(String u, HashMap<String, String> par){
+            if(par.get(u).equals(u)) return u;
+
+            String leader = findPar(par.get(u), par);
+
+            par.put(u, leader); // path compresssion
+            return leader;
+        }
+
+        public List<List<String>> accountsMerge(List<List<String>> accounts) {
+            HashMap<String,String> par = new HashMap<>();
+            HashMap<String, Integer> emailUID = new HashMap<>();
+
+            // merge emails and point email to UID
+            for(int uid=0; uid<accounts.size(); uid++){
+                List<String> account = accounts.get(uid);
+
+                String owner = account.get(0);
+                String firstEmail = account.get(1);
+
+                for(int idx=1; idx<account.size(); idx++){
+                    String currEmail = account.get(idx);
+
+                    if(emailUID.containsKey(currEmail) == false){
+                        emailUID.put(currEmail, uid);
+                    }
+
+                    if(par.containsKey(currEmail) == false){
+                        par.put(currEmail, currEmail);
+                    }
+
+                    String p1 = findPar(firstEmail, par);
+                    String p2 = findPar(currEmail, par);
+
+                    if(!p1.equals(p2)){
+                        par.put(p2,p1); // merge emails
+                    }
+                }
+            }
+
+            // Create UID vs emails ka hashmap
+            HashMap<Integer, List<String>> UidVsEmail = new HashMap<>();
+            for(String currEmail: emailUID.keySet()){
+                String parEmail = findPar(currEmail, par);
+
+                int parUid = emailUID.get(parEmail);
+
+                if(UidVsEmail.containsKey(parUid) == false){
+                    UidVsEmail.put(parUid, new ArrayList<>());
+                }
+
+                UidVsEmail.get(parUid).add(currEmail);
+            }
+
+            List<List<String>> mergedAccounts = new ArrayList<>();
+            // Replace UID with owner 
+            for(int uid: UidVsEmail.keySet()){
+                List<String> mergedAccount = new ArrayList<>();
+
+                List<String> emails = UidVsEmail.get(uid);
+                Collections.sort(emails);
+
+                String owner = accounts.get(uid).get(0);
+                mergedAccount.add(owner);
+                mergedAccount.addAll(emails);
+
+                mergedAccounts.add(mergedAccount);
+            }
+
+            return mergedAccounts;
+        }
+    }
 }
