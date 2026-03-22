@@ -627,21 +627,117 @@ class Questions {
             return diff_char == 1;
         }
 
-        public int ladderLength(String beginWord, String endWord, List<String> wordList) {
-            HashMap<String,HashSet<String>> graph = new HashMap<>();
+        public void addEdges(HashMap<String,HashSet<String>> graph, String u, List<String> wordList){
+            if(graph.containsKey(u) == false){
+                graph.put(u, new HashSet<>());
+            }
 
-            for(int i=0; i<wordList.size(); i++){
-                if(graph.containsKey(wordList.get(i))){
-                    continue;
-                }
-                graph.put(wordList.get(i), new HashSet<>());
-
-                for(int j=0; j<wordList.size(); j++){
-                    if(isSimilar(wordList.get(i), wordList.get(j))){
-                        graph.get(wordList.get(i)).add(wordList.get(j));
-                    }
+            for(String v: wordList){
+                if(isSimilar(u,v)){
+                    graph.get(u).add(v);
                 }
             }
+        }
+
+        public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+            HashMap<String,HashSet<String>> graph = new HashMap<>();
+            HashSet<String> vis = new HashSet<>();
+            LinkedList<String> que = new LinkedList<>();
+
+            addEdges(graph, beginWord, wordList);
+            for(String u: wordList){
+                addEdges(graph, u, wordList);
+            }
+
+            int level = 1;
+
+            que.addLast(beginWord);
+            vis.add(beginWord);
+
+            while(que.size() > 0){
+                int size = que.size();
+
+                while(size-- > 0){
+                    String vtx = que.removeFirst();
+
+                    for(String nbr: graph.get(vtx)){
+                        if(!vis.contains(nbr)){
+                            if(nbr.equals(endWord)) return level+1;
+
+                            que.addLast(nbr);
+                            vis.add(nbr);
+                        }
+                    }
+                }
+                level++;
+            }
+
+            return 0;
+        }
+    }
+
+    // Word ladder 2 (Leetcode 126) =====================
+    class Solution {
+        public boolean isSimilar(String a, String b){
+            int diff_char = 0;
+
+            for(int i=0; i<a.length(); i++){
+                if(a.charAt(i) != b.charAt(i)){
+                    diff_char++;
+                }
+            }
+
+            return diff_char == 1;
+        }
+
+        public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+            HashSet<String> vis = new HashSet<>();
+            LinkedList<List<String>> que = new LinkedList<>();
+            List<List<String>> ans = new ArrayList<>();
+
+            List<String> startingPath = new ArrayList<>();
+            startingPath.add(beginWord);
+
+            int min_PathLength = -1;
+            int level = 1;
+
+            que.add(startingPath);
+
+            while(que.size() > 0){
+                int size = que.size();
+
+                while(size-- > 0){
+                    List<String> path = que.removeFirst();
+
+                    String lastWord = path.get(path.size() - 1);
+
+                    if(vis.contains(lastWord)) continue;
+                    if(min_PathLength != -1 && path.size() >= min_PathLength) continue;
+
+                    vis.add(lastWord);
+
+                    for(String word: wordList){
+                        if(!vis.contains(word) && isSimilar(word,lastWord)){
+                            List<String> nextPath = new ArrayList<>(path);
+                            nextPath.add(word);
+
+                            if(word.equals(endWord)){
+                                if(min_PathLength == -1){
+                                    min_PathLength = nextPath.size();
+                                    ans.add(nextPath);
+                                } else if(nextPath.size() == min_PathLength){
+                                    ans.add(nextPath);
+                                }
+                            } else {
+                                que.add(nextPath);
+                            }                            
+                        }
+                    }
+                }
+                level++;
+            }
+
+            return ans;
         }
     }
 
