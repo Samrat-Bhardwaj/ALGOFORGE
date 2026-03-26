@@ -390,6 +390,282 @@ class Questions {
         return maxGold_tab(n,m,mat);
     }
 
+    // Min cost climbing stairs (Leetcode 746) ==========
+    public int minCost_memo(int idx, int[] cost, int[] dp){
+        if(idx <= 1){
+            return dp[idx] = cost[idx];
+        }
+
+        if(dp[idx] != -1) return dp[idx];
+
+        int minCostWithOneStep = minCost_memo(idx-1, cost, dp);
+        int minCostWithTwoStep = minCost_memo(idx-2, cost, dp);
+
+        return dp[idx] = Math.min(minCostWithOneStep, minCostWithTwoStep) + (idx < cost.length ? cost[idx] : 0);
+    }
+
+    public int minCost_tab(int[] cost){
+        int n = cost.length;
+        int[] dp = new int[n+1];
+
+        for(int idx=0; idx<=n; idx++){
+            if(idx <= 1){
+                dp[idx] = cost[idx];
+                continue;
+            }
+
+            int minCostWithOneStep = dp[idx-1]; //minCost_memo(idx-1, cost, dp);
+            int minCostWithTwoStep = dp[idx-2]; //minCost_memo(idx-2, cost, dp);
+
+            dp[idx] = Math.min(minCostWithOneStep, minCostWithTwoStep) + (idx < cost.length ? cost[idx] : 0);
+        }
+
+        return dp[n];
+    }
+
+    public int minCost_tabPretty(int[] cost){
+        int n = cost.length;
+        int[] dp = new int[n+1];
+
+        for(int idx=0; idx<=n; idx++){
+            if(idx <= 1){
+                dp[idx] = cost[idx];
+            } else if(idx == n){
+                dp[idx] = Math.min(dp[idx-1], dp[idx-2]);
+            } else {
+                dp[idx] = cost[idx] + Math.min(dp[idx-1], dp[idx-2]);
+            }
+        }
+
+        return dp[n];
+    }
+
+    public int minCost_SpaceOptimized(int[] cost){
+        int n = cost.length;
+        int a = cost[0];
+        int b = cost[1];
+
+        for(int idx=2; idx<=n; idx++){
+            int c = Math.min(a,b);
+
+            if(idx < n)
+                c += cost[idx];
+
+            a = b;
+            b = c;
+        }
+
+        return b;
+    }
+
+    public int minCost_PrintPath(int[] cost){
+        int n = cost.length;
+        int[] dp = new int[n+1];
+        String[] sdp = new String[n+1];
+
+        for(int idx=0; idx<=n; idx++){
+            if(idx <= 1){
+                dp[idx] = cost[idx];
+                sdp[idx] = idx + "";
+            } else {
+                int oneStep = dp[idx-1];
+                int twoStep = dp[idx-2];
+
+                if(oneStep < twoStep){
+                    dp[idx] = oneStep;
+                    sdp[idx] = sdp[idx-1] + " + 1  -> " + idx;
+                } else {
+                    dp[idx] = twoStep;
+                    sdp[idx] = sdp[idx-2] + " + 2 -> " + idx;
+                }
+
+                if(idx < n){
+                    dp[idx] += cost[idx];
+                }
+            }
+        }
+
+        System.out.println(sdp[n]);
+        return dp[n];
+    }
+
+    public int minCostClimbingStairs(int[] cost) {
+        // int n = cost.length;
+        // int[] dp = new int[n+1];
+        // Arrays.fill(dp, -1);
+
+        return minCost_PrintPath(cost);
+    }
+
+    // Decode ways (Leetcode 91) =================
+    public int numDecodings_rec(int idx, String s, int[] dp){
+        if(idx == s.length()){
+            return dp[idx] = 1;
+        }
+
+        if(s.charAt(idx) == '0'){ // no possible ans
+            return dp[idx] = 0;
+        }
+
+        if(dp[idx] != -1) return dp[idx];
+
+        int oneChar = numDecodings_rec(idx+1, s, dp);
+        int twoChar = 0;
+
+        if(idx + 1 < s.length()){
+            int num = 10*(s.charAt(idx) - '0') + s.charAt(idx+1) - '0';
+
+            if(num <= 26){
+                twoChar += numDecodings_rec(idx+2, s, dp);
+            }
+        }
+
+        return dp[idx] = oneChar + twoChar;
+    }
+
+    public int numDecodings_tab(String s){
+        int n = s.length();
+        int[] dp = new int[n+1];
+        
+        for(int idx=n; idx>=0; idx--){
+            if(idx == s.length()){
+                dp[idx] = 1;
+                continue;
+            }
+
+            if(s.charAt(idx) == '0'){ // no possible ans
+                dp[idx] = 0;
+                continue;
+            }
+
+            int oneChar = dp[idx+1]; //numDecodings_rec(idx+1, s, dp);
+            int twoChar = 0;
+
+            if(idx + 1 < s.length()){
+                int num = 10*(s.charAt(idx) - '0') + s.charAt(idx+1) - '0';
+
+                if(num <= 26){
+                    twoChar += dp[idx+2]; //numDecodings_rec(idx+2, s, dp);
+                }
+            }
+
+            dp[idx] = oneChar + twoChar;
+        }
+
+        return dp[0];
+    }
+
+    // HOMEWORK => Solve in O(1) space 
+
+    public int numDecodings(String s) {
+        // int n = s.length();
+
+        // int[] dp = new int[n+1];
+        // Arrays.fill(dp, -1);
+
+        // return numDecodings_rec(0,s,dp);
+        return numDecodings_tab(s);
+    }
+
+    // Num decodings 2 (Leetcode 639) ============================
+    int mod = (int)(1e9 + 7);
+    public long numDecodings_rec(int idx, String s, long[] dp){
+        if(idx == s.length()){
+            return dp[idx] = 1;
+        }
+
+        if(s.charAt(idx) == '0'){
+            return dp[idx] = 0;
+        }
+
+        if(dp[idx] != -1) return dp[idx];
+
+        long oneChar = numDecodings_rec(idx+1, s, dp);
+        if(s.charAt(idx) == '*') oneChar *= 9;
+
+        long twoChar = 0;
+        if(idx + 1 < s.length()){
+            twoChar = numDecodings_rec(idx+2, s, dp);
+            char ch1 = s.charAt(idx), ch2 = s.charAt(idx+1);
+
+            if(ch1 == '*' && ch2 == '*'){
+                twoChar *= 15;
+            } else if(ch1 == '*'){
+                twoChar = (ch2 - '0' <= 6) ? twoChar*2 : twoChar;
+            } else if(ch1 == '1' && ch2 == '*'){
+                twoChar *= 9;
+            } else if(ch1 == '2' && ch2 == '*'){
+                twoChar *= 6;
+            } else if(ch2 == '*'){
+                twoChar = 0;
+            } else {
+                int num = 10*(ch1-'0') + (ch2-'0');
+                if(num > 26){
+                    twoChar = 0;
+                }
+            }
+        }
+
+        return dp[idx] = (oneChar + twoChar)%mod;
+    }
+
+    public long numDecodings_tab(String s){
+        int n = s.length();
+        long[] dp = new long[n+1];
+        for(int idx=n; idx>=0; idx--){
+            if(idx == s.length()){
+                dp[idx] = 1;
+                continue;
+            }
+
+            if(s.charAt(idx) == '0'){
+                dp[idx] = 0;
+                continue;
+            }
+
+            long oneChar = dp[idx+1]; //numDecodings_rec(idx+1, s, dp);
+            if(s.charAt(idx) == '*') oneChar *= 9;
+
+            long twoChar = 0;
+            if(idx + 1 < s.length()){
+                twoChar = dp[idx+2]; //numDecodings_rec(idx+2, s, dp);
+                char ch1 = s.charAt(idx), ch2 = s.charAt(idx+1);
+
+                if(ch1 == '*' && ch2 == '*'){
+                    twoChar *= 15;
+                } else if(ch1 == '*'){
+                    twoChar = (ch2 - '0' <= 6) ? twoChar*2 : twoChar;
+                } else if(ch1 == '1' && ch2 == '*'){
+                    twoChar *= 9;
+                } else if(ch1 == '2' && ch2 == '*'){
+                    twoChar *= 6;
+                } else if(ch2 == '*'){
+                    twoChar = 0;
+                } else {
+                    int num = 10*(ch1-'0') + (ch2-'0');
+                    if(num > 26){
+                        twoChar = 0;
+                    }
+                }
+            }
+
+            dp[idx] = (oneChar + twoChar)%mod;
+        }
+        
+        return dp[0];
+    }
+
+    // HOMEWORK => Solve in O(1) space 
+
+    public int numDecodings(String s) {
+        // int n = s.length();
+
+        // long[] dp = new long[n+1];
+        // Arrays.fill(dp, -1);
+
+        return (int)(numDecodings_tab(s));
+    }
+
 
 
 
