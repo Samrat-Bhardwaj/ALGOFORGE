@@ -260,6 +260,41 @@ class KnapsackType {
         return dp[N][totalCapacity];
     }
 
+    public int knapsack_tabWithItemsPicked(int N, int totalCapacity, int[] val, int[] wt){
+        int[][] dp = new int[N+1][totalCapacity + 1];
+        String[][] sdp = new String[N+1][totalCapacity + 1];
+
+        for(int idx=0; idx<=N; idx++){ // traversing on all the items
+            for(int cap=0; cap <= totalCapacity; cap++){
+                if(idx == 0){
+                    dp[idx][cap] = 0;
+                    sdp[idx][cap] = "";
+                } else {
+                    // profit after picking the current item
+                    int pickProfit = 0;
+                    if(cap - wt[idx-1] >= 0){
+                        pickProfit = dp[idx-1][cap - wt[idx-1]] + val[idx-1];
+                    }
+
+                    // profit after NOT picking the current item
+                    int notPickProfit = dp[idx-1][cap];
+
+                    if(pickProfit > notPickProfit){
+                        dp[idx][cap] = pickProfit;
+                        sdp[idx][cap] = sdp[idx-1][cap - wt[idx-1]] + ", " + wt[idx-1];
+                    } else {
+                        dp[idx][cap] = notPickProfit;
+                        sdp[idx][cap] = sdp[idx-1][cap];
+                    }
+                }
+            }
+        }
+
+        // System.out.println("Items picked to get maximum profit" + sdp[N][totalCapacity]);
+
+        return dp[N][totalCapacity];
+    }
+
     public int knapsack(int W, int val[], int wt[]) {
         int n = val.length;
 
@@ -268,7 +303,72 @@ class KnapsackType {
         //     Arrays.fill(d, -1);
         // }
 
-        return knapsack_tab(n,W,val,wt,dp);
+        return knapsack_tabWithItemsPicked(n,W,val,wt);
     }
     
+    // Unbounded knapsack (https://www.geeksforgeeks.org/problems/knapsack-with-duplicate-items4201/1)
+    // Approach 1 => How every item can help maximise profit
+    public int knapSack(int val[], int wt[], int totalCapacity) {
+        int[] dp = new int[totalCapacity+1];
+
+        for(int idx=0; idx<wt.length; idx++){
+            for(int cap=wt[idx]; cap <= totalCapacity; cap++){
+                dp[cap] = Math.max(dp[cap], dp[cap - wt[idx]] + val[idx]);
+            }
+        }
+
+        return dp[totalCapacity];
+    }
+
+    // Approach 2 => What could be the maximum profit with any "capacity" using all items
+    public int knapSack(int val[], int wt[], int totalCapacity) {
+        int[] dp = new int[totalCapacity+1];
+
+        for(int cap=0; cap <= totalCapacity; cap++){
+            for(int idx=0; idx < val.length; idx++){
+                if(cap - wt[idx] >= 0){
+                    dp[cap] = Math.max(dp[cap], dp[cap-wt[idx]] + val[idx]);
+                }
+            }
+        }
+
+        return dp[totalCapacity];
+    }
+
+    // Leetcode 494 ============================
+    public int findTargetSumWays_memo(int[] nums, int idx, int target, int csum, int[][] dp){
+        if(idx == nums.length){
+            return dp[idx][csum] = csum == target ? 1 : 0;
+        }
+
+        if(dp[idx][csum] != -1) return dp[idx][csum];
+        
+        int totalWays = 0;
+        // taking current element as positive
+        totalWays += findTargetSumWays_memo(nums, idx+1, target, csum + nums[idx], dp);
+
+        // taking current element as negative
+        totalWays += findTargetSumWays_memo(nums, idx+1, target, csum - nums[idx], dp);
+
+        return dp[idx][csum] = totalWays;
+    }
+
+    public int findTargetSumWays(int[] nums, int target) {
+        int sum = 0;
+
+        for(int e: nums){
+            sum += e;
+        }
+
+        int newTarget = target + sum; // shifting by sum
+        int newInitialValue = 0 + sum; // shifting by sum => so that there is no negative sums possible
+
+        int range = 2*sum; //(-sum to +sum)
+        int[][] dp = new int[nums.length + 1][range + 1];
+        for(int[] d: dp){
+            Arrays.fill(d, -1);
+        }
+
+        return findTargetSumWays_memo(nums,0,newTarget,newInitialValue,dp);
+    }
 }
