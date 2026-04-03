@@ -316,6 +316,36 @@ class Questions {
         return dp[n][m];
     }
 
+    public int longestCommonSubsequence_tab(String a, String b, int n, int m){
+        int[][] dp = new int[n+1][m+1];
+        String[][] sdp = new String[n+1][m+1];
+
+        for(int i=0; i<=n; i++){
+            for(int j=0; j<=m; j++){
+                if(i == 0 || j == 0){
+                    dp[i][j] = 0;
+                    sdp[i][j] = "";
+                    continue;
+                }
+
+                if(a.charAt(i-1) == b.charAt(j-1)){
+                    dp[i][j] = dp[i-1][j-1] + 1; //longestCommonSubsequence_memo(a,b,n-1,m-1,dp) + 1;
+                    sdp[i][j] = sdp[i-1][j-1] + a.charAt(i-1);
+                } else {
+                    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                    if(dp[i-1][j] > dp[i][j-1]){
+                        sdp[i][j] = sdp[i-1][j];
+                    } else {
+                        sdp[i][j] = sdp[i][j-1];
+                    }
+                }
+            }
+        }
+
+        System.out.println(sdp[n][m]);
+        return dp[n][m];
+    }
+
     public int longestCommonSubsequence(String a, String b) {
         int n = a.length();
         int m = b.length();
@@ -327,6 +357,136 @@ class Questions {
 
         return longestCommonSubsequence_tab(a,b,n,m);
     }
+
+    // Leetcode 583 (Delete operations)
+    public int minDistance(String a, String b) {
+        int n = a.length();
+        int m = b.length();
+
+        int lcs_len = longestCommonSubsequence_tab(a,b,n,m);
+
+        return (n - lcs_len) + (m - lcs_len); // delete everything except lcs
+    }
+
+    // Leetcode 72 (Edit distance) ============================
+    public int minDistance_rec(String a, String b, int n, int m, int[][] dp){
+        if(n == 0 || m == 0){
+            return dp[n][m] = n == 0 ? m : n;
+        }
+
+        if(dp[n][m] != -1) return dp[n][m];
+
+        int ans = 0;
+        if(a.charAt(n-1) == b.charAt(m-1)){
+            ans = minDistance_rec(a,b,n-1,m-1,dp);
+        } else {
+            int insert = minDistance_rec(a,b,n,m-1,dp);
+            int delete = minDistance_rec(a,b,n-1,m,dp);
+            int replace = minDistance_rec(a,b,n-1,m-1,dp);
+
+            ans = Math.min(insert, Math.min(delete, replace)) + 1;
+        }
+
+        return dp[n][m] = ans;
+    }
+
+    public int minDistance_tab(String a, String b, int n, int m){
+        int[][] dp = new int[n+1][m+1];
+
+        // dp[i][j] = minimum number of operations to convert first i letters of string a into first j letters of string b
+        
+        for(int i=0; i<=n; i++){
+            for(int j=0; j<=m; j++){
+                if(i==0){
+                    dp[i][j] = j;
+                } else if(j==0){
+                    dp[i][j] = i;
+                } else if(a.charAt(i-1) == b.charAt(j-1)){
+                    dp[i][j] = dp[i-1][j-1];
+                } else {
+                    int insert = dp[i][j-1];
+                    int delete = dp[i-1][j];
+                    int replace = dp[i-1][j-1];
+
+                    dp[i][j] = Math.min(insert, Math.min(delete, replace)) + 1;
+                }
+            }
+        }
+
+        return dp[n][m];
+    }
+
+    public int minDistance(String a, String b) {
+        int n = a.length();
+        int m = b.length();
+
+        // int[][] dp = new int[n+1][m+1];
+        // for(int[] d: dp){
+        //     Arrays.fill(d, -1);
+        // }
+
+        // return minDistance_rec(a,b,n,m,dp);
+        return minDistance_tab(a,b,n,m);
+    }
+
+    // Leetcode 44 (Wildcard matching) ==========================
+    public boolean wildcardMatching_rec(String s, String p, int n, int m, Boolean[][] dp){
+        if(n==0 && m==0){
+            return dp[n][m] = true;
+        }
+        if(n==0 && m==1 && m.charAt(m-1) == '*'){
+            return true;
+        }
+        if(n==0 || m==0){
+            return dp[n][m] = false;
+        }
+
+        if(dp[n][m] != null) return dp[n][m];
+
+        boolean ans = false;
+
+        if(p.charAt(m-1) == '?' || s.charAt(n-1) == p.charAt(m-1)){
+            ans = wildcardMatching_rec(s,p,n-1,m-1,dp);
+        } else if(p.charAt(m-1) == '*'){
+            ans = wildcardMatching_rec(s,p,n-1,m,dp) || wildcardMatching_rec(s,p,n,m-1,dp);
+        }
+
+        return dp[n][m] = ans;
+    }
+
+    public String combineStars(String p){
+        StringBuilder sb = new StringBuilder();
+
+        for(int i=0; i<p.length(); i++){
+            if(p.charAt(i) == '*'){
+                int j = i;
+                while(j<p.length() && p.charAt(j) == '*') j++; 
+
+                i = j-1;
+
+                sb.append('*');
+            } else {
+                sb.append(p.charAt(i));
+            }
+        }
+
+        return sb.toString();
+    }
+
+
+    public boolean isMatch(String s, String p) {
+        String fixedP = combineStars(p);
+
+        int n = s.length();
+        int m = fixedP.length();
+
+        Boolean[][] dp = new Boolean[n+1][m+1]; 
+
+        return wildcardMatching_rec(s,fixedP,n,m,dp);
+    }
+
+
+
 
 
 
