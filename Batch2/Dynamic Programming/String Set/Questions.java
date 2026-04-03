@@ -160,6 +160,179 @@ class Questions {
         return longestPalindromeSubseq_tab(s);
     }
 
+    // Leetcode 115 (Distinct Subsequences) ===================
+    public int numDistinct_rec(String s, String t, int n, int m){
+        if(m == 0){
+            return 1;
+        }
+        if(n == 0){
+            return 0;
+        }
+        if(n < m){
+            return 0;
+        }
+
+        int ans = 0;
+
+        if(s.charAt(n-1) == t.charAt(m-1)){
+            ans =  numDistinct_rec(s,t,n-1,m-1) + numDistinct_rec(s,t,n-1,m);
+        } else {
+            ans = numDistinct_rec(s,t,n-1,m);
+        }
+
+        return ans;
+    }
+
+    public int numDistinct_memo(String s, String t, int n, int m, int[][] dp){
+        if(m == 0){
+            return dp[n][m] = 1;
+        }
+        if(n == 0){
+            return dp[n][m] = 0;
+        }
+        if(n < m){
+            return dp[n][m] = 0;
+        }
+
+        if(dp[n][m] != -1) return dp[n][m];
+
+        int ans = 0;
+
+        if(s.charAt(n-1) == t.charAt(m-1)){
+            ans =  numDistinct_memo(s,t,n-1,m-1,dp) + numDistinct_memo(s,t,n-1,m,dp);
+        } else {
+            ans = numDistinct_memo(s,t,n-1,m,dp);
+        }
+
+        return dp[n][m] = ans;
+    }
+
+    public int numDistinct_tab(String s, String t, int N, int M){
+        int[][] dp = new int[N+1][M+1];
+
+        for(int n=0; n<=N; n++){
+            for(int m=0; m<=M; m++){
+                if(m == 0){
+                    dp[n][m] = 1;
+                    continue;
+                }
+                if(n == 0){
+                    dp[n][m] = 0;
+                    continue;
+                }
+                if(n < m){
+                    dp[n][m] = 0;
+                    continue;
+                }
+
+                int ans = 0;
+
+                if(s.charAt(n-1) == t.charAt(m-1)){
+                    ans =  dp[n-1][m-1] + dp[n-1][m]; //numDistinct_memo(s,t,n-1,m-1,dp) + numDistinct_memo(s,t,n-1,m,dp);
+                } else {
+                    ans = dp[n-1][m]; //numDistinct_memo(s,t,n-1,m,dp);
+                }
+
+                dp[n][m] = ans;
+            }
+        }
+
+        return dp[N][M];
+    }
+
+    public int numDistinct_tab(String s, String t, int N, int M){
+        int[][] dp = new int[N+1][M+1];
+
+        for(int i=0; i<=N; i++){
+            for(int j=0; j<=M; j++){
+                if(j == 0){
+                    dp[i][j] = 1;
+                } else if(i == 0){
+                    dp[i][j] = 0;
+                } else if(i < j){
+                    dp[i][j] = 0;
+                } else {
+                    if(s.charAt(i-1) == t.charAt(j-1)){
+                        dp[i][j] =  dp[i-1][j-1] + dp[i-1][j];
+                    } else {
+                        dp[i][j] = dp[i-1][j]; 
+                    }
+                }
+            }
+        }
+
+        return dp[N][M];
+    }
+
+    public int numDistinct(String s, String t) {
+        int n = s.length();
+        int m = t.length();
+
+        // int[][] dp = new int[n+1][m+1];
+        // for(int[] d: dp){
+        //     Arrays.fill(d, -1);
+        // }
+
+        // return numDistinct_memo(s,t,n,m);
+        return numDistinct_tab(s,t,n,m);
+    }
+
+    // Longest common subsequence (Leetcode 1143) =================
+    public int longestCommonSubsequence_memo(String a, String b, int n, int m, int[][] dp){
+        if(n == 0 || m == 0){
+            return dp[n][m] = 0;
+        }
+
+        if(dp[n][m] != -1) return dp[n][m];
+
+        int ans = 0;
+        if(a.charAt(n-1) == b.charAt(m-1)){
+            ans = longestCommonSubsequence_memo(a,b,n-1,m-1,dp) + 1;
+        } else {
+            ans = Math.max(longestCommonSubsequence_memo(a,b,n-1,m,dp), longestCommonSubsequence_memo(a,b,n,m-1,dp));
+        }
+
+        return dp[n][m] = ans;
+    }
+
+    public int longestCommonSubsequence_tab(String a, String b, int n, int m){
+        int[][] dp = new int[n+1][m+1];
+
+        for(int i=0; i<=n; i++){
+            for(int j=0; j<=m; j++){
+                if(i == 0 || j == 0){
+                    dp[i][j] = 0;
+                    continue;
+                }
+
+                if(a.charAt(i-1) == b.charAt(j-1)){
+                    dp[i][j] = dp[i-1][j-1] + 1; //longestCommonSubsequence_memo(a,b,n-1,m-1,dp) + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]); //longestCommonSubsequence_memo(a,b,n-1,m,dp), longestCommonSubsequence_memo(a,b,n,m-1,dp));
+                }
+            }
+        }
+
+        return dp[n][m];
+    }
+
+    public int longestCommonSubsequence(String a, String b) {
+        int n = a.length();
+        int m = b.length();
+
+        // int[][] dp = new int[n+1][m+1];
+        // for(int[] d: dp){
+        //     Arrays.fill(d, -1);
+        // }
+
+        return longestCommonSubsequence_tab(a,b,n,m);
+    }
+
+
+
+
+
+
 
 
 
