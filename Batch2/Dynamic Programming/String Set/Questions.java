@@ -485,6 +485,57 @@ class Questions {
         return wildcardMatching_rec(s,fixedP,n,m,dp);
     }
 
+    // Distinct Subsequences 2 (No duplicates, Leetcode 940) ==============================
+    // Homework => Try in O(26) ~= O(1) space
+    public int distinctSubseqII(String s) {
+        int n = s.length();
+        int mod = (int)(1e9+7);
+
+        long[] dp = new long[n+1];
+        dp[0] = 1L;
+
+        int[] loc = new int[26];
+
+        for(int i=1; i<=n; i++){
+            dp[i] = 2*dp[i-1];
+
+            char ch = s.charAt(i-1);
+            int lastOcc = loc[ch-'a'];
+
+            if(lastOcc != 0){
+                dp[i] = (dp[i] - dp[lastOcc - 1] + mod) % mod;
+            }
+
+            loc[ch-'a'] = i;
+
+            dp[i] = dp[i] % mod;
+        }
+
+
+        return (int)(dp[n] - 1 + mod)%mod;
+    }
+
+    // Subs ending with a^i b^j c^k (https://www.geeksforgeeks.org/problems/count-subsequences-of-type-ai-bj-ck4425/1)
+    public int fun(String s) {
+        long s_a = 0;
+        long s_ab = 0;
+        long s_abc = 0;
+        int mod = (int)(1e9 + 7);
+
+        for(int i=0; i<s.length(); i++){
+            if(s.charAt(i) == 'a'){
+                s_a = (2*s_a + 1) % mod;
+            } else if(s.charAt(i) == 'b'){
+                s_ab = (2*s_ab + s_a) % mod;
+            } else {
+                s_abc = (2*s_abc + s_ab) % mod;
+            }
+        }
+        
+        return (int)s_abc % mod;
+    }
+
+
 
 
 
