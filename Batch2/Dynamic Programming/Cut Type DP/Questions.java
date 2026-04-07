@@ -159,4 +159,106 @@ class Questions {
         // return burstBalloons_rec(0,n-1,n,nums,dp);
         return burstBalloons_tab(n, nums);
     }
+
+    // Minimum cost to cut stick (Leetcode 1547) ===========================
+    public int cutStick_memo(int si, int ei, int stickLength, int[] cuts, int[][] dp){
+        if(dp[si][ei] != 0) return dp[si][ei];
+
+        int leftEnd = si == 0 ? 0 : cuts[si-1];
+        int rightEnd = ei == cuts.length-1 ? stickLength : cuts[ei+1];
+
+        int currCuttingCost = rightEnd - leftEnd;
+
+        int minCost = Integer.MAX_VALUE;
+        for(int cut=si; cut <= ei; cut++){
+            int leftAns = cut == si ? 0 : cutStick_memo(si, cut-1, stickLength, cuts, dp);
+            int rightAns = cut == ei ? 0 : cutStick_memo(cut+1, ei, stickLength, cuts, dp);
+
+            int currAns = leftAns + rightAns + currCuttingCost;
+
+            minCost = Math.min(minCost, currAns);
+        } 
+
+        return dp[si][ei] = minCost;
+    }
+
+    public int minCost(int stickLength, int[] cuts) {
+        Arrays.sort(cuts); // we assume the points where we can make cut is sorted => required to find stick length after cuts
+        int n = cuts.length;
+        int[][] dp = new int[n][n];
+
+        return cutStick_memo(0,n-1,stickLength,cuts,dp);
+    }
+
+    // Leetcode 132 (Pallindrome Partitioning 2) =======================
+    public boolean[][] makeIsPallindromeDP(String str, int n){
+        boolean[][] dp = new boolean[n][n];
+
+        for(int gap=0; gap < n; gap++){ // len in consideration = gap + 1
+            for(int i=0, j=gap; j<n; i++, j++){
+                if(gap == 0){
+                    dp[i][j] = true;
+                } else if(gap == 1){
+                    dp[i][j] = str.charAt(i) == str.charAt(j);
+                } else {
+                    if(str.charAt(i) == str.charAt(j)){
+                        dp[i][j] = dp[i+1][j-1];
+                    }
+                }
+            }
+        }
+
+        return dp;
+    }
+
+    public int pallPartitioning_memo(int idx, String s, boolean[][] isPallindrome, int[] dp){
+        if(isPallindrome[idx][s.length()-1]){
+            return 0;
+        }
+
+        if(dp[idx] != -1) return dp[idx];
+
+        int minCuts = Integer.MAX_VALUE;
+        for(int cut = idx; cut < s.length() - 1; cut++){
+            if(isPallindrome[idx][cut]){
+                minCuts = Math.min(minCuts, pallPartitioning_memo(cut+1, s, isPallindrome,dp) + 1);
+            }
+        }
+
+        return dp[idx] = minCuts;
+    }
+
+    // dp[idx] = min cuts required (in string between "idx" to last) to make pallindromic substrings
+    public int pallPartitioning_tab(String s, boolean[][] isPallindrome, int n){
+        int[] dp = new int[n];
+
+        for(int idx = n-1; idx>=0; idx--){
+            if(isPallindrome[idx][s.length()-1]){
+                dp[idx] = 0;
+                continue;
+            }
+
+            int minCuts = Integer.MAX_VALUE;
+            for(int cut = idx; cut < s.length() - 1; cut++){
+                if(isPallindrome[idx][cut]){
+                    minCuts = Math.min(minCuts, dp[cut+1] + 1); //pallPartitioning_memo(cut+1, s, isPallindrome,dp) + 1);
+                }
+            }
+
+            dp[idx] = minCuts;
+        }
+
+        return dp[0];
+    }
+
+    public int minCut(String s) {
+        int n = s.length();
+
+        boolean[][] isPallindrome = makeIsPallindromeDP(s,n);
+
+        // int[] dp = new int[n]; 
+        // Arrays.fill(dp, -1);
+        // return pallPartitioning_memo(0,s,isPallindrome,dp);
+        return pallPartitioning_tab(s,isPallindrome,n);
+    }
 }
