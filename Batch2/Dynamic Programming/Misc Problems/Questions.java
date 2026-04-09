@@ -161,6 +161,7 @@ class Questions {
         return dp[row][c1][c2] = currCherries + nextCherries;
     }
 
+    // dont let robot 1 and robot 2 cross each other to optimise more
     public int cherryPickup_memo(int row, int c1, int c2, int[][] grid, int n, int m, int[][][] dp){
         if(dp[row][c1][c2] != -1) return dp[row][c1][c2];
 
@@ -184,18 +185,52 @@ class Questions {
         return dp[row][c1][c2] = currCherries + nextCherries;
     }
 
+    public int cherryPickup_Tab(int[][] grid, int n, int m){
+        int[][][] dp = new int[n][m][m];
+
+        for(int row=n-1; row>=0; row--){
+            for(int c1=0; c1<m; c1++){
+                for(int c2=c1+1; c2<m; c2++){ // robot2 will always be atleast one column ahead robot1
+                    int currCherries = 0;
+
+                    if(c1 == c2){
+                        currCherries = grid[row][c1];
+                    } else {
+                        currCherries = grid[row][c1] + grid[row][c2];
+                    }
+
+                    int nextCherries = 0;
+                    for(int nextC1 = c1-1; nextC1 <= c1 + 1; nextC1++){
+                        for(int nextC2 = c2-1; nextC2 <= c2 + 1; nextC2++){
+                            if(row + 1 < n && nextC1>=0 && nextC2>=0 && nextC1<m && nextC2<m && nextC1 < nextC2){
+                                nextCherries = Math.max(nextCherries, dp[row+1][nextC1][nextC2]); //cherryPickup_memo(row+1,nextC1,nextC2,grid,n,m,dp));
+                            }
+                        }
+                    }
+
+                    dp[row][c1][c2] = currCherries + nextCherries;
+                }
+            }
+        }
+
+        return dp[0][0][m-1]; // starting point of both robots is 0th row, 0th col and m-1 col
+    }
+
+    // Homework => Solve in 2*m*m space => 2D DP
+
     public int cherryPickup(int[][] grid) {
         int n = grid.length;
         int m = grid[0].length;
 
-        int[][][] dp = new int[n][m][m];
+        // int[][][] dp = new int[n][m][m];
 
-        for(int[][] a: dp){
-            for(int[] b: a){
-                Arrays.fill(b, -1);
-            }
-        }
+        // for(int[][] a: dp){
+        //     for(int[] b: a){
+        //         Arrays.fill(b, -1);
+        //     }
+        // }
 
-        return cherryPickup_memo(0,0,m-1,grid,n,m,dp);
+        // return cherryPickup_memo(0,0,m-1,grid,n,m,dp);
+        return cherryPickup_Tab(grid,n,m);
     }
 }
