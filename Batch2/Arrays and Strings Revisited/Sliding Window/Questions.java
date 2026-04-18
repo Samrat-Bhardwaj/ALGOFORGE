@@ -194,4 +194,32 @@ class Questions {
 
         return maxLen;
     }
+
+    // Leetcode 560 ()
+    public int subarraySum(int[] arr, int k) {
+        int n = arr.length;
+
+        HashMap<Integer,Integer> map = new HashMap<>();
+
+        map.put(0,1);
+
+        int totalCount = 0;
+        int csum = 0;
+
+        for(int i=0; i<n; i++){
+            csum += arr[i];
+
+            if(map.containsKey(csum-k)){
+                totalCount += map.get(csum-k);
+            }
+
+            if(map.containsKey(csum)){
+                map.put(csum, map.get(csum) + 1);
+            } else {
+                map.put(csum,1);
+            }
+        }
+
+        return totalCount;
+    }
 }
