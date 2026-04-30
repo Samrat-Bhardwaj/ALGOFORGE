@@ -244,4 +244,40 @@ class BSonAnswers {
             return minSubarraySum;
         }
     }
+
+    // Minimize Max Distance to Gas Station (https://www.geeksforgeeks.org/problems/minimize-max-distance-to-gas-station/1)
+    class Solution {
+        public boolean isPossible(int[] stations, int K, double mid){
+            for(int i=1; i<stations.length; i++){
+                int dis = stations[i] - stations[i-1];
+
+                int newStations = (int)(dis/mid);
+
+                K -= newStations;
+            }
+
+            return K >= 0;
+        }
+
+        public double minMaxDist(int[] stations, int K) {
+            double left = 0.0; 
+            double right = 1e9;
+            double mid = 0.0;
+
+            double ans = 0.0;
+
+            while(left <= right){
+                mid = (left + right)/2.0;
+
+                if(isPossible(stations,K,mid)){
+                    ans = mid;
+                    right = mid - 1e-6;
+                } else {
+                    left = mid + 1e-6; // mid + 0.000001;
+                }
+            }
+
+            return ans;
+        }
+    }
 }

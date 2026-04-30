@@ -327,5 +327,29 @@ class Questions {
         return 0.0;   
     }
 
+    // Leetcode 56 (Merge Intervals)
+    public int[][] merge(int[][] intervals) {
+        int n = intervals.length;
+        ArrayList<int[]> merged = new ArrayList<>();
+
+        Arrays.sort(intervals, (int[] a, int[] b) -> {
+            return a[0] - b[0];
+        });
+
+        int[] last = intervals[0];
+
+        for(int i=1; i<n; i++){
+            if(last[1] >= intervals[i][0]){
+                last[1] = Math.max(last[1], intervals[i][1]);
+            } else {
+                merged.add(last);
+                last = intervals[i];
+            }
+        }
+
+        merged.add(last);
+        return merged.toArray(new int[merged.size()][]);
+    }
+
     
 }
