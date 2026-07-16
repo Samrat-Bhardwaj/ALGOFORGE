@@ -68,7 +68,169 @@ class Questions {
         return -1;
     }
 
+    public static void printBuildings(int[] heights){
+        int n = heights.length;
 
+        int maxHeight = Integer.MIN_VALUE;
+        for(int i=0; i<n; i++){
+            int currBuildingHeight = heights[i];
+
+            maxHeight = Math.max(maxHeight, currBuildingHeight);
+        }
+
+        int total_number_of_lines = maxHeight;
+        int currFloor = maxHeight;
+
+        while(currFloor > 0){
+            // go to every building and check if currFloor for that building exists or not
+            for(int i=0; i<n; i++){
+                int currBuildingHeight = heights[i];
+
+                if(currFloor <= currBuildingHeight){ // currFloor exists
+                    System.out.print("* ");
+                } else {
+                    System.out.print("  ");
+                }
+            }
+
+            // prepare for next line
+            System.out.println();
+            currFloor--;
+        }
+    }
+
+    public static int[] sumOfTwoArrays(int[] arr1, int[] arr2){
+        int n1 = arr1.length;
+        int n2 = arr2.length;
+
+        int resSize = Math.max(n1, n2) + 1;
+
+        int[] res = new int[resSize];
+
+        int i = arr1.length - 1;
+        int j = arr2.length - 1;
+        int k = res.length - 1;
+
+        int carry = 0;
+
+        while(k >= 0){
+            int csum = 0;
+
+            if(i >= 0){
+                csum += arr1[i];
+            }
+            if(j >= 0){
+                csum += arr2[j];
+            }
+            csum += carry;
+
+            if(csum > 9){
+                csum = csum % 10;
+                carry = 1;
+            } else {
+                carry = 0;
+            }
+
+            res[k] = csum;
+
+            i--;
+            j--;
+            k--;
+        }
+
+        return res;
+    }
+
+    // Reverse array (https://www.geeksforgeeks.org/problems/reverse-an-array/1)
+    public void swap(int[] arr, int left, int right){
+        int temp = arr[left];
+        arr[left] = arr[right];
+        arr[right] = temp;
+    }
+
+    public void reverseArray(int arr[]) {
+        int left = 0;
+        int right = arr.length - 1;
+
+        while(left < right){
+            swap(arr, left, right);
+            left++;
+            right--;
+        }
+    }
+
+    public void reverseArray(int[] arr){
+        int n = arr.length;
+
+        for(int i=0; i<n/2; i++){
+            // swap i <-> n - 1 - i
+
+            int temp = arr[i];
+            arr[i] = arr[n-1-i]; // logic | formula
+            arr[n-1-i] = temp;
+        }
+    }
+
+    public void reverse(int[] arr, int left, int right){
+
+        while(left < right){
+            swap(arr, left, right);
+            left++;
+            right--;
+        }
+
+    }
+
+    // Rotate an array (Leetcode 189)
+    public void rotate(int arr[], int k) {
+        int n = arr.length;
+        
+        k = k % n;
+
+        if(k < 0){
+            k = k + n;
+        }
+
+        reverse(arr,0,n-1);
+        reverse(arr,0,k-1);
+        reverse(arr,k,n-1);
+    }
+
+    public static void printAllSubArrays(int[] arr){
+        int n = arr.length;
+        
+        for(int si = 0; si<n; si++){
+            for(int ei=si; ei<n; ei++){
+                // print array from si to ei
+
+                for(int k=si; k<=ei; k++){
+                    System.out.print(arr[k] + " ");
+                }
+
+                System.out.println();
+            }
+        }
+    }
+
+    public int maxSubArray(int[] arr) {
+        int n = arr.length;
+
+        int maxSum = Integer.MIN_VALUE;
+        
+        for(int si = 0; si<n; si++){
+            for(int ei=si; ei<n; ei++){
+                // find sum from si to ei
+                int currSum = 0;
+                for(int k=si; k<=ei; k++){
+                    currSum += arr[k];
+                }
+
+                maxSum = Math.max(maxSum, currSum);
+            }
+        }
+
+        return maxSum;
+    }
 
 
 
