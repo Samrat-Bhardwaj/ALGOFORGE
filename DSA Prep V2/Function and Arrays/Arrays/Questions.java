@@ -212,6 +212,7 @@ class Questions {
         }
     }
 
+    // Leetcode O(N^3)
     public int maxSubArray(int[] arr) {
         int n = arr.length;
 
@@ -228,6 +229,79 @@ class Questions {
                 maxSum = Math.max(maxSum, currSum);
             }
         }
+
+        return maxSum;
+    }
+
+    // O(N^2)
+    public int maxSubArray(int[] nums) {
+        int n = nums.length;
+        int maxSum = Integer.MIN_VALUE;
+
+        int maxSubSi = -1;
+        int maxSubEi = -1;
+
+        for(int si=0; si<n; si++){
+            int csum = 0;
+            
+            for(int ei=si; ei<n; ei++){
+                csum += nums[ei];
+
+                if(maxSum < csum){
+                    maxSum = csum;
+                    maxSubSi = si;
+                    maxSubEi = ei;
+                }
+            }
+        }   
+
+        return maxSum;
+    }
+
+    // O(N) Kadane's Algorithm (Leetcode 53)
+    public int maxSubArray(int[] nums){
+        int meh = 0; // max_ending_here => max sum ending at currentIdx
+
+        int maxSum = Integer.MIN_VALUE;
+
+        for(int i=0; i<nums.length; i++){
+            meh += nums[i];
+
+            maxSum = Math.max(maxSum, meh);
+
+            if(meh < 0){ // new subarray from next idx
+                meh = 0;
+            }
+        }
+
+        return maxSum;
+    }
+
+    public int maxSubArray(int[] nums){
+        int meh = 0; // max_ending_here => max sum ending at currentIdx
+
+        int maxSum = Integer.MIN_VALUE;
+        int maxSumSi = -1;
+        int maxSumEi = -1;
+
+        int currentStart = 0;
+
+        for(int i=0; i<nums.length; i++){
+            meh += nums[i];
+
+            if(maxSum < meh){
+                maxSum = meh;
+                maxSumSi = currentStart;
+                maxSumEi = i;
+            }
+
+            if(meh < 0){ // new subarray from next idx
+                meh = 0;
+                currentStart = i+1;
+            }
+        }
+
+        System.out.println("Maximum subbarray start and end point is: " + maxSumSi + "," + maxSumEi);
 
         return maxSum;
     }
