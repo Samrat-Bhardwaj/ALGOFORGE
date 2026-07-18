@@ -4,7 +4,7 @@ class BinarySearch {
         int left = 0;
         int right = n-1;
 
-        while(){
+        while(left <= right){
             int mid = (left + right)/2;
 
             if(arr[mid] == tar){
