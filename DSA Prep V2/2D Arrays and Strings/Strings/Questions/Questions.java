@@ -1,4 +1,4 @@
-import java.util.Scanner;
+import java.util.*;
 class Questions {
     public static String compressString(String str){
         String res = "";
@@ -37,11 +37,31 @@ class Questions {
         return res;
     }
 
+    public static String toggleCase(String str){
+        StringBuilder sb = new StringBuilder();
+
+        for(int i=0; i<str.length(); i++){
+            char ch = str.charAt(i);
+
+            if('a' <= ch && ch <= 'z'){
+                char upperCase = (char)('A' + (ch - 'a'));
+                sb.append(upperCase);
+            } else if('A' <= ch && ch <= 'Z'){
+                char lowerCase = (char)('a' + (ch - 'A'));
+                sb.append(lowerCase);
+            } else {
+                sb.append(ch);
+            }
+        }
+
+        return sb.toString();
+    }
+
     public static void main(String[] args){
         Scanner scn = new Scanner(System.in);
 
         String str = scn.next();
 
-        System.out.println(compressString2(str));
+        System.out.println(toggleCase(str));
     }
 }
