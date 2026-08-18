@@ -61,10 +61,44 @@ class Main {
         printMazePaths(sr + 1, sc, dr, dc, psf + "v");
     }
 
+    // print Encodings 
+    public static void printEncodings(String str, String asf){
+        if(str.length() == 0){
+            System.out.println(asf);
+            return;
+        }
+
+        // we can take one character at a time
+        int firstNum = str.charAt(0) - '0';
+
+        if(firstNum == 0){ // no possible solutions
+            return;
+        }
+
+        char convertedLetter = (char)('a' + (firstNum - 1));
+        String smallerString = str.substring(1);
+
+        printEncodings(smallerString, asf + convertedLetter);
+
+        // we can take two characters at a time
+        if(str.length() >= 2){
+            String first2Letters = str.substring(0,2);
+            int first2Num = Integer.parseInt(first2Letters);
+
+            if(first2Num <= 26){
+                convertedLetter = (char)('a' + first2Num - 1);
+                smallerString = str.substring(2);
+
+                printEncodings(smallerString, asf + convertedLetter);
+            }
+        }
+    }
+
     public static void main(String[] args){
         // printSubsequences("abc","");
         // printKPC("789","");
         // printStairPaths(4,"");
-        printMazePaths(0,0,1,2,"");
+        // printMazePaths(0,0,1,2,"")
+        printEncodings("2121","");
     }
 }
