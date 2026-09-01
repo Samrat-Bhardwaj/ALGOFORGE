@@ -374,7 +374,28 @@ class Main {
     }
 
     public int nQueensMostOptimized(int row, int colVis, int diagVis, int aDiagVis, int n){
-        
+        if(row == n){
+            return 1;
+        }
+
+        int ans = 0;
+        for(int col=0; col<n; col++){
+            if(ifKthBitIsOn(colVis,col) == false && !ifKthBitIsOn(diagVis,col-row+n-1) && !((aDiagVis & (1 << col + row)) > 0)){
+                // visited mark
+                colVis = setKthBit(colVis,col);
+                diagVis = setKthBit(diagVis,col-row+n-1);
+                aDiagVis = aDiagVis | (1 << (row+col));
+
+                ans += nQueensMostOptimized(row+1,colVis,diagVis,aDiagVis,n);
+
+                // unmark
+                colVis = unsetKthBit(colVis,col);
+                diagVis = diagVis & ~(1 << (col-row+n-1));
+                aDiagVis = aDiagVis & ~(1 << (col + row));
+            }
+        }
+
+        return ans;
     }
 
     public int totalNQueens(int n) {
