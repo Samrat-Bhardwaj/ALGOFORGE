@@ -156,8 +156,48 @@ class LinkedList {
 
         this.size--;
     }
+
+    public void reverseLinkedListDataIteratively(){
+        int left = 0;
+        int right = size-1;
+
+        while(left < right){
+            // get Nodes 
+            Node nodeAtLeft = this.getNodeAt(left);
+            Node nodeAtRight = this.getNodeAt(right);
+            // get Data
+            int dataAtLeft = nodeAtLeft.data;
+            int dataAtRight = nodeAtRight.data;
+            // set data
+            nodeAtLeft.data = dataAtRight;
+            nodeAtRight.data = dataAtLeft;
+
+            left++;
+            right--;
+        }
+    }
+
+    public void reverseLinkedList(){
+        Node prev = null;
+        Node curr = head;
+
+        while(curr != null){
+            // save currKaNext as we are going to break connection with next
+            Node currKaNext = curr.next;
+
+            // reverse the pointer to point at prev
+            curr.next = prev;
+
+            // move prev and curr
+            prev = curr;
+            curr = currKaNext;
+        }
+
+        // swap head and tail
+        tail = head;
+        head = prev; // new head is the last node which is pointed by prev
+    }
     
-    // dont read this function yet
     public void display(){
         Node temp = head;
 
@@ -169,6 +209,7 @@ class LinkedList {
             // move to next
             temp = tempKaNext;
         }
+        System.out.println();
     }
 }
 
@@ -176,11 +217,16 @@ class Main {
     public static void main(String[] args){
         LinkedList ll = new LinkedList();
 
-        ll.addFirst(5);
-        ll.addFirst(10);
-        ll.addFirst(13);
-        ll.addFirst(15);
-        ll.addFirst(20);
+        ll.addLast(5);
+        ll.addLast(10);
+        ll.addLast(13);
+        ll.addLast(15);
+        ll.addLast(20);
+        ll.addLast(25);
+
+        ll.display();
+
+        ll.reverseLinkedList();
 
         ll.display();
     }
