@@ -197,7 +197,7 @@ class LinkedList {
         tail = head;
         head = prev; // new head is the last node which is pointed by prev
     }
-    
+
     public void display(){
         Node temp = head;
 
