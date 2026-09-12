@@ -157,6 +157,143 @@ class Main {
         return oddListHead;
     }
 
+    // Leetcode 25 (Reverse in k groups)
+    class Solution {
+        public int getSize(ListNode head){
+            int size = 0;
+            ListNode temp = head;
+
+            while(temp != null){
+                temp = temp.next;
+                size++;
+            }
+
+            return size;
+        }
+
+        ListNode oHead = null;
+        ListNode oTail = null;
+        ListNode tHead = null;
+        ListNode tTail = null;
+
+        public void addFirst(ListNode node){
+            if(tHead == null){
+                tHead = node;
+                tTail = node;
+            } else {
+                node.next = tHead;
+                tHead = node;
+            }
+        }
+
+        public ListNode reverseKGroup(ListNode head, int k) {
+            int size = getSize(head);
+            ListNode ptr = head;
+
+            while(size >= k){
+                int currentK = k;
+
+                while(currentK-- > 0){ // will create a reversed list of K size
+                    // isolate ptr
+                    ListNode ptrKaNext = ptr.next;
+                    ptr.next = null;
+
+                    addFirst(ptr);
+                    ptr = ptrKaNext;
+                }
+
+                // add to original list (addLast)
+                if(oHead == null){
+                    oHead = tHead;
+                    oTail = tTail;
+                } else {
+                    oTail.next = tHead;
+                    oTail = tTail;
+                }
+
+                // prepare for next
+                size -= k;
+                tHead = null;
+                tTail = null;
+            }
+
+            oTail.next = ptr;
+
+            return oHead;
+        }
+    }
+
+    // Leetcode 138 (Copy list with random pointer) =============
+    class Solution {
+        // add copy nodes in between
+        public void addCopyNodes(Node head){
+            Node temp = head;
+
+            while(temp != null){
+                // create copy
+                Node copyOfTemp = new Node(temp.val);
+
+                Node tempKaNext = temp.next;
+                // insert copy
+                temp.next = copyOfTemp;
+                copyOfTemp.next = tempKaNext;
+
+                // move
+                temp = tempKaNext; //temp.next.next;
+            }
+        }
+
+        // Assign random pointers to copy Nodes
+        public void assignRandom(Node head){
+            Node curr = head;
+            
+            while(curr != null){
+                // Node currKaRandom = curr.random;
+                // Node randomKaCopy = currKaRandom.next;
+                // Node copyNode = curr.next;
+
+                // copyNode.random = randomKaCopy;
+
+                if(curr.random != null){
+                    curr.next.random = curr.random.next; // currKaRandom.next
+                }
+
+                curr = curr.next.next;
+            }
+        }
+
+        // remove Copy Nodes vala list
+        public Node removeCopy(Node head){
+            Node copyDummy = new Node(-1);
+            Node copyTail = copyDummy;
+            Node temp = head;
+
+            while(ptr != null){
+                Node tempKaCopy = temp.next;
+
+                copyTail.next = tempKaCopy;
+                copyTail = tempKaCopy;
+
+                // to fix original list
+                temp.next = temp.next.next;
+
+                temp = temp.next;
+            }
+
+            return copyDummy.next;
+        }
+
+        public Node copyRandomList(Node head) {
+            addCopyNodes(head);
+            assignRandom(head);
+
+            return removeCopy(head);
+        }
+    }
+
+
+    
+
 
 
 
