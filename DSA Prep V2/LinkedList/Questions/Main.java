@@ -305,7 +305,7 @@ class Main {
 
         Node curr;
         public BrowserHistory(String homepage) {
-            curr = new Node(homepage)
+            curr = new Node(homepage);
         }
         
         public void visit(String url) {
@@ -320,13 +320,109 @@ class Main {
         }
         
         public String back(int steps) {
-            
+            while(steps > 0 && curr.prev != null){
+                curr = curr.prev;
+                steps--;
+            }
+
+            return curr.data;
         }
         
         public String forward(int steps) {
-            
+            while(steps > 0 && curr.next != null){
+                curr = curr.next;
+                steps--;
+            }
+
+            return curr.data;
         }
     }
+
+    // Leetcode 1669. Merge In Between Linked Lists ==============================
+    class Solution {
+        public ListNode getNodeAt(ListNode head, int idx){
+            ListNode temp = head;
+
+            for(int i=0; i<idx; i++){
+                temp = temp.next;
+            }
+
+            return temp;
+        }
+
+        public ListNode getTail(ListNode head){
+            ListNode temp = head;
+
+            while(temp.next != null){
+                temp = temp.next;
+            }
+
+            return temp;
+        }
+
+        public ListNode mergeInBetween(ListNode head1, int a, int b, ListNode head2) {
+            ListNode prevNode = getNodeAt(head1, a-1);
+            ListNode nextNode = getNodeAt(head1, b+1);
+
+            ListNode tailOfList2 = getTail(head2);
+
+            prevNode.next = head2; // attaching head;
+            tailOfList2.next = nextNode; // attaching tail of list 2 with list 1 
+
+            return head1;
+        }
+    }
+
+    // Leetcode 92 ======================
+    class Solution {
+    public ListNode getNodeAt(ListNode head, int idx){
+        ListNode temp = head;
+
+        for(int i=0; i<idx; i++){
+            temp = temp.next;
+        }
+
+        return temp;
+    }
+    public ListNode revereseLinkedList(ListNode head){
+        ListNode curr = head;
+        ListNode prev = null;
+
+        while(curr != null){
+            ListNode currKaNext = curr.next;
+
+            curr.next = prev;
+
+            prev = curr;
+            curr = currKaNext;
+        }
+
+        return prev; // new head
+    }
+
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        ListNode newHead = new ListNode(-1);
+        newHead.next = head;
+
+        ListNode prevNode = getNodeAt(newHead, left-1);
+        ListNode endOfList2 = getNodeAt(newHead, right);
+        ListNode nextNode = endOfList2.next;
+
+        ListNode head2 = prevNode.next;
+
+        // get the list out
+        prevNode.next = null;
+        endOfList2.next = null;
+
+        ListNode reversedHead = revereseLinkedList(head2);
+
+        prevNode.next = reversedHead;
+        if(head2 != null)
+        head2.next = nextNode;
+
+        return newHead.next;
+    }
+}
 
 
     
