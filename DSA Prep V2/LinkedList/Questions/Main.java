@@ -290,6 +290,43 @@ class Main {
             return removeCopy(head);
         }
     }
+    
+    // Create browser History (Leetcode 1472) ======================================
+    class BrowserHistory {
+        class Node {
+            String data;
+            Node prev;
+            Node next;
+
+            public Node(String data){
+                this.data = data;
+            }
+        }
+
+        Node curr;
+        public BrowserHistory(String homepage) {
+            curr = new Node(homepage)
+        }
+        
+        public void visit(String url) {
+            Node newNode = new Node(url);
+
+            // attach this next to curr
+            curr.next = newNode;
+            newNode.prev = curr;
+
+            // move curr to newNode
+            curr = newNode;
+        }
+        
+        public String back(int steps) {
+            
+        }
+        
+        public String forward(int steps) {
+            
+        }
+    }
 
 
     
