@@ -559,6 +559,46 @@ class Main {
         }
 }
 
+// Infix evaluation
+class Solution {
+    public int findRes(int v1, int v2, char op){
+        if(op == '/'){
+            double d = v1/(v2*1.0);
+            return (int)Math.floor(d);
+        } else if(op == '*'){
+            return v1 * v2;
+        } else if(op == '-'){
+            return v1 - v2;
+        } else if(op == '+'){
+            return v1 + v2;
+        } else {
+            return (int)Math.pow(v1,v2);
+        }
+    }
+    
+    public int evaluatePrefix(String[] arr) {
+        Stack<Integer> operands = new Stack<>();
+
+        for(int i=arr.length-1; i>=0; i--){
+            char ch = arr[i].charAt(0);
+            
+            if(Character.isDigit(ch) || (arr[i].length() > 1 && ch == '-')){
+                operands.push(Integer.parseInt(arr[i]));
+            } else if(ch == '/' || ch =='*' || ch == '-' || ch == '+' ||ch == '^'){
+                int v1 = operands.pop();
+                int v2 = operands.pop();
+    
+                int res = findRes(v1,v2,ch);
+    
+                operands.push(res);
+            }
+        }
+        
+        
+        return operands.peek();
+    }
+}
+
 
 
 
