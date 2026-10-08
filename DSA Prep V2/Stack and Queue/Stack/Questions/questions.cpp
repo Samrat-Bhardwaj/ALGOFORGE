@@ -71,6 +71,28 @@ vector<int> prevSmaller(vector<int>& arr) {
     return nsl;
 }
 
+    // Leetcode 503 (NGR on circular array) 
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        int n = nums.size();
+
+        vector<int> res(n, -1);
+
+        stack<int> st;
+
+        for(int i=0; i<2*n; i++){
+            while(st.size() > 0 && nums[st.top()] < nums[i%n]){
+                res[st.top()] = nums[i%n];
+                st.pop();
+            }
+
+            if(i < n){ // second iteration is also to find answers, not add as questions
+                st.push(i);
+            }
+        }
+
+        return res;
+    }
+
 
 
 

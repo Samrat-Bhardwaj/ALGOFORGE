@@ -718,6 +718,109 @@ class MinStack {
     }
 }
 
+    // Leetcode 503 (NGR on circular array) 
+    public int[] nextGreaterElements(int[] nums) {
+        int n = nums.length;
+
+        int[] res = new int[n];
+
+        Stack<Integer> st = new Stack<>();
+
+        for(int i=0; i<2*n; i++){
+            while(st.size() > 0 && nums[st.peek()] < nums[i%n]){
+                res[st.pop()] = nums[i%n];
+            }
+
+            if(i < n){ // second iteration is also to find answers, not add as questions
+                st.push(i);
+            }
+        }
+
+        while(st.size() > 0){
+            res[st.pop()] = -1;
+        }
+
+        return res;
+    }
+
+    // 132 Pattern in O(N^2) =======================================
+    public int[] getMinSoFar(int[] nums){
+        int n = nums.length;
+
+        int[] minSoFar = new int[n];
+        minSoFar[0] = nums[0];
+
+        for(int i=1; i<n; i++){
+            minSoFar[i] = Math.min(nums[i], minSoFar[i-1]);
+        }
+
+        return minSoFar;
+    }
+
+    public boolean find132pattern(int[] nums) {
+        int n = nums.length;
+
+        int[] minSoFar = getMinSoFar(nums);
+
+        for(int j=1; j<n; j++){
+            int firstNum = minSoFar[j-1];
+            int secondNum = nums[j];
+
+            if(firstNum >= secondNum){ 
+                continue;
+            }
+
+            for(int k = j+1; k < n; k++){
+                if(nums[k] < secondNum && nums[k] > firstNum){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // 132 Pattern in O(N) =============================
+    public int[] getMinSoFar(int[] nums){
+        int n = nums.length;
+
+        int[] minSoFar = new int[n];
+        minSoFar[0] = nums[0];
+
+        for(int i=1; i<n; i++){
+            minSoFar[i] = Math.min(nums[i], minSoFar[i-1]);
+        }
+
+        return minSoFar;
+    }
+
+    public boolean find132pattern(int[] nums) {
+        int n = nums.length;
+
+        int[] minSoFar = getMinSoFar(nums);
+
+        Stack<Integer> possibleKValues = new Stack<>();
+        possibleKValues.push(nums[n-1]);
+
+        for(int j=n-2; j>=1; j--){
+            int firstNum = minSoFar[j-1];
+            
+            // removing elements smaller than firstNum
+            while(possibleKValues.size() > 0 && possibleKValues.peek() <= firstNum){
+                possibleKValues.pop();
+            }
+
+            // possibleKValues.peek() is greater than first num and smaller than nums[j]
+            if(possibleKValues.size() > 0 && possibleKValues.peek() < nums[j]){
+                return true;
+            }
+
+            possibleKValues.push(nums[j]); // you can be k in next iteration
+        }
+
+        return false;
+    }
+
 
 
 
