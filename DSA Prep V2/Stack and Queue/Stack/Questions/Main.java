@@ -821,6 +821,119 @@ class MinStack {
         return false;
     }
 
+    // Leetcode 735 ==============================
+    public int[] asteroidCollision(int[] asteroids) {
+        Stack<Integer> st = new Stack<>();
+
+        for(int i=0; i<asteroids.length; i++){
+            int power = asteroids[i];
+
+            if(power > 0){
+                st.push(power);
+            } else {
+                boolean pushNegative = true;
+
+                while(st.size() > 0 && st.peek() > 0){
+                    if(st.peek() > -(power)){
+                        pushNegative = false;
+                        break;
+                    } else if(st.peek() == -(power)){
+                        st.pop();
+                        pushNegative = false;
+                        break;
+                    } else {
+                        st.pop();
+                    }
+                }
+
+                if(pushNegative){
+                    st.push(power);
+                }
+
+
+            }
+        }
+
+        int resLength = st.size();
+        int[] ans = new int[resLength];
+
+        for(int i=resLength-1; i>=0; i--){
+            ans[i] = st.pop();
+        }
+
+        return ans;
+    }
+
+    // Leetcode 402 (Remove k digits) ===========================
+    public String removeKdigits(String num, int k) {
+        Stack<Integer> st = new Stack<>();
+
+        for(int i=0; i<num.length(); i++){
+            int digit = num.charAt(i) - '0';
+
+            while(st.size() > 0 && k > 0 && st.peek() > digit){
+                st.pop();
+                k--;
+            }
+
+            st.push(digit);
+        }
+
+        while(k > 0){
+            st.pop();
+            k--;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        while(st.size() > 0){
+            sb.append(st.pop());
+        }
+
+        int j = sb.length()-1;
+
+        while(j>=0 && sb.charAt(j) == '0'){ // removing leading zeros
+            sb.deleteCharAt(j);
+            j--;
+        }
+
+        sb.reverse();
+
+        return sb.length() == 0 ? "0" : sb.toString();
+    }
+
+    // Leetcode 42 (Trapping rain water) =========================
+    public int trap(int[] height) {
+        int n = height.length;
+
+        int[] lmax = new int[n]; // lmax[j] = maximum height from 0th index to jth idx
+        int[] rmax = new int[n]; // rmax[j] = maximum height from jth index to n-1 idx
+
+        int max = 0;
+        for(int i=0; i<n; i++){
+            max = Math.max(max, height[i]);
+
+            lmax[i] = max;
+        }
+
+        rmax[n-1] = height[n-1];
+        for(int i=n-2; i>=0; i--){
+            rmax[i] = Math.max(rmax[i+1], height[i]);
+        }
+
+        int totalWater = 0;
+        
+        for(int i=1; i<n-1; i++){
+            int totalHeighOfWaterAllowed = Math.min(lmax[i-1], rmax[i+1]);
+
+            int currentLevelWater = Math.max(totalHeighOfWaterAllowed - height[i],0);
+
+            totalWater += currentLevelWater;
+        }
+
+        return totalWater;
+    }
+
 
 
 
