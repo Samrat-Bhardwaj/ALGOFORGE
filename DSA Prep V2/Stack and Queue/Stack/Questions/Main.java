@@ -934,6 +934,68 @@ class MinStack {
         return totalWater;
     }
 
+    // Leetcode 42 (Trapping rain water using Stack)
+    public int trap(int[] height) {
+        Stack<Integer> st = new Stack<>();
+
+        int totalWater = 0;
+        st.push(-1);
+
+        for(int i=0; i<height.length; i++){
+
+            while(st.peek() != -1 && height[st.peek()] <= height[i]){
+                int poppedIdx = st.pop();
+
+                int rightGreater = height[i];
+                
+                if(st.peek() == -1){ // no left greater wall
+                    break; 
+                }
+
+                int leftGreater = height[st.peek()];
+
+                int totalHeightOfWaterAllowed = Math.min(leftGreater, rightGreater);
+
+                int waterHeight = totalHeightOfWaterAllowed - height[poppedIdx];
+                int width = i - st.peek() - 1; // rightGreater - leftGreater - 1;
+
+                totalWater += waterHeight * width;
+            }
+
+            st.push(i);
+        }
+
+        return totalWater;
+    }
+
+    // Trapping rain water O(1) Method
+    public int trap(int[] height) {
+        int n = height.length;
+
+        int left = 0;
+        int right = n-1;
+
+        int lmax = height[0];
+        int rmax = height[n-1];
+
+        int totalWater = 0;
+
+        while(left < right){
+            lmax = Math.max(lmax, height[left]);
+            rmax = Math.max(rmax, height[right]);
+
+            if(lmax <= rmax){
+                totalWater += lmax - height[left];
+                left++;
+            } else {
+                totalWater += rmax - height[right];
+                right--;
+            }
+        }
+
+        return totalWater;
+    }
+
 
 
 
