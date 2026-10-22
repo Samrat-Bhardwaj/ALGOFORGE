@@ -115,6 +115,34 @@ class Questions {
         return ans;
     }
 
+    // Leetcode 128 (Longest Consecutive Sequence)
+    public int longestConsecutive(int[] nums) {
+        HashSet<Integer> set = new HashSet<>();
+
+        for(int e: nums){
+            set.add(e);
+        }
+
+        int res = 0;
+
+        for(int num: nums){
+            int left = num - 1;
+            int right = num + 1;
+
+            while(set.contains(left)){
+                left--;
+            }
+
+            while(set.contains(right)){
+                right++;
+            }
+
+            res = Math.max(res, right - left - 1);
+        }
+
+        return res;
+    }
+
 
 
 
