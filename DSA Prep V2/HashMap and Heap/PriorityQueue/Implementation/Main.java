@@ -23,8 +23,24 @@ class MyHeap {
         }
     }
 
-    private void downHeapify(int idx){
-        
+    private void downHeapify(int parentIdx){
+        int leftChildIdx = 2*parentIdx + 1;
+        int rightChildIdx = 2*parentIdx + 2;
+
+        int minIdx = parentIdx;
+
+        if(leftChildIdx < data.size() && data.get(minIdx) > data.get(leftChildIdx)){
+            minIdx = leftChildIdx;
+        }
+
+        if(rightChildIdx < data.size() && data.get(minIdx) > data.get(rightChildIdx)){
+            minIdx = rightChildIdx;
+        }
+
+        if(minIdx != parentIdx){
+            swap(minIdx, parentIdx);
+            downHeapify(minIdx);
+        }
     }
 
     public void add(int value){
@@ -67,10 +83,11 @@ class Main {
 
         System.out.println(minPQ.peek()); 
 
-        // System.out.println(minPQ.poll()); 
-        // System.out.println(minPQ.poll()); 
-        // System.out.println(minPQ.poll()); 
-        // System.out.println(minPQ.poll()); 
-        // System.out.println(minPQ.poll()); 
+        System.out.println(minPQ.remove()); 
+        System.out.println(minPQ.remove()); 
+        System.out.println(minPQ.remove()); 
+        minPQ.add(99);
+        System.out.println(minPQ.remove()); 
+        System.out.println(minPQ.remove()); 
     }
 }
