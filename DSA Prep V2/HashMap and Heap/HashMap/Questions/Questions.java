@@ -143,6 +143,167 @@ class Questions {
         return res;
     }
 
+    // Longest subarray with zero sum (https://www.geeksforgeeks.org/problems/largest-subarray-with-0-sum/1)
+    int maxLength(int arr[]) {
+        HashMap<Integer,Integer> sumVsIdx = new HashMap<>();
+
+        int csum = 0;
+        int res = 0;
+        sumVsIdx.put(0,-1);
+
+        for(int idx=0; idx<arr.length; idx++){
+            csum += arr[idx];
+
+            if(sumVsIdx.containsKey(csum)){
+                res = Math.max(res, idx - sumVsIdx.get(csum));
+            } else {
+                sumVsIdx.put(csum,idx);
+            }
+        }
+
+        return res;
+    }
+
+    // Number of subarrays with zero sum (https://www.geeksforgeeks.org/problems/zero-sum-subarrays1825/1)
+    public int findSubarray(int[] arr) {
+        HashMap<Long, Integer> sumFre = new HashMap<>();
+
+        sumFre.put(0l,1); // we have seen zero sum once even before starting
+        long csum = 0; // maximum sum can be equal to 10^15
+        int count = 0;
+
+        for(int idx=0; idx<arr.length; idx++){
+            csum += arr[idx];
+
+            count += sumFre.getOrDefault(csum,0);
+            sumFre.put(csum, sumFre.getOrDefault(csum,0) + 1);
+        }
+
+        return count;
+    }
+
+    // Longest subarray with k Sum  (https://www.geeksforgeeks.org/problems/longest-sub-array-with-sum-k0809/1)
+    public int longestSubarray(int[] arr, int k) {
+        HashMap<Integer,Integer> sumVsIdx = new HashMap<>();
+
+        int csum = 0;
+        int res = 0;
+        sumVsIdx.put(0,-1);
+
+        for(int idx=0; idx<arr.length; idx++){
+            csum += arr[idx];
+
+            if(sumVsIdx.containsKey(csum - k)){
+                res = Math.max(res, idx - sumVsIdx.get(csum - k));
+            } 
+            
+            if(sumVsIdx.containsKey(csum) == false) {
+                sumVsIdx.put(csum,idx);
+            }
+        }
+
+        return res;
+    }
+
+    // LRU Cache (Leetcode 146)
+    class LRUCache {
+        
+        class Node {
+            int key;
+            int value;
+            Node prev;
+            Node next;
+
+            public Node(int key, int value){
+                this.key = key;
+                this.value = value;
+            }
+        }
+
+        HashMap<Integer, Node> map;
+
+        Node head;
+        Node tail;
+        int size;
+        int maxCapacity;
+
+        private void addLast(Node newNode){
+            if(head == null){
+                head = newNode;
+                tail = newNode;
+            } else {
+                tail.next = newNode;
+                newNode.prev = tail;
+                tail = newNode;
+            }
+
+            size++;
+        }
+
+        private void removeNode(Node toRemove){
+            if(head == tail){
+                head = null;
+                tail = null;
+            } else if(toRemove == head){
+                head = head.next;
+                head.prev = null;
+            } else if(toRemove == tail){
+                tail = tail.prev;
+                tail.next = null;
+            } else {
+                Node prevNode = toRemove.prev;
+                Node nextNode = toRemove.next;
+
+                prevNode.next = nextNode;
+                nextNode.prev = prevNode;
+
+                toRemove.prev = null;
+                toRemove.next = null;
+            }
+
+            size--;
+        }
+
+        public LRUCache(int capacity) {
+            maxCapacity = capacity;
+            map = new HashMap<>();
+            head = null;
+            tail = null;
+            size = 0;
+        }
+        
+        public int get(int key) {
+            if(map.containsKey(key) == false){
+                return -1;
+            }
+
+            Node nodeWithKey = map.get(key);
+            removeNode(nodeWithKey);
+            addLast(nodeWithKey);
+
+            return nodeWithKey.value;
+        }
+        
+        public void put(int key, int value) {
+            if(map.containsKey(key)){
+                Node nodeWithKey = map.get(key);
+                nodeWithKey.value = value;
+
+                get(key); // we accessed this node, so position should update;
+            } else {
+    
+                Node newNode = new Node(key, value);
+                addLast(newNode);
+                map.put(key, newNode);
+
+                if(size > maxCapacity){
+                    int headKey = head.key;
+                    map.remove(headKey);
+                    removeNode(head); // removing least recently used
+                }
+            }
+        }
+    }
 
 
 

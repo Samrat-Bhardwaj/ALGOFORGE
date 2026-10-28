@@ -67,6 +67,45 @@ vector<int> commonElements(vector<int> &a, vector<int> &b) {
     return ans;
 }
 
+// Longest subarray with zero sum (https://www.geeksforgeeks.org/problems/largest-subarray-with-0-sum/1)
+int maxLength(vector<int>& arr) {
+    unordered_map<int,int> sumVsIdx;
+
+    int csum = 0;
+    int res = 0;
+    sumVsIdx[0] = -1;
+
+    for(int idx=0; idx<arr.size(); idx++){
+        csum += arr[idx];
+
+        if(sumVsIdx.find(csum) != sumVsIdx.end()){
+            res = max(res, idx - sumVsIdx[csum]);
+        } else {
+            sumVsIdx[csum] = idx;
+        }
+    }
+
+    return res;
+}
+
+// Number of subarrays with zero sum (https://www.geeksforgeeks.org/problems/zero-sum-subarrays1825/1)
+int findSubarray(vector<int>& arr) {
+    unordered_map<long,int> sumFre;
+
+    sumFre[0] = 1;
+    long csum = 0;
+    int count = 0;
+
+    for(int idx=0; idx<arr.size(); idx++){
+        csum += arr[idx];
+
+        count += sumFre[csum];
+        sumFre[csum]++;
+    }
+
+    return count;
+}
+
 
 
 
