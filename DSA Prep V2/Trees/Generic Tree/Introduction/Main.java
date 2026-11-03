@@ -12,16 +12,7 @@ class Node {
 
 class Main {
     public static void displayTree(Node root){
-        System.out.print(root.data + " -> ");
-        for(Node child: root.children){
-            System.out.print(child.data + ",");
-        }
-
-        System.out.println();
-
-        for(Node child: root.children){
-            displayTree(child);
-        }
+        
     }
 
     public static Node constructTree(int[] dataArray){
