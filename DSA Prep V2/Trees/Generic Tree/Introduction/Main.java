@@ -11,10 +11,6 @@ class Node {
 }
 
 class Main {
-    public static void displayTree(Node root){
-        
-    }
-
     public static Node constructTree(int[] dataArray){
         Stack<Node> st = new Stack<>();
 
@@ -39,11 +35,39 @@ class Main {
         return root;
     }
 
+    public static void displayTree(Node root){
+        System.out.print(root.data + " -> ");
+
+        for(int i=0; i<root.children.size(); i++){
+            Node child = root.children.get(i);
+
+            System.out.print(child.data + ",");
+        }
+        System.out.println(".");
+
+        // display all subTrees
+        for(Node child: root.children){
+            displayTree(child);
+        }
+    }
+
+    public static int sizeOfTree(Node root){
+        int totalSize = 0;
+
+        for(Node child: root.children){
+            totalSize += sizeOfTree(child);
+        }
+
+        return totalSize + 1; // adding +1 for root
+    }
+    
+
     public static void main(String[] args){
         int[] dataArray = {10,20,50,-1,60,-1,-1,30,70,110,-1,120,-1,-1,-1,40,80,-1,90,-1,100,-1,-1,-1};
 
         Node root = constructTree(dataArray);
 
-        displayTree(root);
+        // displayTree(root);
+        System.out.println(sizeOfTree(root));
     }
 }
