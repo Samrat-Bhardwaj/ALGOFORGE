@@ -1,5 +1,6 @@
 import java.util.Stack;
 import java.util.ArrayList;
+import java.util.LinkedList;
 class Node {
     int data;
     ArrayList<Node> children;
@@ -60,6 +61,94 @@ class Main {
 
         return totalSize + 1; // adding +1 for root
     }
+
+    public static int height(Node root){
+        int h = -1;
+
+        for(Node child: root.children){
+            h = Math.max(height(child), h);
+        }
+
+        return h + 1;
+    }
+
+    public static void traverse(Node root){
+        System.out.println("Pre-order " + root.data); 
+
+        for(int i=0; i<root.children.size(); i++){
+            Node child = root.children.get(i);
+            traverse(child);
+
+            if(i < root.children.size() - 1)
+                System.out.println("In-order " + root.data);
+        }
+         
+        System.out.println("Post-order " + root.data); 
+    }
+
+    public static void levelOrder(Node root){
+        LinkedList<Node> que = new LinkedList<>();
+        que.addLast(root);
+
+        while(que.size() > 0){
+            Node front = que.removeFirst();
+
+            System.out.print(front.data + ",");
+
+            for(Node child : front.children){
+                que.addLast(child);
+            }
+        }
+    }
+
+    public static void levelOrderLineWise(Node root){
+        LinkedList<Node> que = new LinkedList<>();
+        que.addLast(root);
+        que.addLast(null); // marker
+
+        while(que.size() > 0){
+            Node front = que.removeFirst();
+
+            if(front == null){
+                System.out.println(".");
+
+                if(que.size() > 0){
+                    que.addLast(null);
+                }
+
+            } else {
+                System.out.print(front.data + ",");
+
+                for(Node child: front.children){
+                    que.addLast(child);
+                }
+            }
+        }
+    }
+
+    public static void levelOrderLineWise2(Node root){
+        LinkedList<Node> que = new LinkedList<>();
+        que.addLast(root);
+        int level = 1;
+
+        while(que.size() > 0){
+            int size = que.size();
+            System.out.print("Level: " + level + " -> ");
+
+            while(size-- > 0){
+                Node front = que.removeFirst();
+
+                System.out.print(front.data + ",");
+
+                for(Node child : front.children){
+                    que.addLast(child);
+                }
+            }
+
+            System.out.println();
+            level++;
+        }
+    }
     
 
     public static void main(String[] args){
@@ -68,6 +157,7 @@ class Main {
         Node root = constructTree(dataArray);
 
         // displayTree(root);
-        System.out.println(sizeOfTree(root));
+        // System.out.println(height(root));
+        levelOrderLineWise2(root);
     }
 }
