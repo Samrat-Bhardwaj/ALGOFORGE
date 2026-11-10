@@ -244,6 +244,46 @@ class Main {
         return new ArrayList<>();
     }
 
+    // Find LCA
+    public static int findLCA(Node root, int num1, int num2){
+        ArrayList<Integer> ntrPath1 = nodeToRootPath(root,num1);
+        ArrayList<Integer> ntrPath2 = nodeToRootPath(root,num2);
+
+        int i = ntrPath1.size() - 1;
+        int j = ntrPath2.size() - 1;
+
+        while(i >= 0 && j >= 0 && ntrPath1.get(i) == ntrPath2.get(j)){
+            i--;
+            j--;
+        }
+
+        j++; // or i++;
+        return ntrPath2.get(j); // ntrPath1.get(i)
+    }
+
+    // is Mirror 
+    public static boolean isMirror(Node root1, Node root2){
+        if(root1.data != root2.data || root1.children.size() != root2.children.size()){
+            return false;
+        }
+
+        int j = root2.children.size() - 1;
+
+        for(int i=0; i<root1.children.size(); i++, j--){
+            boolean isChildMirror = isMirror(root1.children.get(i), root2.children.get(j));
+
+            if(isChildMirror == false){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean isSymmetric(Node root){
+        return isMirror(root, root); // a symmetric object is mirror of itself
+    }
+
 
 
 
@@ -277,6 +317,6 @@ class Main {
         Node root = constructTree(dataArray);
 
         // displayTree(root);
-        System.out.println(nodeToRootPath(root,12));
+        System.out.println(findLCA(root,80,110));
     }
 }
