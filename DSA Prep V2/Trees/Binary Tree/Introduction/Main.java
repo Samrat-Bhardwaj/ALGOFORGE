@@ -61,18 +61,26 @@ class Main {
             return;
         }
 
-        String current = "";
-
-        current += root.left == null ? "." : root.left.data;
-        current += " <- ";
-        current += root.data;
-        current += " -> ";
-        current += root.right == null ? "." : root.right.data;
+        String current = (root.left == null ? "." : root.left.data) + " <- " + root.data + " -> " 
+                            + (root.right == null ? "." : root.right.data);
 
         System.out.println(current);
-        
+
         display(root.left);
         display(root.right);
+    }
+
+    public static int size(Node root){
+        if(root == null){
+            return 0;
+        }
+        
+        int totalSize = 0;
+
+        totalSize += size(root.left);
+        totalSize += size(root.right);
+
+        return totalSize + 1;
     }
 
     public static void main(String[] args){
