@@ -296,6 +296,40 @@ class Main {
         return buildTree(preorder,0,n-1,inorder,0,n-1);
     }
 
+    // Construct Binary Tree from preorder and postorder (Leetcode 889)
+    public TreeNode buildTree(int[] preorder, int prsi, int prei, int[] postorder, int posi, int poei){
+        if(prsi > prei){
+            return null;
+        }
+
+        if(prsi == prei){
+            return new TreeNode(preorder[prsi]);
+        }
+
+        int rootEle = preorder[prsi];
+        TreeNode root = new TreeNode(rootEle);
+
+        int possibleLeftTreeRootEle = preorder[prsi + 1];
+        int leftRootIdx = posi;
+
+        while(postorder[leftRootIdx] != possibleLeftTreeRootEle){
+            leftRootIdx++;
+        }
+
+        int leftSubtreeEle = leftRootIdx - posi + 1;
+
+        root.left = buildTree(preorder, prsi + 1, prsi + leftSubtreeEle, postorder, posi, leftRootIdx);
+        root.right = buildTree(preorder, prsi + leftSubtreeEle + 1, prei, postorder, leftRootIdx + 1, poei - 1);
+
+        return root;
+    }
+
+    public TreeNode constructFromPrePost(int[] preorder, int[] postorder) {
+        int n = preorder.length;
+
+        return buildTree(preorder,0,n-1,postorder,0,n-1);
+    }
+
 
 
 
