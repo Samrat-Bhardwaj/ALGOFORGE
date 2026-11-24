@@ -330,6 +330,97 @@ class Main {
         return buildTree(preorder,0,n-1,postorder,0,n-1);
     }
 
+    // ================================================ BINARY TREE VIEWS PROBLEMS ====================================================
+
+    // width of binary Tree
+    public void traverse(TreeNode root, int verticalLevel, int[] minMax){
+        if(root == null){
+            return;
+        }
+
+        minMax[0] = Math.min(minMax[0], verticalLevel);
+        minMax[1] = Math.max(minMax[1], verticalLevel);
+
+        traverse(root.left, verticalLevel - 1, minMax);
+        traverse(root.right, verticalLevel + 1, minMax);
+    }
+
+    public int widthOfBinaryTree(TreeNode root){
+        int[] minMax = new int[2];
+
+        traverse(root,0,minMax);
+
+        int width = minMax[1] - minMax[0] + 1;
+
+        return width;
+    }
+
+    // Vertical order of a tree ===============================
+    class Solution {
+        class Pair {
+            Node node;
+            int verticalLevel;
+
+            public Pair(Node node, int verticalLevel){
+                this.node = node;
+                this.verticalLevel = verticalLevel;
+            }
+        }
+
+        public void traverse(Node root, int verticalLevel, int[] minMax){
+            if(root == null){
+                return;
+            }
+
+            minMax[0] = Math.min(minMax[0], verticalLevel);
+            minMax[1] = Math.max(minMax[1], verticalLevel);
+
+            traverse(root.left, verticalLevel - 1, minMax);
+            traverse(root.right, verticalLevel + 1, minMax);
+        }
+
+        public ArrayList<ArrayList<Integer>> verticalOrder(Node root) {
+            int[] minMax = new int[2];
+
+            traverse(root,0,minMax);
+
+            int width = minMax[1] - minMax[0] + 1;
+
+            int shift = -minMax[0]; // how left you can go
+
+            ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+            for(int i=0; i<width; i++){
+                res.add(new ArrayList<>());
+            }
+
+            LinkedList<Pair> que = new LinkedList<>();
+            que.addLast(new Pair(root,shift));
+
+            while(que.size() > 0){
+                int size = que.size();
+
+                while(size-- > 0){
+                    Pair front = que.removeFirst();
+
+                    Node node = front.node;
+                    int currentLevel = front.verticalLevel;
+
+                    res.get(currentLevel).add(node.data); // getting the list at that particulal vLevel, then adding data
+
+                    if(node.left != null){
+                        que.addLast(new Pair(node.left, currentLevel - 1));
+                    }
+
+                    if(node.right != null){
+                        que.addLast(new Pair(node.right, currentLevel + 1));
+                    }
+                }
+            }
+
+            return res;
+        }
+    }
+
 
 
 
