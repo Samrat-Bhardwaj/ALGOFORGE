@@ -623,7 +623,174 @@ class Main {
         }
     }
 
+    // diagonal traversal of a tree (https://www.geeksforgeeks.org/problems/diagonal-traversal-of-binary-tree/1)
+    class Solution {
+        public void traverse(Node root, int diagonalLevel, int[] minMax){
+            if(root == null){
+                return;
+            }
 
+            minMax[0] = Math.min(minMax[0], diagonalLevel);
+            minMax[1] = Math.max(minMax[1], diagonalLevel);
+
+            traverse(root.left, diagonalLevel - 1, minMax);
+            traverse(root.right, diagonalLevel, minMax);
+        }
+        
+        public void fillDiagonalLevels(Node root, int currentLevel, ArrayList<ArrayList<Integer>> res){
+            if(root == null){
+                return;
+            }
+
+            res.get(currentLevel).add(root.data);
+
+            fillDiagonalLevels(root.left, currentLevel - 1, res);
+            fillDiagonalLevels(root.right, currentLevel, res);
+        }
+
+        public ArrayList<Integer> diagonal(Node root) {
+            int[] minMax = new int[2];
+
+            traverse(root,0,minMax);
+
+            int totalDiagonals = - minMax[0] + 1;
+            int shift = -minMax[0]; // total left levels
+
+            ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+            for(int i=0; i<totalDiagonals; i++){
+                res.add(new ArrayList<>());
+            }   
+
+            fillDiagonalLevels(root,shift,res);
+
+            // convert 2d to 1d
+            ArrayList<Integer> convertedAns = new ArrayList<>();
+            for(int i=totalDiagonals-1; i>=0; i--){
+                for(int e: res.get(i)){
+                    convertedAns.add(e);
+                }
+            }
+
+            return convertedAns;
+        }
+    }
+
+
+    // ================================  QUESTIONS RELATED TO DIAMETER OF TREE ====================================================
+    public int getHeight(TreeNode root){
+        if(root == null){
+            return -1;
+        }
+
+        int leftHeight = getHeight(root.left);
+        int rightHeight = getHeight(root.right);
+
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    public int diameterOfBinaryTree(TreeNode root) {
+        if(root == null){
+            return -1;
+        }
+
+        int leftMaxDia = diameterOfBinaryTree(root.left);
+        int rightMaxDia = diameterOfBinaryTree(root.right);
+
+        int myDia = getHeight(root.left) + getHeight(root.right) + 2;
+
+        int maxDiameter = Math.max(myDia, Math.max(leftMaxDia, rightMaxDia));
+
+        return maxDiameter;
+    }
+
+    // Method 2 
+    class Solution {
+        public int getHeight(TreeNode root, int[] maxDiameter){
+            if(root == null){
+                return -1;
+            }
+
+            int leftHeight = getHeight(root.left, maxDiameter);
+            int rightHeight = getHeight(root.right, maxDiameter);
+
+            int myDiameter = leftHeight + rightHeight + 2;
+            maxDiameter[0] = Math.max(maxDiameter[0], myDiameter); // max of all diameter
+
+            return Math.max(leftHeight, rightHeight) + 1;
+        }
+
+        public int diameterOfBinaryTree(TreeNode root) {
+            int[] maxDiameter = new int[1];
+            maxDiameter[0] = -1;
+
+            getHeight(root, maxDiameter);
+
+            return maxDiameter[0];
+        }
+    }
+
+    // Method 3 ============
+    class Solution {
+        // {height, maxDiameter}
+        public int[] getHeighDia(TreeNode root){
+            if(root == null){
+                return new int[]{-1,-1};
+            }
+
+            int[] leftHeightDia = getHeighDia(root.left);
+            int[] rightHeightDia = getHeighDia(root.right);
+
+            int leftHeight = leftHeightDia[0];
+            int rightHeight = rightHeightDia[0];
+
+            int leftMaxDia = leftHeightDia[1];
+            int rightMaxDia = rightHeightDia[1];
+
+            int myHeight = Math.max(leftHeight, rightHeight) + 1;
+
+            int myDia = leftHeight + rightHeight + 2;
+            int maxDiameter = Math.max(myDia, Math.max(leftMaxDia, rightMaxDia));
+
+            return new int[]{myHeight, maxDiameter};
+        }
+
+        public int diameterOfBinaryTree(TreeNode root) {
+            return getHeighDia(root)[1];
+        }
+    }
+
+    // Max path sum between two leaves 
+    class Solution {
+        public int leafToNode(Node root, int[] maxLeafToLeaf){
+                if(root == null){
+                    return -(int)(1e8);
+                }
+
+                if(root.left == null && root.right == null){
+                    return root.data;
+                }
+
+                int leftMaxLeafToNode = leafToNode(root.left, maxLeafToLeaf);
+                int rightMaxLeafToNode = leafToNode(root.right, maxLeafToLeaf);
+
+                int myLeafToLeaf = leftMaxLeafToNode + root.data + rightMaxLeafToNode;
+
+                if(root.left != null && root.right != null){ // only if leaf to leaf exists
+                    maxLeafToLeaf[0] = Math.max(maxLeafToLeaf[0], myLeafToLeaf);
+                }
+            
+                return Math.max(leftMaxLeafToNode, rightMaxLeafToNode) + root.data;
+            }
+
+            public int maxPathSum(Node root) {
+                int[] maxLeafToLeaf = new int[1];
+                maxLeafToLeaf[0] = (int)(-1e8);
+
+                int leafToRoot = leafToNode(root, maxLeafToLeaf);
+
+                return maxLeafToLeaf[0] == (int)(-1e8) ? -1 : maxLeafToLeaf[0];
+            }
+    }
 
 
 
