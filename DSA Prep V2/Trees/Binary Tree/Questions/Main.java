@@ -878,30 +878,6 @@ class Main {
         }
     }
 
-    // Leetcode 116 (Populating next right pointer in a perfect binary Tree) ===================================
-    public Node connect(Node root) {
-        if(root == null) return root;
-        
-        Node curr = root;
-        Node first = root.left;
-
-        while(first != null){
-            curr.left.next = curr.right;
-
-            if(curr.next == null){ // current level is over, move to next level
-                curr = first;
-                first = first.left;
-            } else {
-                Node next = curr.next;
-
-                curr.right.next = next.left;
-
-                curr = next;
-            }
-        }
-
-        return root;
-    }
 
 
 
