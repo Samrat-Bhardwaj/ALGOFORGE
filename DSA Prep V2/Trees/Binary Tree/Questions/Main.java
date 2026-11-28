@@ -792,6 +792,118 @@ class Main {
             }
     }
 
+    // Homework - Max sum node to node
+
+        // Binary tree to doubly LinkedList (https://www.geeksforgeeks.org/problems/binary-tree-to-dll/1)
+    class Solution {
+        Node head;
+        Node prev;
+
+        public void traverseInorder(Node root){
+            if(root == null) return;
+
+            traverseInorder(root.left);
+
+            if(prev == null){
+                head = root;
+            } else {
+                prev.right = root; // prev node and its subtrees are already visited, can ruin structure
+                root.left = prev; // left subtree is already visited, can ruin structure
+            }
+
+
+            prev = root;
+            traverseInorder(root.right);
+        }
+
+        Node bToDLL(Node root) {
+            head = null;
+            prev = null;
+
+            traverseInorder(root);
+
+            return head;
+        }
+    }
+
+    // flatten binary tree (Same as generic ) => Leetcode 114 =================================
+    public TreeNode flattenBinaryTree(TreeNode root){
+        if(root == null){
+            return null;
+        }
+
+        if(root.left == null && root.right == null){
+            return root;
+        }
+
+        TreeNode leftKaTail = flattenBinaryTree(root.left);
+        TreeNode rightKaTail = flattenBinaryTree(root.right);
+
+        TreeNode leftSubTree = root.left;
+        TreeNode rightSubTree = root.right;
+
+        root.left = null;
+        if(leftSubTree != null){
+            root.right = leftSubTree;
+            leftKaTail.right = rightSubTree;
+        }
+
+        return rightSubTree != null ? rightKaTail : leftKaTail;
+    }
+
+    public void flatten(TreeNode root) {
+        return flattenBinaryTree(root);
+    }
+
+    // flatten binary tree (Using postorder traversal) => Leetcode 114 =================================
+    class Solution {
+        TreeNode prev;
+
+        public void flattenBT(TreeNode root){
+            if(root == null) return;
+
+            flattenBT(root.right);
+            flattenBT(root.left);
+
+            root.right = prev;
+            root.left = null;
+
+            prev = root;
+        }
+
+        public void flatten(TreeNode root) {
+            prev = null;
+
+            flattenBT(root);
+        }
+    }
+
+    // Leetcode 116 (Populating next right pointer in a perfect binary Tree) ===================================
+    public Node connect(Node root) {
+        if(root == null) return root;
+        
+        Node curr = root;
+        Node first = root.left;
+
+        while(first != null){
+            curr.left.next = curr.right;
+
+            if(curr.next == null){ // current level is over, move to next level
+                curr = first;
+                first = first.left;
+            } else {
+                Node next = curr.next;
+
+                curr.right.next = next.left;
+
+                curr = next;
+            }
+        }
+
+        return root;
+    }
+
+
 
 
 
